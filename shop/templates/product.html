@@ -1,0 +1,301 @@
+
+{% load static %}
+{% load humanize %}
+<!doctype html>
+<html lang="fa" DIR="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.rtl.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <title>صفحه محصول</title>
+</head>
+<body>
+<header class="mb-5">
+    <div class="top-menu">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 text-center">logo</div>
+                <div class="col-md-6">
+                    <div class="main-menu">
+                        <ul>
+                            <li><a href="">خانه</a></li>
+                            <li><a href="">فروشگاه</a></li>
+                            <li><a href="">محصولات</a>
+                                <ul>
+                                    <li><a href="">خانه</a></li>
+                                    <li><a href="">فروشگاه</a></li>
+                                    <li><a href="">محصولات</a></li>
+                                    <li><a href="">تماس</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="">تماس</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="top-access">
+                        <ul class="text-center">
+                            <li class="d-inline-block"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="bottom"
+                                title="سبد خرید">
+                                <a href="#" class="text-light d-inline-block"><i class="bi bi-bag"></i></a>
+                            </li>
+                            <li class="d-inline-block"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="bottom"
+                                title="حساب کاربری">
+                                <a href="#" class="text-light d-inline-block"><i class="bi bi-person"></i></a>
+                            </li>
+                            <li class="d-inline-block"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="bottom"
+                                title="علاقه مندی ها">
+                                <a href="#" class="text-light d-inline-block"><i class="bi bi-heart"></i></a>
+                            </li>
+                            <li class="d-inline-block"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="bottom"
+                                title="جستجو">
+                                <a href="#" class="text-light d-inline-block"><i class="bi bi-search"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid px-0">
+        <div class="page-title-box text-center">
+            <div class="bread-crumb-box pb-3">
+                <ol>
+                    <li><a href="index.html">خانه</a></li>
+                    <li><a href="#">خشکبار</a></li>
+                    <li><span>{{ product.name }}</span></li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</header>
+<section>
+    <div class="container">
+        <div class="page-content">
+            <div class="row">
+                <div class="col-lg-5 col-md-6">
+                    <div class="product-img bg-white p-3 rounded">
+                        <figure class="border-bottom mb-0">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="d-table mx-auto">
+                        </figure>
+                        <div class="product-gallery owl-carousel owl-theme pt-3">
+                            <div class="item">
+                                <a href="#">
+                                    <figure class="position-relative p-1">
+                                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="d-table mx-auto">
+                                        <figcaption class="position-absolute rounded w-100 h-100 text-center">
+                                            <i class="bi bi-zoom-in"></i>
+                                        </figcaption>
+                                    </figure>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#">
+                                    <figure class="position-relative p-1">
+                                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="d-table mx-auto">
+                                        <figcaption class="position-absolute rounded w-100 h-100 text-center">
+                                            <i class="bi bi-zoom-in"></i>
+                                        </figcaption>
+                                    </figure>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#">
+                                    <figure class="position-relative p-1">
+                                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="d-table mx-auto">
+                                        <figcaption class="position-absolute rounded w-100 h-100 text-center">
+                                            <i class="bi bi-zoom-in"></i>
+                                        </figcaption>
+                                    </figure>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#">
+                                    <figure class="position-relative p-1">
+                                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="d-table mx-auto">
+                                        <figcaption class="position-absolute rounded w-100 h-100 text-center">
+                                            <i class="bi bi-zoom-in"></i>
+                                        </figcaption>
+                                    </figure>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#">
+                                    <figure class="position-relative p-1">
+                                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="d-table mx-auto">
+                                        <figcaption class="position-absolute rounded w-100 h-100 text-center">
+                                            <i class="bi bi-zoom-in"></i>
+                                        </figcaption>
+                                    </figure>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-7 col-6">
+                    <div class="product-detail p-3">
+                        <h1 class="pb-3 m-0">{{ product.name }}</h1>
+                        <div class="product-rating mb-3">
+                            {% with ''|center:product.star as range %}
+                                {% for _ in range %}
+                                    <i class="bi bi-star text-warning"></i>
+                                {% endfor %}
+                            {% endwith %}
+                            <span>12 دیدگاه ثبت شده</span>
+                        </div>
+                        <div class="product-price mb-3">
+                            {% if product.is_sale %}
+                                <p> {{ product.sale_price | intcomma }}</p>
+                            {% else %}
+                                <p> {{ product.price | intcomma }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="add-to-card d-inline-block bg-white mb-3 p-4 my-4 border rounded">
+                            <input type="number" min="1" class="rounded">
+                            <button class="rounded">افزودن به سبد خرید</button>
+                        </div>
+                        <div class="add-to-wish mb-3">
+                            <span><i class="bi bi-heart">&nbsp;افزودن به علاقه‌مندی</i></span>
+                        </div>
+                        <div class="cat-sku">
+                            <span class="d-inline-block pe-4">دسته: خشکبار</span>
+                            <span>شناسه محصول 63989</span>
+                        </div>
+                        <div class="product-excerpt mt-3 border-top pt-3">
+                            <p>{{ product.description }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-12">
+                    <div class="product-content bg-white p-3 mt-3">
+                        <ul class="nav nav-pills mb-2" id="pills-tab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home"
+                                        type="button" role="tab" aria-controls="pills-home" aria-selected="true">جزئیات محصول</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile"
+                                        type="button" role="tab" aria-controls="pills-profile" aria-selected="false">ویژگی ها</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact"
+                                        type="button" role="tab" aria-controls="pills-contact" aria-selected="false">نظرات</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active p-3" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                                <h4>{{ product.name }}</h4>
+                                {{ product.description }}
+                            </div>
+                            <div class="tab-pane fade p-3" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                                <table class="table">
+                                    <tr>
+                                        <td>وزن</td>
+                                        <td>500 گرم</td>
+                                    </tr>
+                                    <tr>
+                                        <td>محتویات</td>
+                                        <td>گردو،بادام،تخمه کدو</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade p-3" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+                                3
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<footer class="py-4 mt-5 position-relative">
+    <span class="scrooltop position-absolute" onclick="topFunction()"></span>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="footer-menu">
+                    <ul class="p-0 my-3 text-center">
+                        <li><a href="#">مشتریان</a></li>
+                        <li><a href="#">قوانین</a></li>
+                        <li><a href="#">خرید کالا</a></li>
+                        <li><a href="#">فروشگاه</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="footer-box">
+                    <span class="title py-3 pb-4 d-block position-relative">تماس با ما</span>
+                    <ul class="p-0">
+                        <li class="d-block w-100 py-2">
+                            <span><i class="bi bi-telephone-inbound"></i>&nbsp;0211111111</span>
+                        </li>
+                        <li class="d-block w-100 py-2">
+                            <span><i class="bi bi-geo-alt"></i>&nbsp;تبریز خیابان المهدی کوی المهدی جنب بیمارستان پلاک 4</span>
+                        </li>
+                        <li class="d-block w-100 py-2">
+                            <span><i class="bi bi-envelope-at"></i>&nbsp;info@lorem.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="footer-box text-center">
+                    <span class="title py-3 pb-4 d-block position-relative">همراه ما باشید</span>
+                    <ul class="p-0 social-ul">
+                        <li class="d-inline-block m-1">
+                            <a href="#" class="d-inline-block p-2">
+                                <i class="bi bi-instagram"></i>
+                            </a>
+                        </li>
+                        <li class="d-inline-block m-1">
+                            <a href="#" class="d-inline-block p-2">
+                                <i class="bi bi-linkedin"></i>
+                            </a>
+                        </li>
+                        <li class="d-inline-block m-1">
+                            <a href="#" class="d-inline-block p-2">
+                                <i class="bi bi-twitter"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="footer-box">
+                    <span class="title py-3 pb-4 d-block position-relative">سایت فروش هل و زعفران</span>
+                    <ul class="p-0">
+                        <li class="d-block w-100 py-2">
+                            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد.
+                        </li>
+                        <li class="d-block w-100 py-2">
+                            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'js/jquery.simple.timer.js' %}"></script>
+<script src="{% static 'js/index.js' %}"></script>
+</body>
+</html>
