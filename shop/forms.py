@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-class SignupForm(UserCreationForm):
 
+
+class SignupForm(UserCreationForm):
     first_name = forms.CharField(
         label="",
         max_length=50,
