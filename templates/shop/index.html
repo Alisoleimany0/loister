@@ -1,120 +1,46 @@
 
+{% extends 'base.html' %}
 {% load static %}
 {% load humanize %}
+{% block content %}
 
-<!doctype html>
-<html lang="fa" DIR="rtl">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.rtl.css' %}">
-    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
-    <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
-    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
-
-    <title>فروشگاه</title>
-</head>
-<body>
-
-<header class="mb-4">
-    <div class="top-menu">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3 text-center">logo</div>
-                <div class="col-md-6">
-                    <div class="main-menu">
-                        <ul>
-                            <li><a href="">خانه</a></li>
-                            <li><a href="">فروشگاه</a></li>
-                            <li><a href="">محصولات</a>
-                                <ul>
-                                    <li><a href="">خانه</a></li>
-                                    <li><a href="">فروشگاه</a></li>
-                                    <li><a href="">محصولات</a></li>
-                                    <li><a href="">تماس</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="">تماس</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="top-access">
-                        <ul class="text-center">
-                            <li class="d-inline-block"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="bottom"
-                                title="سبد خرید">
-                                <a href="#" class="text-light d-inline-block"><i class="bi bi-bag"></i></a>
-                            </li>
-                            <li class="d-inline-block"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="bottom"
-                                title="حساب کاربری">
-                                <a href="#" class="text-light d-inline-block"><i class="bi bi-person"></i></a>
-                            </li>
-                            <li class="d-inline-block"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="bottom"
-                                title="علاقه مندی ها">
-                                <a href="#" class="text-light d-inline-block"><i class="bi bi-heart"></i></a>
-                            </li>
-                            <li class="d-inline-block"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="bottom"
-                                title="جستجو">
-                                <a href="#" class="text-light d-inline-block"><i class="bi bi-search"></i></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+<div class="container-fluid px-0">
+    <div class="slider-box">
+        <div id="carouselExampleCaptions" class="carousel slide">
+            <div class="carousel-indicators">
+                {% for background in backgrounds %}
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="{{ forloop.counter }}" class="active" aria-current="true" aria-label="Slide {{ forloop.counter }}"></button>
+                {% endfor %}
             </div>
+            <div class="carousel-inner">
+                {% for background in backgrounds %}
+                {% comment %} <div class="carousel-item active position-relative">
+                    <img src="{{ background.image.url }}" class="d-block w-100" alt="...">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>First slide label</h5>
+                        <p>Some representative placeholder content for the first slide.</p>
+                    </div>
+                </div> {% endcomment %}
+                <div class="carousel-item active position-relative">
+                    <img src="{{ background.image.url }}" class="d-block w-100" alt="...">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>First slide label</h5>
+                        <p>Some representative placeholder content for the first slide.</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
     </div>
-    <div class="container-fluid px-0">
-        <div class="slider-box">
-            <div id="carouselExampleCaptions" class="carousel slide">
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                </div>
-                <div class="carousel-inner">
-                    <div class="carousel-item active position-relative">
-                        <img src="{% static 'img/slider1.jpg' %}" class="d-block w-100" alt="...">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>First slide label</h5>
-                            <p>Some representative placeholder content for the first slide.</p>
-                        </div>
-                    </div>
-                    <div class="carousel-item position-relative">
-                        <img src="{% static 'img/slider2.jpg' %}" class="d-block w-100" alt="...">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>Second slide label</h5>
-                            <p>Some representative placeholder content for the second slide.</p>
-                        </div>
-                    </div>
-                    <div class="carousel-item position-relative">
-                        <img src="{% static 'img/slider3.jpg' %}" class="d-block w-100" alt="...">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>Third slide label</h5>
-                            <p>Some representative placeholder content for the third slide.</p>
-                        </div>
-                    </div>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-        </div>
-    </div>
-</header>
+</div>
 
 <section class="index-services mb-3">
     <div class="container-fluid">
@@ -1103,82 +1029,4 @@
         </div>
     </div>
 </section>
-
-<footer class="py-4 mt-5 position-relative">
-    <span class="scrooltop position-absolute" onclick="topFunction()"></span>
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="footer-menu">
-                    <ul class="p-0 my-3 text-center">
-                        <li><a href="#">مشتریان</a></li>
-                        <li><a href="#">قوانین</a></li>
-                        <li><a href="#">خرید کالا</a></li>
-                        <li><a href="#">فروشگاه</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="footer-box">
-                    <span class="title py-3 pb-4 d-block position-relative">تماس با ما</span>
-                    <ul class="p-0">
-                        <li class="d-block w-100 py-2">
-                            <span><i class="bi bi-telephone-inbound"></i>&nbsp;0211111111</span>
-                        </li>
-                        <li class="d-block w-100 py-2">
-                            <span><i class="bi bi-geo-alt"></i>&nbsp;تبریز خیابان المهدی کوی المهدی جنب بیمارستان پلاک 4</span>
-                        </li>
-                        <li class="d-block w-100 py-2">
-                            <span><i class="bi bi-envelope-at"></i>&nbsp;info@lorem.com</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="footer-box text-center">
-                    <span class="title py-3 pb-4 d-block position-relative">همراه ما باشید</span>
-                    <ul class="p-0 social-ul">
-                        <li class="d-inline-block m-1">
-                            <a href="#" class="d-inline-block p-2">
-                                <i class="bi bi-instagram"></i>
-                            </a>
-                        </li>
-                        <li class="d-inline-block m-1">
-                            <a href="#" class="d-inline-block p-2">
-                                <i class="bi bi-linkedin"></i>
-                            </a>
-                        </li>
-                        <li class="d-inline-block m-1">
-                            <a href="#" class="d-inline-block p-2">
-                                <i class="bi bi-twitter"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="footer-box">
-                    <span class="title py-3 pb-4 d-block position-relative">سایت فروش هل و زعفران</span>
-                    <ul class="p-0">
-                        <li class="d-block w-100 py-2">
-                            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد.
-                        </li>
-                        <li class="d-block w-100 py-2">
-                            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
-
-<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
-<script src="{% static 'js/popper.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
-<script src="{% static 'js/owl.carousel.min.js' %}"></script>
-<script src="{% static 'js/jquery.simple.timer.js' %}"></script>
-<script src="{% static 'js/index.js' %}"></script>
-
-</body>
-</html>
+{% endblock content %}

@@ -45,3 +45,6 @@ class Order(models.Model):
 
     def __str__(self):
         return f'{self.customer.first_name} {self.customer.last_name}'
+
+class Background(models.Model):
+    image = models.ImageField(null=True)

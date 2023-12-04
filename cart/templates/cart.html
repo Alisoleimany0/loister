@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+
+
+<section>
+    <div class="container">
+      <div class="page-body bg-white p-3 rounded">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="alert alert-danger">
+              سبد خرید شما خالی است
+            </div>
+            <div class="purchase-table">
+              <table class="table">
+                <tr>
+                  <td>ردیف</td>
+                  <td>نام محصول</td>
+                  <td>قیمت</td>
+                  <td>تصویر</td>
+                  <td>عملیات</td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>زعفران</td>
+                  <td>500،000 تومان</td>
+                  <td><img src="img/saffron.png"></td>
+                  <td><a href="#" id="delete-cart-item" class="text-danger"><i class="bi bi-trash"></i></a></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>زعفران</td>
+                  <td>500،000 تومان</td>
+                  <td><img src="img/saffron.png"></td>
+                  <td><a href="#" id="delete-cart-item" class="text-danger"><i class="bi bi-trash"></i></a></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>زعفران</td>
+                  <td>500،000 تومان</td>
+                  <td><img src="img/saffron.png"></td>
+                  <td><a href="#" id="delete-cart-item" class="text-danger"><i class="bi bi-trash"></i></a></td>
+                </tr>
+              </table>
+              <div class="cart-off my-3">
+                <form action="">
+                  <div class="row">
+                    <div class="col-sm-8">
+                      <input type="text" placeholder="اگر کد تخفیف دارید وارد کنید...">
+                    </div>
+                    <div class="col-sm-4">
+                      <button>اعمال تخفیف</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <table class="table">
+                <tr>
+                  <td colspan="3">مجموع سبد</td>
+                </tr>
+                <tr>
+                  <td>3 محصول</td>
+                  <td>0% تخفیف</td>
+                  <td>مجموع : 1.500.000 تومان</td>
+                </tr>
+              </table>
+              <div class="row justify-content-end">
+                <div class="col-4">
+                  <form action="">
+                    <button>ادامه جهت تصویه حساب</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
