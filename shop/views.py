@@ -1,14 +1,16 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-
+from django.shortcuts import get_object_or_404
 from .forms import SignupForm
-from .models import Product
-
+from .models import Category, Product, Background
+from django import forms
+from django.db import models
 
 def helloworld(request):
     all_products = Product.objects.all()
-    return render(request, "index.html", {'products': all_products})
+    backgrounds = Background.objects.all()
+    return render(request, "shop/index.html", {'products': all_products, 'backgrounds': backgrounds})
 
 
 def about(request):
@@ -29,7 +31,7 @@ def login_user(request):
             messages.error(request, "اشکال در ورود")
             return redirect("login")
     else:
-        return render(request, 'login.html')
+        return render(request, 'shop/login.html')
 
 
 def logout_user(request):
@@ -56,4 +58,12 @@ def signup_user(request):
 
 def product(request, pk):
     product = Product.objects.get(id=pk)
-    return render(request, "product.html", {'product': product})
+    return render(request, "shop/product.html", {'product': product})
+
+
+def category(request, cat):
+    cat = cat.replace("-", " ")
+    category = get_object_or_404(Category, name=cat)
+    products = Product.objects.filter(category=category)
+    all_categories = Category.objects.all()
+    return render(request, "category.html", {'products': products, "category": category, "all_categories": all_categories})

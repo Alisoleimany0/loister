@@ -1,0 +1,36 @@
+{% load static %}
+<!doctype html>
+<html lang="fa" DIR="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.rtl.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+
+    <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/jquery.simple.timer.js' %}"></script>
+    <script src="{% static 'js/index.js' %}"></script>
+
+    <title>فروشگاه</title>
+</head>
+{% block header %} {% include 'main/navbar.html' %} {% endblock header %}
+
+
+
+<body>
+
+    {% block content %}
+        
+    {% endblock content %}
+
+
+
+</body>
+
+{% block footer %} {% include 'main/footer.html' %} {% endblock footer %}
