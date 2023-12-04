@@ -10,7 +10,8 @@ from django.db import models
 def helloworld(request):
     all_products = Product.objects.all()
     backgrounds = Background.objects.all()
-    return render(request, "shop/index.html", {'products': all_products, 'backgrounds': backgrounds})
+    return render(request, "shop/index_copy.html")
+    # return render(request, "shop/index.html", {'products': all_products, 'backgrounds': backgrounds})
 
 
 def about(request):
