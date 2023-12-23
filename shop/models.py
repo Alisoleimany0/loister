@@ -51,3 +51,6 @@ class Background(models.Model):
     title = models.CharField(blank=True, max_length=30)
     description = models.CharField(blank=True, max_length=100)
     image = models.ImageField(null=True)
+
+    def __str__(self):
+        return self.title
