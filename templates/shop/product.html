@@ -1,4 +1,4 @@
-{% include "base.html" %}
+{% extends "base.html" %}
 {% load static %}
 {% load humanize %}
 
@@ -66,7 +66,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-7 col-6">
                     <div class="product-detail p-3">
                         <h1 class="pb-3 m-0">{{ product.name }}</h1>
@@ -101,7 +101,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-12">
                     <div class="product-content bg-white p-3 mt-3">
                         <ul class="nav nav-pills mb-2" id="pills-tab" role="tablist">
