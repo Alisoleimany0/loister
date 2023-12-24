@@ -3,15 +3,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from .forms import SignupForm
-from .models import Category, Product, Background
-from django import forms
-from django.db import models
+from .models import Category, Product, HomepageCoverGroup, HomepageCover
+
 
 def helloworld(request):
     all_products = Product.objects.all()
-    backgrounds = Background.objects.all()
-    # return render(request, "shop/index_copy.html")
-    return render(request, "shop/index.html", {'products': all_products, 'backgrounds': backgrounds})
+    covers = HomepageCover.objects.all()
+    return render(request, "shop/index.html", {'products': all_products, 'covers': covers})
 
 
 def about(request):
@@ -67,4 +65,5 @@ def category(request, cat):
     category = get_object_or_404(Category, name=cat)
     products = Product.objects.filter(category=category)
     all_categories = Category.objects.all()
-    return render(request, "category.html", {'products': products, "category": category, "all_categories": all_categories})
+    return render(request, "category.html",
+                  {'products': products, "category": category, "all_categories": all_categories})

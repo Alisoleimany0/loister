@@ -77,24 +77,24 @@
         <div class="slider-box">
             <div id="carouselExampleCaptions" class="carousel slide">
                 <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
-                            aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
-                            aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
-                            aria-label="Slide 3"></button>
+                    {% for cover in covers %}
+                        <button type="button" data-bs-target="#carouselExampleCaptions"
+                                data-bs-slide-to="{{ forloop.counter|add:"-1" }}"
+                                {% if forloop.counter == 1 %}class="active" aria-current="true" {% endif %}
+                                aria-label="Slide {{ forloop.counter }}"></button>
+                    {% endfor %}
                 </div>
                 <div class="carousel-inner">
-                    {% for background in backgrounds %}
+                    {% for cover in covers %}
                         {% if forloop.counter == 1 %}
                             <div class="carousel-item active position-relative">
                         {% else %}
                             <div class="carousel-item position-relative">
                         {% endif %}
-                    <img src="{{ background.image.url }}" class="d-block w-100" alt="...">
+                    <img src="{{ cover.image.url }}" class="d-block w-100" alt="...">
                     <div class="carousel-caption d-none d-md-block">
-                        <h5>{{ background.title }}</h5>
-                        <p>{{ background.description }}</p>
+                        <h5>{{ cover.title }}</h5>
+                        <p>{{ cover.description }}</p>
                     </div>
                     </div>
                     {% endfor %}

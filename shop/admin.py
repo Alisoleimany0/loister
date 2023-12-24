@@ -1,11 +1,17 @@
 from django.contrib import admin
 from . import models
-# Register your models here.
-
-
+from .models import HomepageCover, HomepageCoverGroup
 
 admin.site.register(models.Category)
-admin.site.register(models.Customer)
+admin.site.register(models.CustomerProfile)
 admin.site.register(models.Product)
 admin.site.register(models.Order)
-admin.site.register(models.Background)
+
+
+class HomepageCoverInline(admin.TabularInline):
+    model = HomepageCover
+
+
+@admin.register(HomepageCoverGroup)
+class HomepageCoverGroupAdmin(admin.ModelAdmin):
+    inlines = HomepageCoverInline,

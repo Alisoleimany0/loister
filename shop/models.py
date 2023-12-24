@@ -1,5 +1,8 @@
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxLengthValidator
 from django.db import models
+
+from customer.models import CustomerProfile
 
 
 class Category(models.Model):
@@ -7,18 +10,6 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class Customer(models.Model):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    phone = models.CharField(max_length=20)
-    email = models.EmailField(max_length=100)
-    password = models.CharField(max_length=50)
-    postal_code = models.IntegerField(null=False, default=0)
-
-    def __str__(self):
-        return f'{self.first_name} {self.last_name}'
 
 
 class Product(models.Model):
@@ -38,7 +29,7 @@ class Product(models.Model):
 
 class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
     address = models.CharField(max_length=400, default='', blank=True)
     phone = models.CharField(max_length=20, blank=True)
@@ -48,7 +39,21 @@ class Order(models.Model):
         return f'{self.customer.first_name} {self.customer.last_name}'
 
 
-class Background(models.Model):
+class HomepageCoverGroup(models.Model):
+    def save(self, *args, **kwargs):
+        if not self.pk and HomepageCoverGroup.objects.exists():
+            raise ValidationError("You can only create one instance of HomepageCovers")
+        return super(HomepageCoverGroup, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return "Homepage Covers"
+
+
+class HomepageCover(models.Model):
+    group = models.ForeignKey(
+        HomepageCoverGroup,
+        on_delete=models.CASCADE
+    )
     title = models.CharField(blank=True, max_length=30)
     description = models.CharField(blank=True, max_length=100)
     image = models.ImageField(null=True)
