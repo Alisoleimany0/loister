@@ -13,7 +13,19 @@
                             <img src="{{ product.image.url }}" alt="{{ product.name }}" class="d-table mx-auto">
                         </figure>
                         <div class="product-gallery owl-carousel owl-theme pt-3">
+                            {% for product in products %}
                             <div class="item">
+                                <a href="#">
+                                    <figure class="position-relative p-1">
+                                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="d-table mx-auto">
+                                        <figcaption class="position-absolute rounded w-100 h-100 text-center">
+                                            <i class="bi bi-zoom-in"></i>
+                                        </figcaption>
+                                    </figure>
+                                </a>
+                            </div>
+                            {% endfor %}
+                            {% comment %} <div class="item">
                                 <a href="#">
                                     <figure class="position-relative p-1">
                                         <img src="{{ product.image.url }}" alt="{{ product.name }}" class="d-table mx-auto">
@@ -52,17 +64,7 @@
                                         </figcaption>
                                     </figure>
                                 </a>
-                            </div>
-                            <div class="item">
-                                <a href="#">
-                                    <figure class="position-relative p-1">
-                                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="d-table mx-auto">
-                                        <figcaption class="position-absolute rounded w-100 h-100 text-center">
-                                            <i class="bi bi-zoom-in"></i>
-                                        </figcaption>
-                                    </figure>
-                                </a>
-                            </div>
+                            </div> {% endcomment %}
                         </div>
                     </div>
                 </div>
