@@ -27,6 +27,15 @@ class Product(models.Model):
         return self.name
 
 
+class ProductDetails(models.Model):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE
+    )
+    title = models.CharField(max_length=50)
+    details = models.TextField()
+
+
 class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     customer = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE)

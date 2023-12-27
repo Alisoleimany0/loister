@@ -1,3 +1,4 @@
+
 *{
     margin: 0;
     padding: 0;
@@ -5,13 +6,34 @@
 
 @font-face {
     font-family: 'Mikhak';
-    src: url('fonts/Mikhak-VF[wght,KSHD,DSTY].woff2') format("woff");
+    src: url('../fonts/Mikhak-VF[wght,KSHD,DSTY].woff2') format("woff");
 }
 
 body,html{
+    background-image: linear-gradient( 135deg, #8aaede 10%, #2964b0 100%);
     font-family: 'Mikhak', serif;
-    background-color: #faf4f4;
     font-size: 13px;
+    height: 100vh;
+    width: 100%;
+}
+body::before,
+body::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+}
+body::before{
+    clip-path: circle(30% at left 20%);
+    opacity: 0.4;
+    background-image: linear-gradient( 135deg, #2964b0 10%, #8aaede 100%);
+}
+body::after{
+    opacity: 0.4;
+    clip-path: circle(25% at right 80%);
+    background-image: linear-gradient( 135deg, #2964b0 10%, #8aaede 100%);
 }
 
 li{
@@ -39,7 +61,8 @@ header .top-menu{
     height: 57px;
     position: relative;
     /*backdrop-filter: blur(14px);*/
-    /*background-color: rgba(68, 68, 68, 0.4);*/
+    background-color: rgba(68, 68, 68, 0.4);
+    backdrop-filter: blur(15px);
     /*box-shadow: 0 3px 8px -4px #000000;*/
     /*position: fixed;*/
     width: 100%;
@@ -136,11 +159,7 @@ header .slider-box,header .page-title-box{
 
 header .page-title-box{
     padding-top: 100px;
-    background: #B79891;  /* fallback for old browsers */
-    background-image: linear-gradient( 135deg, #8aaede 10%, #2964b0 100%);
-
-
-    /*background-image: linear-gradient( 135deg, #9f2d2d 10%, #faf4f4 100%);*/
+    background-color: #ea868f;
     color: #eee;
     font-size: 12px;
 }
@@ -295,56 +314,13 @@ footer{
     /*background-repeat: repeat;*/
     /*background-size: 290px auto;*/
     /*background-position: center center;*/
-    background-image: linear-gradient( 135deg, #8aaede 10%, #2964b0 100%);
+    background-color: rgba(86, 86, 86, 0.52);
+    backdrop-filter: blur(20px);
     color: #eee;
+    z-index: 99;
     font-size: 12px;
 }
 
-footer span.scrooltop{
-    right: 0;
-    left: 0;
-    top: -20px;
-    margin: 0 auto;
-    width: 40px;
-    height: 40px;
-    z-index: 10;
-    cursor: pointer;
-}
-
-footer::before{
-    content: "";
-    position: absolute;
-    right: 0;
-    left: 0;
-    top: -20px;
-    margin: 0 auto;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    color: #ffffff;
-    font-size: 16px;
-    transform: rotate(45deg);
-    background-image: linear-gradient( 135deg, #8aaede 10%, #2964b0 100%);
-}
-
-footer::after{
-    content: "";
-    position: absolute;
-    right: 0;
-    left: 0;
-    top: -20px;
-    margin: 0 auto;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    color: #ffffff;
-    font-size: 16px;
-    transform: rotate(135deg);
-    background-color: rgba(138, 174, 222, 0.65);
-    background-image: url("img/svg/arrow-down-left-square.svg");
-    background-position: center center;
-    background-repeat: no-repeat;
-}
 
 footer .footer-menu li{
     display: inline-block;
@@ -352,7 +328,7 @@ footer .footer-menu li{
 }
 
 footer .footer-menu li a{
-    color: #ececec;
+    color: #ffffff;
     padding: 5px;
 }
 
@@ -477,35 +453,6 @@ footer .social-ul li a{
     margin-left: 8px;
 }
 
-.add-to-card button{
-    border: 0;
-    outline: 0;
-    padding: 5px 15px;
-    color: #FFFFFF;
-    background-color: #de3434;
-}
-
-.add-to-card input[type="number"]{
-    border: 0;
-    outline: 0;
-    width: 40px;
-    height: 29px;
-    padding-left: 5px;
-    color: #3f3f3f;
-    background-color: #efefef;
-}
-
-.add-to-wish{
-    font-size: 12px;
-    color: #9d9d9d;
-    cursor: pointer;
-}
-
-.cat-sku{
-    font-size: 12px;
-    color: #515151;
-}
-
 .product-excerpt p{
     line-height: 1.8;
     font-size: 12px;
@@ -540,16 +487,7 @@ footer .social-ul li a{
     font-size: 10px;
 }
 
-.product-content .tab-content h1,
-.product-content .tab-content h2,
-.product-content .tab-content h3,
-.product-content .tab-content h4,
-.product-content .tab-content h5,
-.product-content .tab-content h6{
-    margin: 15px 0;
-    padding: 0;
-    color: #414141;
-}
+
 
 .product-content .tab-content img{
     display: table;
@@ -568,15 +506,21 @@ footer .social-ul li a{
 
 form input[type="text"],
 form input[type="email"],
-form input[type="tel"],
 form input[type="password"]{
     width: 100%;
     height: 40px;
-    background-color: #eeeeee;
+    background-color: rgba(197, 196, 196, 0.35);
     padding: 0 8px;
     border: 0;
     margin: 5px 0;
     outline: 0;
+    color: #FFFFFF;
+}
+
+form input[type="text"]::placeholder,
+form input[type="email"]::placeholder,
+form input[type="password"]::placeholder{
+    color: #f1f1f1;
 }
 
 form textarea{
@@ -653,26 +597,11 @@ form input[type="submit"]{
     color: #ffd600;
 }
 
-
-
-
-.loggin-signup .loggin-area{
-    background-color: #a3cfbb;
-    width: 100px;
-    margin: 50px;
-    border: 1px solid #43564d;
+.login-register-div{
+    backdrop-filter: blur(5px);
+    background: rgba(255, 255, 255, 0.1);
 }
 
-.loggin-signup .loggin-area input{
-    width: 70%;
-    height: 45px;
-    background-color: #a3cfbb;
-    color: #FFFFFF;
-    padding: 8px;
-    border: 1px solid #43564d;
-    margin: 5px 0;
-    outline: 0;
-}
 
 .blog-post-item img{
     height: 220px;
@@ -718,44 +647,6 @@ form input[type="submit"]{
     color: #031633;
 }
 
-.blog-sidebar span.title::after{
-    content: "";
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    height: 1px;
-    background-color: #515151;
-    width: 40px;
-}
-
-.blog-sidebar ul{
-    padding: 0;
-}
-
-.blog-sidebar ul li{
-    margin: 3px;
-    border-bottom: 1px dotted #eeeeee;
-    padding-bottom: 5px;
-}
-
-.blog-sidebar ul li:last-child{
-    border-bottom: 0;
-}
-
-.blog-sidebar ul li a{
-    display: block;
-    color: #717171;
-    padding: 5px 0;
-}
-
-.blog-sidebar ul li a::before{
-    content: "\f284";
-    font-family: bootstrap-icons, serif !important;
-    position: absolute;
-    top: 10px;
-    right: 0;
-}
-
 .login-register-div label{
     position: relative;
     top: 2px;
@@ -785,12 +676,11 @@ form input[type="submit"]{
     transform: rotate(45deg);
 }
 
-.purchase-table table img{
-    height: 60px;
-    object-fit: contain;
+.form-div{
+    display: flex;
+    justify-content: space-between;
 }
 
-.purchase-table table td{
-    text-align: center;
-    vertical-align: middle;
+.login-register-div i, span{
+    color: #FFFFFF;
 }

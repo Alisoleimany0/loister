@@ -37,10 +37,10 @@ jQuery('.slider-item').owlCarousel({
 //         mybutton.style.display="none";
 //     }
 // }
-// function topFunction(){
-//     document.body.scrollTop=0;
-//     document.documentElement.scrollTop=0;
-// }
+function topFunction(){
+    document.body.scrollTop=0;
+    document.documentElement.scrollTop=0;
+}
 
 jQuery('.cat-slider-item').owlCarousel({
     loop:true,
@@ -83,3 +83,14 @@ jQuery('.product-gallery').owlCarousel({
 });
 
 jQuery('.timer').startTimer();
+
+// $("#appzoon").elevateZoom();
+
+jQuery("#appzoon").elevateZoom({
+    zoomType: "inner",
+    cursor: "crossshair"
+});
+
+jQuery('[data-fancybox="gallery"]').fancybox({
+
+})
