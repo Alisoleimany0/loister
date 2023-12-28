@@ -58,7 +58,10 @@ def signup_user(request):
 
 def product(request, pk):
     product = Product.objects.get(id=pk)
-    return render(request, "shop/product.html", {'product': product})
+    category = Product.category
+    print(category)     # error for showinh righ category
+    return render(request, "shop/product.html",
+                   {'product': product , 'category' : category})
 
 
 def category(request, cat):
