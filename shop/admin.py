@@ -1,17 +1,23 @@
 from django.contrib import admin
-from . import models
-from .models import HomepageCover, HomepageCoverGroup
+from .models import HomepageCover, HomepageCoverGroup, ProductProperty, Product, Category, Order
 
-admin.site.register(models.Category)
-admin.site.register(models.Product)
-admin.site.register(models.Order)
+admin.site.register(Category)
+admin.site.register(Order)
+
+
+class ProductPropertyInline(admin.TabularInline):
+    model = ProductProperty
 
 
 class HomepageCoverInline(admin.TabularInline):
     model = HomepageCover
 
 
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    inlines = ProductPropertyInline,
+
+
 @admin.register(HomepageCoverGroup)
 class HomepageCoverGroupAdmin(admin.ModelAdmin):
-    fields = ['user_phone_number']
     inlines = HomepageCoverInline,
