@@ -49,16 +49,18 @@
 
 <section class="index-products mb-5">
     <div class="container-fluid">
-        {% comment %} do not work {% endcomment %}
-        {% for category in all_categories %}
         <ul class="nav nav-pills mb-2 justify-content-center" id="pills-tab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home"
-                        type="button" role="tab" aria-controls="pills-home" aria-selected="true">{{ category.name }}
-                </button>
-            </li>
+            {% for category in all_categories %}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link{% if forloop.first %} active{% endif %}" id="pills-{{ category.name }}-tab"
+                            data-bs-toggle="pill" data-bs-target="#pills-{{ category.name }}"
+                            type="button" role="tab" aria-controls="pills-{{ category.name }}"
+                            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
+                        {{ category.name }}
+                    </button>
+                </li>
+            {% endfor %}
         </ul>
-        {% endfor %}
         <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                 <div class="row">
@@ -93,7 +95,7 @@
                                     <a href="{% url 'product' item.id %}">
                                         <h5 class="m-0 py-2 text-center overflow-hidden">{{ item.name }}</h5>
                                     </a>
-                                    <p class="text-center overflow-hidden mt-2">{{ product.description }}</p>
+                                    <p class="text-center overflow-hidden mt-2">{{ item.description }}</p>
                                     <div class="product-rate text-center mb-2">
                                         {% with ''|center:item.star as range %}
                                             {% for _ in range %}
@@ -139,10 +141,7 @@
                                     <a href="{% url 'product' item.id %}">
                                         <h5 class="m-0 py-2 text-center overflow-hidden">{{ item.name }}</h5>
                                     </a>
-                                    <p class="text-center overflow-hidden mt-2">Lorem ipsum dolor sit amet, consectetur
-                                        adipisicing elit. Adipisci beatae blanditiis consectetur cupiditate dolorem,
-                                        eaque error et eum exercitationem, ipsum laborum nam nemo placeat quidem rem
-                                        repudiandae soluta vel voluptates!</p>
+                                    <p class="text-center overflow-hidden mt-2">{{ item.description }}</p>
                                     <div class="product-rate text-center mb-2">
                                         {% with ''|center:item.star as range %}
                                             {% for _ in range %}

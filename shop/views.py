@@ -8,8 +8,9 @@ from .models import Category, Product, HomepageCoverGroup, HomepageCover
 
 def helloworld(request):
     all_products = Product.objects.all()
+    all_categories = Category.objects.all()
     covers = HomepageCover.objects.all()
-    return render(request, "shop/index.html", {'products': all_products, 'covers': covers})
+    return render(request, "shop/index.html", {'products': all_products, 'covers': covers, "all_categories": all_categories})
 
 
 def about(request):
