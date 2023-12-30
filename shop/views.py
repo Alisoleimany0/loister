@@ -65,7 +65,7 @@ def signup_user(request):
         return render(request, "signup.html", {'form': form})
 
 
-def product(request, pk):
+def product_single(request, pk):
     product = Product.objects.get(id=pk)
     category = Product.category
     print(category)     # error for showinh righ category

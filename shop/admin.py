@@ -52,7 +52,7 @@ class ProductAdmin(admin.ModelAdmin):
                 for form in formset:
                     if form.cleaned_data.get('is_default'):
                         # Unset previous default pictures
-                        ProductImage.objects.filter(product=form.instance.product).exclude(pk=form.instance.pk).update(
+                        ProductImage.objects.filter(product=form.instance.product_single).exclude(pk=form.instance.pk).update(
                             is_default=False)
 
 

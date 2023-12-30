@@ -64,7 +64,7 @@ class CustomChoiceField(forms.ModelChoiceField):
         Shows an image with the label
         """
         image = conditional_escape(obj.image.url)
-        title = conditional_escape(obj.product)
+        title = conditional_escape(obj.product_single)
 
         label = """<img src="%s" alt="%s" width="150" height="150" style="object-fit: cover;"/>""" % (image, title)
 
