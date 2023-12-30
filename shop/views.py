@@ -1,16 +1,25 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.db.models import QuerySet
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from .forms import SignupForm
-from .models import Category, Product, HomepageCoverGroup, HomepageCover
+from .models import Category, Product, HomepageCoverGroup, HomepageCover, ProductImage
 
 
 def helloworld(request):
     all_products = Product.objects.all()
+    products_with_images = []
+    for i in range(len(all_products)):
+        default_image = ProductImage.objects.filter(product=all_products[i]).get(is_default=True)
+        products_with_images.append({
+            'product': all_products[i],
+            'default_image': default_image
+        })
     all_categories = Category.objects.all()
     covers = HomepageCover.objects.all()
-    return render(request, "shop/index.html", {'products': all_products, 'covers': covers, "all_categories": all_categories})
+    return render(request, "shop/index.html",
+                  {'products': products_with_images, 'covers': covers, "all_categories": all_categories})
 
 
 def about(request):

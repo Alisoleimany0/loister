@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxLengthValidator
 from django.db import models
 
+from django.db.models import signals
 from customer.models import CustomerProfile
 
 
@@ -18,7 +19,6 @@ class Product(models.Model):
     details = models.TextField()
     price = models.DecimalField(default=0, decimal_places=0, max_digits=12)
     category = models.ManyToManyField(Category, blank=True)
-    picture = models.ImageField(null=True, upload_to='upload/product/')
     star = models.CharField(max_length=5, default='0', validators=[MaxLengthValidator(5), MinValueValidator('0')])
     # star = models.IntegerField(default=0 , validators=[MaxLengthValidator(5), MinValueValidator(0)])
     is_on_sale = models.BooleanField(default=False)
@@ -37,6 +37,15 @@ class ProductProperty(models.Model):
     details = models.CharField(max_length=200)
 
 
+class ProductImage(models.Model):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE
+    )
+    image = models.ImageField(null=True, upload_to='upload/product/')
+    is_default = models.BooleanField(default=False)
+
+
 class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     customer = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE)
@@ -46,7 +55,7 @@ class Order(models.Model):
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.customer.first_name} {self.customer.last_name}'
+        return f'{self.customer.user.first_name} {self.customer.user.last_name}'
 
 
 class HomepageCoverGroup(models.Model):
@@ -70,3 +79,11 @@ class HomepageCover(models.Model):
 
     def __str__(self):
         return self.title
+
+
+def pre_product_image_save(sender, instance, **kwargs):
+    if not ProductImage.objects.all():
+        instance.is_default = True
+
+
+signals.pre_save.connect(pre_product_image_save, sender=ProductImage)
