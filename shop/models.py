@@ -46,6 +46,10 @@ class ProductImage(models.Model):
     is_default = models.BooleanField(default=False)
 
 
+class ProductOffers(models.Model):
+    pass
+
+
 class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     customer = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE)

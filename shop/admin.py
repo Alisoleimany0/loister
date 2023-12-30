@@ -15,7 +15,7 @@ class ProductPropertyInline(admin.TabularInline):
     model = ProductProperty
 
 
-class ProductImageWidget(AdminFileWidget):
+class ImageWidget(AdminFileWidget):
     def render(self, name, value, attrs=None, renderer=None):
         output = []
         if value and getattr(value, "url", None):
@@ -32,26 +32,12 @@ class ProductImageInline(admin.TabularInline):
     model = ProductImage
     readonly_fields = ['is_default']
     formfield_overrides = {
-        models.ImageField: {'widget': ProductImageWidget}}
-
-
-class HomepageCoverImageWidget(AdminFileWidget):
-    def render(self, name, value, attrs=None, renderer=None):
-        output = []
-        if value and getattr(value, "url", None):
-            image_url = value.url
-            file_name = str(value)
-            output.append(
-                u' <a href="%s" target="_blank"><img src="%s" alt="%s" width="150" height="150"  '
-                u'style="object-fit: cover;"/></a> %s ' % \
-                (image_url, image_url, file_name, ''))
-        output.append(super(AdminFileWidget, self).render(name, value, attrs))
-        return mark_safe(u''.join(output))
+        models.ImageField: {'widget': ImageWidget}}
 
 
 class HomepageCoverInline(admin.TabularInline):
     model = HomepageCover
-    formfield_overrides = {models.ImageField: {'widget': ProductImageWidget}}
+    formfield_overrides = {models.ImageField: {'widget': ImageWidget}}
 
 
 @admin.register(Product)

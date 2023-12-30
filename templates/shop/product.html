@@ -81,7 +81,7 @@
                             <span>12 دیدگاه ثبت شده</span>
                         </div>
                         <div class="product-price mb-3">
-                            {% if product.is_sale %}
+                            {% if product.is_on_sale %}
                                 <p> {{ product.sale_price | intcomma }}</p>
                             {% else %}
                                 <p> {{ product.price | intcomma }}</p>
@@ -99,7 +99,7 @@
                             <span>شناسه محصول 63989</span>
                         </div>
                         <div class="product-excerpt mt-3 border-top pt-3">
-                            <p>{{ product.description }}</p>
+                            <p>{{ product.display_description }}</p>
                         </div>
                     </div>
                 </div>
@@ -122,8 +122,7 @@
                         </ul>
                         <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade show active p-3" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                                <h4>{{ product.name }}</h4>
-                                {{ product.description }}
+                                {{ product.details }}
                             </div>
                             <div class="tab-pane fade p-3" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                                 <table class="table">

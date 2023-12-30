@@ -100,7 +100,7 @@
                                     <a href="{% url 'product' item.product.id %}">
                                         <h5 class="m-0 py-2 text-center overflow-hidden">{{ item.product.name }}</h5>
                                     </a>
-                                    <p class="text-center overflow-hidden mt-2">{{ item.product.description }}</p>
+                                    <p class="text-center overflow-hidden mt-2">{{ item.product.display_description }}</p>
                                     <div class="product-rate text-center mb-2">
                                         {% with ''|center:item.product.star as range %}
                                             {% for _ in range %}
