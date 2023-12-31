@@ -7,19 +7,39 @@ from .forms import SignupForm
 from .models import Category, Product, HomepageCoverGroup, HomepageCover, ProductImage
 
 
-def helloworld(request):
+def index_view(request):
     all_products = Product.objects.all()
-    products_with_images = []
-    for i in range(len(all_products)):
-        default_image = ProductImage.objects.filter(product=all_products[i]).get(is_default=True)
-        products_with_images.append({
-            'product': all_products[i],
+    order_by_time = all_products.order_by("release_date")[0:7]
+    # TODO: change to correct order by
+    order_by_units_sold = all_products.order_by("release_date")[0:7]
+    order_by_most_viewed = all_products.order_by("views")[0:7]
+    products_with_images_by_date = []
+    products_with_images_by_sold = []
+    products_with_images_by_views = []
+    for product in order_by_time:
+        default_image = ProductImage.objects.filter(product=product).get(is_default=True)
+        products_with_images_by_date.append({
+            'product': product,
+            'default_image': default_image
+        })
+    for product in order_by_units_sold:
+        default_image = ProductImage.objects.filter(product=product).get(is_default=True)
+        products_with_images_by_sold.append({
+            'product': product,
+            'default_image': default_image
+        })
+    for product in order_by_most_viewed:
+        default_image = ProductImage.objects.filter(product=product).get(is_default=True)
+        products_with_images_by_views.append({
+            'product': product,
             'default_image': default_image
         })
     all_categories = Category.objects.all()
     covers = HomepageCover.objects.all()
     return render(request, "shop/index.html",
-                  {'products': products_with_images, 'covers': covers, "all_categories": all_categories})
+                  {'products_by_time': products_with_images_by_date, 'products_by_sold': products_with_images_by_sold,
+                   'products_by_views': products_with_images_by_views, 'covers': covers,
+                   "all_categories": all_categories})
 
 
 def about(request):
@@ -67,13 +87,13 @@ def signup_user(request):
 
 def product_single(request, pk):
     product = Product.objects.get(id=pk)
+    images = ProductImage.objects.filter(product=product)
     category = Product.category
-    print(category)     # error for showinh righ category
-    return render(request, "shop/product.html",
-                   {'product': product , 'category' : category})
+    return render(request, "shop/product_single.html",
+                  {'product': product, 'product_images': images, 'category': category})
 
 
-def category(request, cat):
+def category_view(request, cat):
     cat = cat.replace("-", " ")
     category = get_object_or_404(Category, name=cat)
     products = Product.objects.filter(category=category)

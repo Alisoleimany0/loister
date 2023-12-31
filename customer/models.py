@@ -15,7 +15,7 @@ class CustomerProfile(models.Model):
         return f'{self.user.username}'
 
 
-class Address(models.Model):
+class CustomerAddress(models.Model):
     customer = models.ForeignKey(
         CustomerProfile,
         null=False,
