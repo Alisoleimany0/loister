@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from .forms import SignupForm
-from .models import Category, Product, HomepageCover, ProductImage, ProductOffers
+from .models import Category, Product, HomepageCover, ProductImage, ProductOffers, ProductProperty
 
 
 def index_view(request):
@@ -26,6 +26,16 @@ def index_view(request):
                    "all_categories": all_categories,
                    'offered_products': product_offers.products.all() if product_offers else (),
                    'offer_seconds_remaining': offer_seconds_remaining})
+
+
+def product_single(request, pk):
+    product = Product.objects.get(id=pk)
+    images = ProductImage.objects.filter(product=product)
+    category = Product.category
+    properties = ProductProperty.objects.filter(product=product)
+    return render(request, "shop/product_single.html",
+                  {'product': product, 'product_images': images, 'category': category,
+                   'product_properties': properties})
 
 
 def about(request):
@@ -69,14 +79,6 @@ def signup_user(request):
             return redirect("signup")
     else:
         return render(request, "signup.html", {'form': form})
-
-
-def product_single(request, pk):
-    product = Product.objects.get(id=pk)
-    images = ProductImage.objects.filter(product=product)
-    category = Product.category
-    return render(request, "shop/product_single.html",
-                  {'product': product, 'product_images': images, 'category': category})
 
 
 def category_view(request, cat):

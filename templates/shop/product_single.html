@@ -30,10 +30,9 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-lg-7 col-6">
+                    <div class="col-lg-7 col-6 bg-white rounded">
                         <div class="product-detail p-3">
-                            <h1 class="pb-3 m-0">{{ product.name }}</h1>
+                            <h1 class="pb-4 pt-3 m-0">{{ product.name }}</h1>
                             <div class="product-rating mb-3">
                                 {% with product.star as stars %}
                                     {% with remaining=5|sub:stars %}
@@ -49,13 +48,13 @@
                             </div>
                             <div class="product-price mb-3">
                                 {% if product.is_on_sale %}
-                                    <p> {{ product.sale_price | intcomma }}</p>
+                                    <p> تومان{{ product.sale_price | intcomma }}</p>
                                 {% else %}
                                     <p> {{ product.price | intcomma }}</p>
                                 {% endif %}
                             </div>
-                            <div class="add-to-card d-inline-block bg-white mb-3 p-4 my-4 border rounded">
-                                <input type="number" min="1" class="rounded">
+                            <div class="add-to-card d-inline-block bg-white mb-3 p-4">
+                                <input type="number" min="1" value="1" class="rounded">
                                 <button class="rounded">افزودن به سبد خرید</button>
                             </div>
                             <div class="add-to-wish mb-3">
@@ -66,13 +65,40 @@
                                 <span>شناسه محصول: {{ product.id }}</span>
                             </div>
                             <div class="product-excerpt mt-3 border-top pt-3">
-                                <p>{{ product.display_description }}</p>
+                                <p class="bi bi-info-circle">
+                                    درخواست مرجوع کردن کالا با دلیل "انصراف از خرید" تنها در صورتی قابل تایید است که
+                                    کالا در شرایط اولیه باشد (در صورت پلمپ بودن، کالا نباید باز شده باشد).
+                                </p>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-12">
-                        <div class="product-content bg-white p-3 mt-3">
+                    <div class="col-lg-5 col-md-6">
+                        <div class="product-review-form bg-white rounded p-3 mt-3">
+                            <form action="">
+                                <div class="set-rate d-flex rounded">
+                                    <span class="d-inline-block pe-3">امتیاز شما</span>
+                                    <div class="box-rate w-100 text-end">
+                                        <input type="radio" id="5" value="5" name="rate">
+                                        <label for="5"></label>
+                                        <input type="radio" id="4" value="4" name="rate">
+                                        <label for="4"></label>
+                                        <input type="radio" id="3" value="3" name="rate">
+                                        <label for="3"></label>
+                                        <input type="radio" id="2" value="2" name="rate">
+                                        <label for="2"></label>
+                                        <input type="radio" id="1" value="1" name="rate">
+                                        <label for="1"></label>
+                                    </div>
+                                </div>
+                                <input class="rounded" type="text" placeholder="نام شما (الزامی)">
+                                <input class="rounded" type="email" placeholder="ایمیل شما (الزامی)">
+                                <textarea class="rounded" placeholder="نظر شما ..."></textarea>
+                                <button class="rounded">ارسال دیدگاه</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-7 col-sm-6 p-0">
+                        <div class="product-content bg-white p-3 mt-3 rounded">
                             <ul class="nav nav-pills mb-2" id="pills-tab" role="tablist">
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill"
@@ -103,20 +129,109 @@
                                 </div>
                                 <div class="tab-pane fade p-3" id="pills-profile" role="tabpanel"
                                      aria-labelledby="pills-profile-tab">
-                                    <table class="table">
-                                        <tr>
-                                            <td>وزن</td>
-                                            <td>500 گرم</td>
-                                        </tr>
-                                        <tr>
-                                            <td>محتویات</td>
-                                            <td>گردو،بادام،تخمه کدو</td>
-                                        </tr>
+                                    <table class="table mt-2">
+                                        {% for property in product_properties %}
+                                            <tr>
+                                                <td>{{ property.title }}</td>
+                                                <td>{{ property.details }}</td>
+                                            </tr>
+                                        {% endfor %}
                                     </table>
                                 </div>
                                 <div class="tab-pane fade p-3" id="pills-contact" role="tabpanel"
                                      aria-labelledby="pills-contact-tab">
-                                    3
+                                    <div class="review-item-box border-bottom mb-3 mt-3">
+                                        <div class="review-parent pb-3">
+                                            <div class="row">
+                                                <div class="col-2">
+                                                    <div class="review-avatar">
+                                                        <img src="img/m-user.png" alt="">
+                                                    </div>
+                                                </div>
+                                                <div class="col-10">
+                                                    <span class="d-inline-block pe-5">علیرضا</span>
+                                                    <span class="d-inline-block pe-5">
+                                                <i class="bi bi-star text-warning"></i>
+                                                <i class="bi bi-star text-warning"></i>
+                                                <i class="bi bi-star text-warning"></i>
+                                                <i class="bi bi-star text-warning"></i>
+                                                <i class="bi bi-star text-dark"></i>
+                                            </span>
+                                                    <P>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با
+                                                        استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله
+                                                        در ستون و سطرآنچنان که لازم است</P>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="review-parent ms-5 mb-3">
+                                            <div class="row">
+                                                <div class="col-2">
+                                                    <div class="review-avatar">
+                                                        <img src="img/m-user.png" alt="">
+                                                    </div>
+                                                </div>
+                                                <div class="col-10">
+                                                    <span class="d-inline-block pe-5">علیرضا</span>
+                                                    <span class="d-inline-block pe-5">
+                                                <i class="bi bi-star text-warning"></i>
+                                                <i class="bi bi-star text-warning"></i>
+                                                <i class="bi bi-star text-warning"></i>
+                                                <i class="bi bi-star text-warning"></i>
+                                                <i class="bi bi-star text-dark"></i>
+                                            </span>
+                                                    <P>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با
+                                                        استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله
+                                                        در ستون و سطرآنچنان که لازم است</P>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review-item-box border-bottom mb-3">
+                                        <div class="review-parent pb-3">
+                                            <div class="row">
+                                                <div class="col-2">
+                                                    <div class="review-avatar">
+                                                        <img src="img/f-user.png" alt="">
+                                                    </div>
+                                                </div>
+                                                <div class="col-10">
+                                                    <span class="d-inline-block pe-5">متین</span>
+                                                    <span class="d-inline-block pe-5">
+                                                <i class="bi bi-star text-warning"></i>
+                                                <i class="bi bi-star text-warning"></i>
+                                                <i class="bi bi-star text-warning"></i>
+                                                <i class="bi bi-star text-warning"></i>
+                                                <i class="bi bi-star text-dark"></i>
+                                            </span>
+                                                    <P>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با
+                                                        استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله
+                                                        در ستون و سطرآنچنان که لازم است</P>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="review-parent ms-5 mb-3">
+                                            <div class="row">
+                                                <div class="col-2">
+                                                    <div class="review-avatar">
+                                                        <img src="img/f-user.png" alt="">
+                                                    </div>
+                                                </div>
+                                                <div class="col-10">
+                                                    <span class="d-inline-block pe-5">متین</span>
+                                                    <span class="d-inline-block pe-5">
+                                                <i class="bi bi-star text-warning"></i>
+                                                <i class="bi bi-star text-warning"></i>
+                                                <i class="bi bi-star text-warning"></i>
+                                                <i class="bi bi-star text-warning"></i>
+                                                <i class="bi bi-star text-dark"></i>
+                                            </span>
+                                                    <P>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با
+                                                        استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله
+                                                        در ستون و سطرآنچنان که لازم است</P>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -125,4 +240,122 @@
             </div>
         </div>
     </section>
+    <section class="d-inline-block w-100">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="site-title-box">
+                    <span class="d-block">محصولات مرتبط</span>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="cat-slider-item owl-carousel owl-theme">
+                    <div class="product-item p-3 bg-white rounded my-3">
+                        <a href="#">
+                            <figure class="w-100 position-relative overflow-hidden border-bottom">
+                                <img src="img/saffron.png" alt="" class="d-table mx-auto">
+                                <figcaption class="position-absolute w-100 h-100 text-center">
+                                    <ul class="p-0">
+                                        <li class="d-inline-block"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            title="مشاهده محصول"><a href="#" class="d-inline-block rounded"><i class="bi bi-eye"></i></a></li>
+                                        <li class="d-inline-block"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            title="افزودن به علاقه مندی"><a href="#" class="d-inline-block rounded"><i class="bi bi-heart"></i></a></li>
+                                    </ul>
+                                </figcaption>
+                            </figure>
+                        </a>
+                        <a href="#">
+                            <h5 class="m-0 py-2 text-center overflow-hidden">محصول تست شماره یک</h5>
+                        </a>
+                        <p class="text-center overflow-hidden mt-2">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci beatae blanditiis consectetur cupiditate dolorem, eaque error et eum exercitationem, ipsum laborum nam nemo placeat quidem rem repudiandae soluta vel voluptates!</p>
+                        <div class="product-rate text-center mb-2">
+                            <i class="bi bi-star text-warning"></i>
+                            <i class="bi bi-star text-warning"></i>
+                            <i class="bi bi-star text-warning"></i>
+                            <i class="bi bi-star text-warning"></i>
+                            <i class="bi bi-star text-dark"></i>
+                        </div>
+                        <div class="product-price d-flex">
+                            <span class="d-inline-block w-100 text-start">2.000.000 تومان</span>
+                            <del class="d-inline-block w-100 text-end">2.540.000 تومان</del>
+                        </div>
+                    </div>
+                    <div class="product-item p-3 bg-white rounded my-3">
+                        <a href="#">
+                            <figure class="w-100 position-relative overflow-hidden border-bottom">
+                                <img src="img/saffron.png" alt="" class="d-table mx-auto">
+                                <figcaption class="position-absolute w-100 h-100 text-center">
+                                    <ul class="p-0">
+                                        <li class="d-inline-block"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            title="مشاهده محصول"><a href="#" class="d-inline-block rounded"><i class="bi bi-eye"></i></a></li>
+                                        <li class="d-inline-block"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            title="افزودن به علاقه مندی"><a href="#" class="d-inline-block rounded"><i class="bi bi-heart"></i></a></li>
+                                    </ul>
+                                </figcaption>
+                            </figure>
+                        </a>
+                        <a href="#">
+                            <h5 class="m-0 py-2 text-center overflow-hidden">محصول تست شماره یک</h5>
+                        </a>
+                        <p class="text-center overflow-hidden mt-2">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci beatae blanditiis consectetur cupiditate dolorem, eaque error et eum exercitationem, ipsum laborum nam nemo placeat quidem rem repudiandae soluta vel voluptates!</p>
+                        <div class="product-rate text-center mb-2">
+                            <i class="bi bi-star text-warning"></i>
+                            <i class="bi bi-star text-warning"></i>
+                            <i class="bi bi-star text-warning"></i>
+                            <i class="bi bi-star text-warning"></i>
+                            <i class="bi bi-star text-dark"></i>
+                        </div>
+                        <div class="product-price d-flex">
+                            <span class="d-inline-block w-100 text-start">2.000.000 تومان</span>
+                            <del class="d-inline-block w-100 text-end">2.540.000 تومان</del>
+                        </div>
+                    </div>
+                    <div class="product-item p-3 bg-white rounded my-3">
+                        <a href="#">
+                            <figure class="w-100 position-relative overflow-hidden border-bottom">
+                                <img src="img/saffron.png" alt="" class="d-table mx-auto">
+                                <figcaption class="position-absolute w-100 h-100 text-center">
+                                    <ul class="p-0">
+                                        <li class="d-inline-block"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            title="مشاهده محصول"><a href="#" class="d-inline-block rounded"><i class="bi bi-eye"></i></a></li>
+                                        <li class="d-inline-block"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            title="افزودن به علاقه مندی"><a href="#" class="d-inline-block rounded"><i class="bi bi-heart"></i></a></li>
+                                    </ul>
+                                </figcaption>
+                            </figure>
+                        </a>
+                        <a href="#">
+                            <h5 class="m-0 py-2 text-center overflow-hidden">محصول تست شماره یک</h5>
+                        </a>
+                        <p class="text-center overflow-hidden mt-2">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci beatae blanditiis consectetur cupiditate dolorem, eaque error et eum exercitationem, ipsum laborum nam nemo placeat quidem rem repudiandae soluta vel voluptates!</p>
+                        <div class="product-rate text-center mb-2">
+                            <i class="bi bi-star text-warning"></i>
+                            <i class="bi bi-star text-warning"></i>
+                            <i class="bi bi-star text-warning"></i>
+                            <i class="bi bi-star text-warning"></i>
+                            <i class="bi bi-star text-dark"></i>
+                        </div>
+                        <div class="product-price d-flex">
+                            <span class="d-inline-block w-100 text-start">2.000.000 تومان</span>
+                            <del class="d-inline-block w-100 text-end">2.540.000 تومان</del>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 {% endblock content %}
