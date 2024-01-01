@@ -71,14 +71,14 @@
             <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                     <div class="row">
-                        {% for item in products_by_views %}
+                        {% for product in products_by_date %}
                             <div class="col-lg-3 col-md-4 col-sm-2">
                                 <!-- Product actions-->
                                 <div class="product-item p-3 bg-white rounded my-3">
-                                    <a href="{% url 'product' item.product.id %}">
+                                    <a href="{% url 'product' product.id %}">
                                         <figure class="w-100 position-relative overflow-hidden border-bottom">
                                             <!-- Product image-->
-                                            <img src="{{ item.default_image.image.url }}" alt=""
+                                            <img src="{{ product.default_image.image.url }}" alt=""
                                                  class="d-table mx-auto">
                                             <!-- Product details-->
                                             <figcaption class="position-absolute w-100 h-100 text-center">
@@ -104,12 +104,12 @@
                                         </figure>
                                     </a>
                                     <!-- Product name-->
-                                    <a href="{% url 'product' item.product.id %}">
-                                        <h5 class="m-0 py-2 text-center overflow-hidden">{{ item.product.name }}</h5>
+                                    <a href="{% url 'product' product.id %}">
+                                        <h5 class="m-0 py-2 text-center overflow-hidden">{{ product.name }}</h5>
                                     </a>
-                                    <p class="text-center overflow-hidden mt-2">{{ item.product.display_description }}</p>
+                                    <p class="text-center overflow-hidden mt-2">{{ product.display_description }}</p>
                                     <div class="product-rate text-center mb-2">
-                                        {% with item.product.star as stars %}
+                                        {% with product.star as stars %}
                                             {% with remaining=5|sub:stars %}
                                                 {% for _ in ''|center:remaining %}
                                                     <i class="bi bi-star text-dark"></i>
@@ -121,16 +121,16 @@
                                         {% endwith %}
                                     </div>
                                     <!-- Product price-->
-                                    {% if item.product.is_on_sale %}
+                                    {% if product.is_on_sale %}
                                         <div class="product-price d-flex">
-                                            <span class="d-inline-block w-100 text-start">{{ item.product.sale_price | intcomma }} تومان</span>
+                                            <span class="d-inline-block w-100 text-start">{{ product.sale_price | intcomma }} تومان</span>
                                             <del class="d-inline-block w-100 text-end">
-                                                <strike>{{ item.product.price | intcomma }}
+                                                <strike>{{ product.price | intcomma }}
                                                     تومان </strike> <br></del>
                                         </div>
                                     {% else %}
                                         <div class="product-price d-flex">
-                                            <span class="d-inline-block w-100 text-start">{{ item.product.price | intcomma }} تومان</span>
+                                            <span class="d-inline-block w-100 text-start">{{ product.price | intcomma }} تومان</span>
                                         </div>
                                     {% endif %}
                                 </div>
@@ -140,14 +140,14 @@
                 </div>
                 <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                     <div class="row">
-                        {% for item in products_by_sold %}
+                        {% for product in products_by_sold %}
                             <div class="col-lg-3 col-md-4 col-sm-2">
                                 <!-- Product actions-->
                                 <div class="product-item p-3 bg-white rounded my-3">
-                                    <a href="{% url 'product' item.product.id %}">
+                                    <a href="{% url 'product' product.id %}">
                                         <figure class="w-100 position-relative overflow-hidden border-bottom">
                                             <!-- Product image-->
-                                            <img src="{{ item.default_image.image.url }}" alt=""
+                                            <img src="{{ product.default_image.image.url }}" alt=""
                                                  class="d-table mx-auto">
                                             <!-- Product details-->
                                             <figcaption class="position-absolute w-100 h-100 text-center">
@@ -173,12 +173,12 @@
                                         </figure>
                                     </a>
                                     <!-- Product name-->
-                                    <a href="{% url 'product' item.product.id %}">
-                                        <h5 class="m-0 py-2 text-center overflow-hidden">{{ item.product.name }}</h5>
+                                    <a href="{% url 'product' product.id %}">
+                                        <h5 class="m-0 py-2 text-center overflow-hidden">{{ product.name }}</h5>
                                     </a>
-                                    <p class="text-center overflow-hidden mt-2">{{ item.product.display_description }}</p>
+                                    <p class="text-center overflow-hidden mt-2">{{ product.display_description }}</p>
                                     <div class="product-rate text-center mb-2">
-                                        {% with item.product.star as stars %}
+                                        {% with product.star as stars %}
                                             {% with remaining=5|sub:stars %}
                                                 {% for _ in ''|center:remaining %}
                                                     <i class="bi bi-star text-dark"></i>
@@ -190,16 +190,16 @@
                                         {% endwith %}
                                     </div>
                                     <!-- Product price-->
-                                    {% if item.product.is_on_sale %}
+                                    {% if product.is_on_sale %}
                                         <div class="product-price d-flex">
-                                            <span class="d-inline-block w-100 text-start">{{ item.product.sale_price | intcomma }} تومان</span>
+                                            <span class="d-inline-block w-100 text-start">{{ product.sale_price | intcomma }} تومان</span>
                                             <del class="d-inline-block w-100 text-end">
-                                                <strike>{{ item.product.price | intcomma }}
+                                                <strike>{{ product.price | intcomma }}
                                                     تومان </strike> <br></del>
                                         </div>
                                     {% else %}
                                         <div class="product-price d-flex">
-                                            <span class="d-inline-block w-100 text-start">{{ item.product.price | intcomma }} تومان</span>
+                                            <span class="d-inline-block w-100 text-start">{{ product.price | intcomma }} تومان</span>
                                         </div>
                                     {% endif %}
                                 </div>
@@ -209,11 +209,11 @@
                 </div>
                 <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
                     <div class="row">
-                        {% for item in products_by_views %}
+                        {% for product in products_by_views %}
                             <div class="col-lg-3 col-md-4 col-sm-2">
                                 <!-- Product actions-->
                                 <div class="product-item p-3 bg-white rounded my-3">
-                                    <a href="{% url 'product' item.product.id %}">
+                                    <a href="{% url 'product' product.id %}">
                                         <figure class="w-100 position-relative overflow-hidden border-bottom">
                                             <!-- Product image-->
                                             <img src="{{ item.default_image.image.url }}" alt=""
@@ -242,12 +242,12 @@
                                         </figure>
                                     </a>
                                     <!-- Product name-->
-                                    <a href="{% url 'product' item.product.id %}">
-                                        <h5 class="m-0 py-2 text-center overflow-hidden">{{ item.product.name }}</h5>
+                                    <a href="{% url 'product' product.id %}">
+                                        <h5 class="m-0 py-2 text-center overflow-hidden">{{ product.name }}</h5>
                                     </a>
-                                    <p class="text-center overflow-hidden mt-2">{{ item.product.display_description }}</p>
+                                    <p class="text-center overflow-hidden mt-2">{{ product.display_description }}</p>
                                     <div class="product-rate text-center mb-2">
-                                        {% with item.product.star as stars %}
+                                        {% with product.star as stars %}
                                             {% with remaining=5|sub:stars %}
                                                 {% for _ in ''|center:remaining %}
                                                     <i class="bi bi-star text-dark"></i>
@@ -259,16 +259,16 @@
                                         {% endwith %}
                                     </div>
                                     <!-- Product price-->
-                                    {% if item.product.is_on_sale %}
+                                    {% if product.is_on_sale %}
                                         <div class="product-price d-flex">
-                                            <span class="d-inline-block w-100 text-start">{{ item.product.sale_price | intcomma }} تومان</span>
+                                            <span class="d-inline-block w-100 text-start">{{ product.sale_price | intcomma }} تومان</span>
                                             <del class="d-inline-block w-100 text-end">
-                                                <strike>{{ item.product.price | intcomma }}
+                                                <strike>{{ product.price | intcomma }}
                                                     تومان </strike> <br></del>
                                         </div>
                                     {% else %}
                                         <div class="product-price d-flex">
-                                            <span class="d-inline-block w-100 text-start">{{ item.product.price | intcomma }} تومان</span>
+                                            <span class="d-inline-block w-100 text-start">{{ product.price | intcomma }} تومان</span>
                                         </div>
                                     {% endif %}
                                 </div>
@@ -284,135 +284,66 @@
             <div class="row">
                 <div class="col-md-7">
                     <div class="offer-box bg-white p-5">
-                        <div class="timer-box timer d-flex justify-content-center" data-seconds-left="180">
+                        <div class="timer-box timer d-flex justify-content-center" data-seconds-left="{{ offer_seconds_remaining }}">
                         </div>
                         <div class="slider-item owl-carousel owl-theme">
-                            <div class="product-item p-3 bg-white rounded my-3">
-                                <a href="#">
-                                    <figure class="w-100 position-relative overflow-hidden border-bottom">
-                                        <img src="{% static 'img/saffron.png' %}" alt="" class="d-table mx-auto">
-                                        <figcaption class="position-absolute w-100 h-100 text-center">
-                                            <ul class="p-0">
-                                                <li class="d-inline-block"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-placement="top"
-                                                    title="مشاهده محصول"><a href="#" class="d-inline-block rounded"><i
-                                                        class="bi bi-eye"></i></a></li>
-                                                <li class="d-inline-block"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-placement="top"
-                                                    title="افزودن به علاقه مندی"><a href="#"
-                                                                                    class="d-inline-block rounded"><i
-                                                        class="bi bi-heart"></i></a></li>
-                                            </ul>
-                                        </figcaption>
-                                    </figure>
-                                </a>
-                                <a href="#">
-                                    <h5 class="m-0 py-2 text-center overflow-hidden">محصول تست شماره 25</h5>
-                                </a>
-                                <p class="text-center overflow-hidden mt-2">Lorem ipsum dolor sit amet, consectetur
-                                    adipisicing elit. Adipisci beatae blanditiis consectetur cupiditate dolorem, eaque
-                                    error
-                                    et eum exercitationem, ipsum laborum nam nemo placeat quidem rem repudiandae soluta
-                                    vel
-                                    voluptates!</p>
-                                <div class="product-rate text-center mb-2">
-                                    <i class="bi bi-star text-warning"></i>
-                                    <i class="bi bi-star text-warning"></i>
-                                    <i class="bi bi-star text-warning"></i>
-                                    <i class="bi bi-star text-warning"></i>
-                                    <i class="bi bi-star text-dark"></i>
+                            {% for product in offered_products %}
+                                <div class="product-item p-3 bg-white rounded my-3">
+                                    <a href="#">
+                                        <figure class="w-100 position-relative overflow-hidden border-bottom">
+                                            <img src="{{ product.default_image.image.url }}" alt="" class="d-table mx-auto">
+                                            <figcaption class="position-absolute w-100 h-100 text-center">
+                                                <ul class="p-0">
+                                                    <li class="d-inline-block"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top"
+                                                        title="مشاهده محصول">
+                                                        <a href="#" class="d-inline-block rounded">
+                                                            <i class="bi bi-eye"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li class="d-inline-block"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top"
+                                                        title="افزودن به علاقه مندی">
+                                                        <a href="#" class="d-inline-block rounded">
+                                                            <i class="bi bi-heart"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </figcaption>
+                                        </figure>
+                                    </a>
+                                    <a href="#">
+                                        <h5 class="m-0 py-2 text-center overflow-hidden">{{ product.name }}</h5>
+                                    </a>
+                                    <p class="text-center overflow-hidden mt-2">{{ product.display_description }}</p>
+                                    <div class="product-rate text-center mb-2">
+                                        {% with product.star as stars %}
+                                            {% with remaining=5|sub:stars %}
+                                                {% for _ in ''|center:remaining %}
+                                                    <i class="bi bi-star text-dark"></i>
+                                                {% endfor %}
+                                            {% endwith %}
+                                            {% for _ in ''|center:stars %}
+                                                <i class="bi bi-star text-warning"></i>
+                                            {% endfor %}
+                                        {% endwith %}
+                                    </div>
+                                    {% if product.is_on_sale %}
+                                        <div class="product-price d-flex">
+                                            <span class="d-inline-block w-100 text-start">{{ product.sale_price | intcomma }} تومان</span>
+                                            <del class="d-inline-block w-100 text-end">
+                                                <strike>{{ product.price | intcomma }}
+                                                    تومان </strike> <br></del>
+                                        </div>
+                                    {% else %}
+                                        <div class="product-price d-flex">
+                                            <span class="d-inline-block w-100 text-start">{{ product.price | intcomma }} تومان</span>
+                                        </div>
+                                    {% endif %}
                                 </div>
-                                <div class="product-price d-flex">
-                                    <span class="d-inline-block w-100 text-start">2.000.000 تومان</span>
-                                    <del class="d-inline-block w-100 text-end">2.540.000 تومان</del>
-                                </div>
-                            </div>
-                            <div class="product-item p-3 bg-white rounded my-3">
-                                <a href="#">
-                                    <figure class="w-100 position-relative overflow-hidden border-bottom">
-                                        <img src="{% static 'img/saffron.png' %}" alt="" class="d-table mx-auto">
-                                        <figcaption class="position-absolute w-100 h-100 text-center">
-                                            <ul class="p-0">
-                                                <li class="d-inline-block"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-placement="top"
-                                                    title="مشاهده محصول"><a href="#" class="d-inline-block rounded"><i
-                                                        class="bi bi-eye"></i></a></li>
-                                                <li class="d-inline-block"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-placement="top"
-                                                    title="افزودن به علاقه مندی"><a href="#"
-                                                                                    class="d-inline-block rounded"><i
-                                                        class="bi bi-heart"></i></a></li>
-                                            </ul>
-                                        </figcaption>
-                                    </figure>
-                                </a>
-                                <a href="#">
-                                    <h5 class="m-0 py-2 text-center overflow-hidden">محصول تست شماره 26</h5>
-                                </a>
-                                <p class="text-center overflow-hidden mt-2">Lorem ipsum dolor sit amet, consectetur
-                                    adipisicing elit. Adipisci beatae blanditiis consectetur cupiditate dolorem, eaque
-                                    error
-                                    et eum exercitationem, ipsum laborum nam nemo placeat quidem rem repudiandae soluta
-                                    vel
-                                    voluptates!</p>
-                                <div class="product-rate text-center mb-2">
-                                    <i class="bi bi-star text-warning"></i>
-                                    <i class="bi bi-star text-warning"></i>
-                                    <i class="bi bi-star text-warning"></i>
-                                    <i class="bi bi-star text-warning"></i>
-                                    <i class="bi bi-star text-dark"></i>
-                                </div>
-                                <div class="product-price d-flex">
-                                    <span class="d-inline-block w-100 text-start">2.000.000 تومان</span>
-                                    <del class="d-inline-block w-100 text-end">2.540.000 تومان</del>
-                                </div>
-                            </div>
-                            <div class="product-item p-3 bg-white rounded my-3">
-                                <a href="#">
-                                    <figure class="w-100 position-relative overflow-hidden border-bottom">
-                                        <img src="{% static 'img/saffron.png' %}" alt="" class="d-table mx-auto">
-                                        <figcaption class="position-absolute w-100 h-100 text-center">
-                                            <ul class="p-0">
-                                                <li class="d-inline-block"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-placement="top"
-                                                    title="مشاهده محصول"><a href="#" class="d-inline-block rounded"><i
-                                                        class="bi bi-eye"></i></a></li>
-                                                <li class="d-inline-block"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-placement="top"
-                                                    title="افزودن به علاقه مندی"><a href="#"
-                                                                                    class="d-inline-block rounded"><i
-                                                        class="bi bi-heart"></i></a></li>
-                                            </ul>
-                                        </figcaption>
-                                    </figure>
-                                </a>
-                                <a href="#">
-                                    <h5 class="m-0 py-2 text-center overflow-hidden">محصول تست شماره 27</h5>
-                                </a>
-                                <p class="text-center overflow-hidden mt-2">Lorem ipsum dolor sit amet, consectetur
-                                    adipisicing elit. Adipisci beatae blanditiis consectetur cupiditate dolorem, eaque
-                                    error
-                                    et eum exercitationem, ipsum laborum nam nemo placeat quidem rem repudiandae soluta
-                                    vel
-                                    voluptates!</p>
-                                <div class="product-rate text-center mb-2">
-                                    <i class="bi bi-star text-warning"></i>
-                                    <i class="bi bi-star text-warning"></i>
-                                    <i class="bi bi-star text-warning"></i>
-                                    <i class="bi bi-star text-warning"></i>
-                                    <i class="bi bi-star text-dark"></i>
-                                </div>
-                                <div class="product-price d-flex">
-                                    <span class="d-inline-block w-100 text-start">2.000.000 تومان</span>
-                                    <del class="d-inline-block w-100 text-end">2.540.000 تومان</del>
-                                </div>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>

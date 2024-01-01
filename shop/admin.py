@@ -5,7 +5,8 @@ from django.db import models
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
-from .models import HomepageCover, HomepageCoverGroup, ProductProperty, Product, Category, Order, ProductImage
+from .models import HomepageCover, HomepageCoverGroup, ProductProperty, Product, Category, Order, ProductImage, \
+    ProductOffers
 
 admin.site.register(Category)
 admin.site.register(Order)
@@ -73,18 +74,21 @@ class ProductAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProductAdminForm, self).__init__(*args, **kwargs)
         if self.instance:
-            default_images = ProductImage.objects.filter(product=self.instance)
-            self.fields['default_image_choice'].queryset = default_images
-            if default_images:
-                self.fields['default_image_choice'].initial = default_images.get(is_default=True)
+            images = ProductImage.objects.filter(product=self.instance)
+            if images:
+                self.fields['default_image_choice'].queryset = images
+                default_image = images.filter(is_default=True)
+                if default_image:
+                    self.fields['default_image_choice'].initial = default_image.first()
 
     def save(self, commit=True):
-        queryset = ProductImage.objects.filter(product=self.instance)
-        queryset.update(is_default=False)
-        image = self.cleaned_data['default_image_choice']
-        if image:
-            image.is_default = True
-            image.save()
+        images = ProductImage.objects.filter(product=self.instance)
+        if images:
+            images.update(is_default=False)
+        chosen_image = self.cleaned_data['default_image_choice']
+        if chosen_image:
+            chosen_image.is_default = True
+            chosen_image.save()
         return super().save(commit)
 
 
@@ -107,3 +111,8 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(HomepageCoverGroup)
 class HomepageCoverGroupAdmin(admin.ModelAdmin):
     inlines = HomepageCoverInline,
+
+
+@admin.register(ProductOffers)
+class ProductOffersAdmin(admin.ModelAdmin):
+    filter_horizontal = ('products',)

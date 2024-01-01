@@ -11,7 +11,7 @@
                     <div class="col-lg-5 col-md-6">
                         <div class="product-img bg-white p-3 rounded">
                             <figure class="border-bottom mb-0">
-                                <img src="{{ product.image.url }}" alt="image" class="d-table mx-auto">
+                                <img src="{{ product.default_image.image.url }}" alt="image" class="d-table mx-auto">
                             </figure>
                             <div class="product-gallery owl-carousel owl-theme pt-3">
                                 {% for product_image in product_images %}

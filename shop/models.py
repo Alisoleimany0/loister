@@ -18,19 +18,24 @@ class Product(models.Model):
     name = models.CharField(max_length=40)
     display_description = models.CharField(max_length=500, default='', blank=True, null=True)
     details = models.TextField()
-    price = models.DecimalField(default=0, decimal_places=0, max_digits=12)
     category = models.ManyToManyField(Category, blank=True)
     release_date = models.DateField(default=timezone.now)
     views = models.IntegerField(default=0)
     star = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
-    # star = models.IntegerField(default=0 , validators=[MaxLengthValidator(5), MinValueValidator(0)])
+    price = models.DecimalField(default=0, decimal_places=0, max_digits=12)
     is_on_sale = models.BooleanField(default=False)
     sale_price = models.DecimalField(default=0, decimal_places=0, max_digits=12)
 
     @property
     def units_sold(self):
-
         return 0
+
+    @property
+    def default_image(self):
+        image = ProductImage.objects.filter(product=self).filter(is_default=True)
+        if image:
+            return image.first()
+        return None
 
     def __str__(self):
         return self.name
@@ -53,9 +58,22 @@ class ProductImage(models.Model):
     image = models.ImageField(null=True, upload_to='upload/product/')
     is_default = models.BooleanField(default=False)
 
+    def save(self, *args, **kwargs):
+        images = ProductImage.objects.filter(product=self.product)
+        if not images:
+            self.is_default = True
+        super().save(*args, **kwargs)
+
 
 class ProductOffers(models.Model):
-    pass
+    products = models.ManyToManyField(Product)
+    finish_time = models.DateTimeField(default=timezone.now)
+
+    def save(self, *args, **kwargs):
+        # make sure we're not updating
+        if not self.pk and HomepageCoverGroup.objects.exists():
+            raise ValidationError("You can only create one instance of HomepageCovers")
+        return super(ProductOffers, self).save(*args, **kwargs)
 
 
 class Order(models.Model):
@@ -74,7 +92,6 @@ class Order(models.Model):
     date = models.DateField(auto_now_add=True)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        print(self.address)
         super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
