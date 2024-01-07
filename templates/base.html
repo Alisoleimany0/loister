@@ -12,7 +12,7 @@
 
     <title>فروشگاه</title>
 </head>
-<header class="mb-4">
+<header class="{% if not index %}mb-5{% else %}mb-4{% endif %}">
     <div class="top-menu">
         <div class="container">
             <div class="row">
@@ -70,6 +70,7 @@
         </div>
     </div>
     <div class="container-fluid px-0">
+    {% if index %}
         <div class="slider-box">
             <div id="carouselExampleCaptions" class="carousel slide">
                 <div class="carousel-indicators">
@@ -109,8 +110,21 @@
             </div>
         </div>
     </div>
+    {% endif%}
+    {% if not index %}
+        <div class="container-fluid px-0">
+            <div class="page-title-box text-center">
+                <div class="bread-crumb-box pb-3">
+                    <ol>
+                        <li><a href="index.html">خانه</a></li>
+                        <li><a href="#">خشکبار</a></li>
+                        <li><span>آجیل 500 گرمی</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 </header>
-
 <body>
 
 {% block content %}

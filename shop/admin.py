@@ -9,7 +9,6 @@ from .models import HomepageCover, HomepageCoverGroup, ProductProperty, Product,
     ProductOffers
 
 admin.site.register(Category)
-admin.site.register(Order)
 
 
 class ProductPropertyInline(admin.TabularInline):
@@ -116,3 +115,8 @@ class HomepageCoverGroupAdmin(admin.ModelAdmin):
 @admin.register(ProductOffers)
 class ProductOffersAdmin(admin.ModelAdmin):
     filter_horizontal = ('products',)
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    pass

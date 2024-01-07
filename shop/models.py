@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models import signals
 from django.utils import timezone
 
-from customer.models import CustomerAddress
+from customer.models import CustomerAddress, CustomerProfile
 
 
 class Category(models.Model):
@@ -72,30 +72,42 @@ class ProductOffers(models.Model):
     def save(self, *args, **kwargs):
         # make sure we're not updating
         if not self.pk and HomepageCoverGroup.objects.exists():
-            raise ValidationError("You can only create one instance of HomepageCovers")
+            raise ValidationError("You can only create one instance of ProductOffers")
         return super(ProductOffers, self).save(*args, **kwargs)
 
 
 class Order(models.Model):
-    # product = models.ForeignKey(
-    #     Product,
-    #     on_delete=models.CASCADE)
-    # customer = models.ForeignKey(
-    #     CustomerProfile,
-    #     on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
+    ORDER_STATUS_CHOICES = (
+        ("payment", "در انتظار پرداخت"),
+        ("processing", "در حال پردازش"),
+        ("sent", "ارسال شده"),
+    )
+    products = models.ManyToManyField(Product)
+    customer = models.ForeignKey(
+        CustomerProfile,
+        on_delete=models.CASCADE)
+    checkout_date = models.DateTimeField(default=timezone.now)
     address = models.ForeignKey(
         CustomerAddress,
         on_delete=models.CASCADE,
     )
-    phone = models.CharField(max_length=20, blank=True)
-    date = models.DateField(auto_now_add=True)
+    delivery_details = models.TextField(blank=True)
+    order_status = models.CharField(choices=ORDER_STATUS_CHOICES, max_length=20)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
-        return f'{self.customer.user.first_name} {self.customer.user.last_name}'
+        return self.id
+
+
+# failed to put cart model in customer app due to circular import issues
+class Cart(models.Model):
+    customer = models.OneToOneField(
+        CustomerProfile,
+        on_delete=models.CASCADE
+    )
+    products = models.ManyToManyField(Product)
 
 
 class HomepageCoverGroup(models.Model):

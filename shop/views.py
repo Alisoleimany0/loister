@@ -1,6 +1,5 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.db.models import QuerySet
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -25,7 +24,8 @@ def index_view(request):
                    'products_by_views': order_by_views, 'covers': covers,
                    "all_categories": all_categories,
                    'offered_products': product_offers.products.all() if product_offers else (),
-                   'offer_seconds_remaining': offer_seconds_remaining})
+                   'offer_seconds_remaining': offer_seconds_remaining,
+                   'index': True})
 
 
 def product_single(request, pk):

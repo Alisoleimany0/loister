@@ -18,7 +18,8 @@ class CustomerProfile(models.Model):
 class CustomerAddress(models.Model):
     customer = models.ForeignKey(
         CustomerProfile,
-        null=False,
+        null=True,
+        blank=True,
         on_delete=models.CASCADE)
     delivery_phone_number = models.IntegerField()
     address = models.TextField()
