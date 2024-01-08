@@ -1,11 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.core.exceptions import ValidationError, PermissionDenied
+from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
+from customer.models import CustomerProfile
 from .forms import SignupForm
-from .models import Category, Product, HomepageCover, ProductImage, ProductOffers, ProductProperty
+from .models import Category, Product, HomepageCover, ProductImage, ProductOffers, ProductDetail, Cart, \
+    CartProductQuantity
 
 
 def index_view(request):
@@ -32,10 +36,28 @@ def product_single(request, pk):
     product = Product.objects.get(id=pk)
     images = ProductImage.objects.filter(product=product)
     category = Product.category
-    properties = ProductProperty.objects.filter(product=product)
+    properties = ProductDetail.objects.filter(product=product)
+    if request.user.is_authenticated:
+        if request.POST.get("quantity", None):
+            cart = Cart.objects.filter(customer__user=request.user)
+            if not cart:
+                raise PermissionDenied()
+            try:
+                CartProductQuantity.objects.create(product_id=pk, cart=cart[0], quantity=request.POST.get("quantity"))
+            except IntegrityError as exception:
+                if "UNIQUE constraint failed" in exception.__str__():
+                    cart_product = CartProductQuantity.objects.get(product_id=pk, cart=cart[0])
+                    cart_product.quantity += int(request.POST.get("quantity"))
+                    cart_product.save()
+        if request.GET.get("add_favourite", None):
+            CustomerProfile.objects.get(user=request.user).favourites.add(product)
+        elif request.GET.get("remove_favourite", None):
+            CustomerProfile.objects.get(user=request.user).favourites.remove(product)
+
     return render(request, "shop/product_single.html",
                   {'product': product, 'product_images': images, 'category': category,
-                   'product_properties': properties})
+                   'product_properties': properties,
+                   'user': request.user})
 
 
 def about(request):

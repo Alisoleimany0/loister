@@ -477,7 +477,7 @@ footer .social-ul li a{
     margin-left: 8px;
 }
 
-.add-to-card button{
+.add-to-cart input[type="submit"]{
     border: 0;
     outline: 0;
     padding: 5px 15px;
@@ -485,7 +485,7 @@ footer .social-ul li a{
     background-color: #de3434;
 }
 
-.add-to-card input[type="number"]{
+.add-to-cart input[type="number"]{
     border: 0;
     outline: 0;
     width: 40px;
@@ -499,6 +499,10 @@ footer .social-ul li a{
     font-size: 12px;
     color: #9d9d9d;
     cursor: pointer;
+}
+
+.red-heart{
+    fill: red;
 }
 
 .cat-sku{
@@ -566,10 +570,10 @@ footer .social-ul li a{
     object-fit: contain;
 }
 
-form input[type="text"],
-form input[type="email"],
-form input[type="tel"],
-form input[type="password"]{
+.product-review-form input[type="text"],
+.product-review-form input[type="email"],
+.product-review-form input[type="tel"],
+.product-review-form input[type="password"]{
     width: 100%;
     height: 40px;
     background-color: #eeeeee;
@@ -579,7 +583,7 @@ form input[type="password"]{
     outline: 0;
 }
 
-form textarea{
+.product-review-form textarea{
     width: 100%;
     height: 150px;
     resize: none;
@@ -590,8 +594,8 @@ form textarea{
     outline: 0;
 }
 
-form button,
-form input[type="submit"]{
+.product-review-form button,
+.product-review-form input[type="submit"]{
     width: 100%;
     height: 45px;
     background-color: #a3cfbb;

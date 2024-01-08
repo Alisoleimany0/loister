@@ -5,14 +5,14 @@ from django.db import models
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
-from .models import HomepageCover, HomepageCoverGroup, ProductProperty, Product, Category, Order, ProductImage, \
-    ProductOffers
+from .models import HomepageCover, HomepageCoverGroup, ProductDetail, Product, Category, Order, ProductImage, \
+    ProductOffers, Cart, CartProductQuantity
 
 admin.site.register(Category)
 
-
-class ProductPropertyInline(admin.TabularInline):
-    model = ProductProperty
+class ProductDetailInline(admin.TabularInline):
+    model = ProductDetail
+    classes = ('collapse',)
 
 
 class ImageWidget(AdminFileWidget):
@@ -33,6 +33,7 @@ class ProductImageInline(admin.TabularInline):
     readonly_fields = ['is_default']
     formfield_overrides = {
         models.ImageField: {'widget': ImageWidget}}
+    classes = ('collapse',)
 
 
 class HomepageCoverInline(admin.TabularInline):
@@ -93,7 +94,7 @@ class ProductAdminForm(forms.ModelForm):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    inlines = ProductPropertyInline, ProductImageInline
+    inlines = ProductDetailInline, ProductImageInline
     form = ProductAdminForm
 
     def save_related(self, request, form, formsets, change):
@@ -120,3 +121,14 @@ class ProductOffersAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     pass
+
+
+class CartProductQuantityInline(admin.TabularInline):
+    model = CartProductQuantity
+    extra = 1
+
+
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    filter_horizontal = ("products",)
+    inlines = CartProductQuantityInline,

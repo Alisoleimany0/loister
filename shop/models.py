@@ -17,7 +17,7 @@ class Category(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=40)
     display_description = models.CharField(max_length=500, default='', blank=True, null=True)
-    details = models.TextField()
+    description = models.TextField()
     category = models.ManyToManyField(Category, blank=True)
     release_date = models.DateField(default=timezone.now)
     views = models.IntegerField(default=0)
@@ -37,11 +37,14 @@ class Product(models.Model):
             return image.first()
         return None
 
+    def is_favourite(self, customer: CustomerProfile):
+        return self in customer.favourites.all()
+
     def __str__(self):
         return self.name
 
 
-class ProductProperty(models.Model):
+class ProductDetail(models.Model):
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE
@@ -107,7 +110,27 @@ class Cart(models.Model):
         CustomerProfile,
         on_delete=models.CASCADE
     )
-    products = models.ManyToManyField(Product)
+    products = models.ManyToManyField(Product, through='CartProductQuantity')
+
+
+class CartProductQuantity(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['product', 'cart'], name='product_cart_constraint')
+        ]
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE
+    )
+    cart = models.ForeignKey(
+        Cart,
+        on_delete=models.CASCADE
+    )
+    quantity = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.product} : {self.quantity}"
 
 
 class HomepageCoverGroup(models.Model):
@@ -139,3 +162,12 @@ def pre_product_image_save(sender, instance, **kwargs):
 
 
 signals.pre_save.connect(pre_product_image_save, sender=ProductImage)
+
+
+def customer_post_save(instance: CustomerProfile, *args, **kwargs):
+    if not instance.cart:
+        cart = Cart.objects.create(customer=instance)
+        cart.save()
+
+
+signals.post_save.connect(customer_post_save, sender=CustomerProfile)
