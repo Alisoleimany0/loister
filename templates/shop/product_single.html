@@ -56,7 +56,7 @@
                                 {% endif %}
                             </div>
                             <div class="add-to-cart d-inline-block bg-white mb-3 p-4">
-                                <form class="add-to-cart" action="{% url 'product' product.id %}" method="post">
+                                <form action="{% url 'product' product.id %}" method="post">
                                     {% csrf_token %}
                                     <input type="number" name="quantity" min="1" value="1" class="rounded">
                                     <input type="submit" class="rounded" value="افزودن به سبد خرید">
@@ -95,7 +95,7 @@
                         </div>
                     </div>
                     <div class="col-lg-5 col-md-6">
-                        <div class="product-review-form bg-white rounded p-3 mt-3">
+                        <div class="global-form product-review-form bg-white rounded p-3 mt-3">
                             <form action="">
                                 <div class="set-rate d-flex rounded">
                                     <span class="d-inline-block pe-3">امتیاز شما</span>
@@ -400,6 +400,7 @@
                     </div>
                 </div>
             </div>
+        </div>
     </section>
 
 {% endblock content %}

@@ -491,8 +491,8 @@ footer .social-ul li a{
     margin-left: 8px;
 }
 
-.add-to-cart button {
-    !important;
+.add-to-cart input[type="submit"] {
+
     border: 0;
     outline: 0;
     padding: 5px 15px;
@@ -581,10 +581,10 @@ footer .social-ul li a{
     object-fit: contain;
 }
 
-form input[type="text"],
-form input[type="email"],
-form input[type="tel"],
-form input[type="password"]{
+.global-form input[type="text"],
+.global-form input[type="email"],
+.global-form input[type="tel"],
+.global-form input[type="password"]{
     width: 100%;
     height: 40px;
     background-color: #f8f8f8;
@@ -595,7 +595,7 @@ form input[type="password"]{
     outline: 0;
 }
 
-form textarea{
+.global-form textarea{
     width: 100%;
     height: 150px;
     resize: none;
@@ -607,8 +607,8 @@ form textarea{
     outline: 0;
 }
 
-form button,
-form input[type="submit"]{
+.global-form button,
+.global-form input[type="submit"]{
     width: 100%;
     height: 45px;
     background-color: #a3cfbb;
