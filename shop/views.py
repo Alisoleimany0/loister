@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import IntegrityError
+from django.http import Http404
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -23,13 +24,14 @@ def index_view(request):
     product_offers = ProductOffers.objects.first()
     offer_seconds_remaining = (product_offers.finish_time - timezone.now()).seconds
 
-    return render(request, "shop/index.html",
-                  {'products_by_date': order_by_date, 'products_by_sold': order_by_units_sold,
-                   'products_by_views': order_by_views, 'covers': covers,
-                   "all_categories": all_categories,
-                   'offered_products': product_offers.products.all() if product_offers else (),
-                   'offer_seconds_remaining': offer_seconds_remaining,
-                   'index': True})
+    context = {'products_by_date': order_by_date, 'products_by_sold': order_by_units_sold,
+               'products_by_views': order_by_views, 'covers': covers,
+               "all_categories": all_categories,
+               'offered_products': product_offers.products.all() if product_offers else (),
+               'offer_seconds_remaining': offer_seconds_remaining,
+               'index': True}
+
+    return render(request, "shop/index.html", context)
 
 
 def product_single(request, pk):
@@ -61,7 +63,7 @@ def product_single(request, pk):
 
 
 def about(request):
-    return render(request, 'about.html')
+    return render(request, 'shop/about.html')
 
 
 def login_user(request):
@@ -100,7 +102,7 @@ def signup_user(request):
             messages.error(request, "مشکلی در ثبت نام شما وجود دارد")
             return redirect("signup")
     else:
-        return render(request, "signup.html", {'form': form})
+        return render(request, "shop/signup.html", {'form': form})
 
 
 def category_view(request, cat):
@@ -108,5 +110,32 @@ def category_view(request, cat):
     category = get_object_or_404(Category, name=cat)
     products = Product.objects.filter(category=category)
     all_categories = Category.objects.all()
-    return render(request, "category.html",
+    return render(request, "shop/category.html",
                   {'products': products, "category": category, "all_categories": all_categories})
+
+
+def cart_view(request):
+    if request.user.is_authenticated:
+        items = CartProductQuantity.objects.filter(cart__customer__user=request.user)
+        sub_total = 0
+        for item in items:
+            sub_total += item.total_price
+        context = {'items': items, 'sub_total': sub_total}
+        return render(request, "shop/cart.html", context)
+    # TODO properly handle this
+    raise Http404
+
+
+def remove_cart_item_view(request):
+    if request.user.is_authenticated:
+        items = CartProductQuantity.objects.filter(cart__customer__user=request.user)
+        if request.POST.get("item_id", None):
+            items.get(id=request.POST.get("item_id")).delete()
+            print("hello")
+        sub_total = 0
+        for item in items:
+            sub_total += item.total_price
+        context = {'items': items, 'sub_total': sub_total}
+        return render(request, "shop/cart.html", context)
+    # TODO properly handle this
+    raise Http404

@@ -129,6 +129,22 @@ class CartProductQuantity(models.Model):
     )
     quantity = models.IntegerField(default=1)
 
+    @property
+    def total_price(self):
+        if self.product.is_on_sale:
+            price = self.product.sale_price
+        else:
+            price = self.product.price
+        return price * self.quantity
+
+    @property
+    def sell_price(self):
+        if self.product.is_on_sale:
+            price = self.product.sale_price
+        else:
+            price = self.product.price
+        return price
+
     def __str__(self):
         return f"{self.product} : {self.quantity}"
 
