@@ -15,10 +15,30 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path , include
+from django.urls import path, include
 from . import settings
-from django.conf.urls.static import static
+# from django.conf.urls.static import static
 
+import re
+from urllib.parse import urlsplit
+from django.core.exceptions import ImproperlyConfigured
+from django.urls import re_path
+from django.views.static import serve
+
+
+def static(prefix, view=serve, **kwargs):
+    # TODO: remove for production
+    if not prefix:
+        raise ImproperlyConfigured("Empty static prefix not permitted")
+    # elif not settings.DEBUG or urlsplit(prefix).netloc:
+    elif urlsplit(prefix).netloc:
+        # No-op if not in debug mode or a non-local prefix.
+        return []
+    return [
+        re_path(
+            r"^%s(?P<path>.*)$" % re.escape(prefix.lstrip("/")), view, kwargs=kwargs
+        ),
+    ]
 
 
 urlpatterns = [
@@ -26,7 +46,7 @@ urlpatterns = [
     path('', include('shop.urls')),
     path('cart/', include('cart.urls')),
 ]
+handler404 = 'loister.views.http404'
 
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
