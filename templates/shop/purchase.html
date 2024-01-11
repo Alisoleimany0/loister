@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+
+    <section>
+        <div class="container">
+            <div class="page-body bg-white p-3 rounded">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="purchase-table ">
+
+                            <table class="table">
+                                <tr>
+                                    <td>ردیف</td>
+                                    <td>نام محصول</td>
+                                    <td>تصویر</td>
+                                    <td>تعداد</td>
+                                    <td>قیمت کل</td>
+                                </tr>
+                                {% for item in items %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ item.product.name }}</td>
+                                        <td>
+                                            <img src="{{ item.product.default_image.image.url }}"
+                                                 alt="{{ item.product.name }}">
+                                        </td>
+                                        <td>{{ item.quantity|intcomma }}</td>
+                                        <td>{{ item.total_price|intcomma }} تومان</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                        <div class="purchase-note bg-light p-3 rounded mt-3">
+                            <span class="d-block pb-3 mb-3 border-bottom">قوانین</span>
+                            <p>
+                                لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان
+                                گرافیک
+                                است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط
+                                فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد.
+                            </p>
+                            <div class="form-check my-3">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked"
+                                       checked>
+                                <label class="form-check-label" for="flexCheckChecked">
+                                    پذیرش قوانین سایت
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="d-block my-3">اطلاعات تحویل مرسوله</span>
+                        <div class="purchase-address-profile-content p-3 mt-3 border rounded">
+                            <div id="address_display">
+                                <h5 class="m-3 p-2 border-bottom">آدرس های من</h5>
+                                {% if addresses %}
+                                    <div class="purchase-history-profile-content p-3 mt-3 border rounded">
+                                        <table class="table text-center">
+                                            <tr>
+                                                <td>استان</td>
+                                                <td>شهر</td>
+                                                <td>کد پستی</td>
+                                                <td>شماره تلفن</td>
+                                                <td>مشاهده جزئیات</td>
+                                            </tr>
+                                            {% for address in addresses %}
+                                                <tr>
+                                                    <td id="{{ forloop.counter }}">{{ address.district }}</td>
+                                                    <td>{{ address.city }}</td>
+                                                    <td>{{ address.postal_code }}</td>
+                                                    <td>{{ address.delivery_phone_number }}</td>
+                                                    <td>{{ address.address }}</td>
+                                                    <td>
+                                                        <input type="radio" id="address{{ address.id }}" name="address"
+                                                               value="{{ address.id }}"
+                                                               {% if forloop.first %}checked{% endif %}>
+                                                        <script>
+                                                            document.getElementById('address{{ address.id }}').addEventListener('change', function () {
+                                                                document.getElementById('address_id_input').value = this.value
+                                                            });
+                                                        </script>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </table>
+                                    </div>
+
+                                {% else %}
+                                    <div class="alert alert-danger">
+                                        شما آدرسی ثبت نکرده اید
+                                    </div>
+                                {% endif %}
+                                <p id="full_address"></p>
+                            </div>
+                            <p id="full_address"></p>
+                            {#                            <form class="global-form" action="" method="post">#}
+                            {#                                <h5 class="m-3 p-2 border-bottom">افزودن آدرس جدید</h5>#}
+                            {#                                <select name="state" onChange="iranwebsv(this.value);">#}
+                            {#                                    <option value="0">لطفا استان را انتخاب نمایید</option>#}
+                            {#                                    <option value="1">تهران</option>#}
+                            {#                                    <option value="2">گیلان</option>#}
+                            {#                                    <option value="3">آذربایجان شرقی</option>#}
+                            {#                                    <option value="4">خوزستان</option>#}
+                            {#                                    <option value="5">فارس</option>#}
+                            {#                                    <option value="6">اصفهان</option>#}
+                            {#                                    <option value="7">خراسان رضوی</option>#}
+                            {#                                    <option value="8">قزوین</option>#}
+                            {#                                    <option value="9">سمنان</option>#}
+                            {#                                    <option value="10">قم</option>#}
+                            {#                                    <option value="11">مرکزی</option>#}
+                            {#                                    <option value="12">زنجان</option>#}
+                            {#                                    <option value="13">مازندران</option>#}
+                            {#                                    <option value="14">گلستان</option>#}
+                            {#                                    <option value="15">اردبیل</option>#}
+                            {#                                    <option value="16">آذربایجان غربی</option>#}
+                            {#                                    <option value="17">همدان</option>#}
+                            {#                                    <option value="18">کردستان</option>#}
+                            {#                                    <option value="19">کرمانشاه</option>#}
+                            {#                                    <option value="20">لرستان</option>#}
+                            {#                                    <option value="21">بوشهر</option>#}
+                            {#                                    <option value="22">کرمان</option>#}
+                            {#                                    <option value="23">هرمزگان</option>#}
+                            {#                                    <option value="24">چهارمحال و بختیاری</option>#}
+                            {#                                    <option value="25">یزد</option>#}
+                            {#                                    <option value="26">سیستان و بلوچستان</option>#}
+                            {#                                    <option value="27">ایلام</option>#}
+                            {#                                    <option value="28">کهگلویه و بویراحمد</option>#}
+                            {#                                    <option value="29">خراسان شمالی</option>#}
+                            {#                                    <option value="30">خراسان جنوبی</option>#}
+                            {#                                    <option value="31">البرز</option>#}
+                            {#                                </select>#}
+                            {#                                <select name="city" id="city">#}
+                            {#                                    <option value="0">لطفا شهرستان را انتخاب نمایید</option>#}
+                            {#                                </select>#}
+                            {#                                <input type="text" name="address" id="address" placeholder="آدرس دقیق را وارد کنید">#}
+                            {#                                <input type="text" name="postal_code" id="postal_code"#}
+                            {#                                       placeholder="کد پستی را وارد کنید">#}
+                            {#                                <input type="text" name="mobile" id="mobile" placeholder="شماره موبایل را وارد کنید">#}
+                            {#                                <input type="submit" value="افزودن" onClick="showAddress()">#}
+                            {#                            </form>#}
+                        </div>
+                        <form class="global-form" action="{% url 'payment_redirect' %}" method="post">
+                            {% csrf_token %}
+                            <textarea placeholder="توضیحات اضافی"></textarea>
+                            <input type="hidden" id="address_id_input" name="address_id">
+                            <button id="submit_button" class="bg-danger">{{ sub_total|intcomma }} تومان - پرداخت
+                                انلاین
+                            </button>
+                        </form>
+                        <script>
+                            document.getElementById('submit_button').addEventListener('click', function () {
+                                document.getElementsByName('address').forEach((item, index) => {
+                                    if (item.checked) {
+                                        document.getElementById('address_id_input').value = item.value
+                                    }
+                                })
+                            });
+
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

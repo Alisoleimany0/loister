@@ -23,5 +23,7 @@ class CustomerAddress(models.Model):
         blank=True,
         on_delete=models.CASCADE)
     delivery_phone_number = models.IntegerField()
+    district = models.CharField(max_length=20)
+    city = models.CharField(max_length=20)
     address = models.TextField()
     postal_code = models.IntegerField(null=False, default=0)

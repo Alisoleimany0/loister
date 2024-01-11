@@ -7,10 +7,10 @@ from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from customer.models import CustomerProfile
+from customer.models import CustomerProfile, CustomerAddress
 from .forms import SignupForm
 from .models import Category, Product, HomepageCover, ProductImage, ProductOffers, ProductDetail, Cart, \
-    CartProductQuantity
+    CartProductQuantity, Order, BoughtProduct
 
 
 def index_view(request):
@@ -126,16 +126,104 @@ def cart_view(request):
     raise Http404
 
 
+# TODO this is stupid. merge it with cart view
 def remove_cart_item_view(request):
     if request.user.is_authenticated:
         items = CartProductQuantity.objects.filter(cart__customer__user=request.user)
         if request.POST.get("item_id", None):
             items.get(id=request.POST.get("item_id")).delete()
-            print("hello")
         sub_total = 0
         for item in items:
             sub_total += item.total_price
         context = {'items': items, 'sub_total': sub_total}
         return render(request, "shop/cart.html", context)
-    # TODO properly handle this
     raise Http404
+
+
+def new_order_view(request):
+    if request.user.is_authenticated:
+        items = CartProductQuantity.objects.filter(cart__customer__user=request.user)
+        addresses = CustomerAddress.objects.filter(customer__user=request.user)
+        sub_total = 0
+        for item in items:
+            sub_total += item.total_price
+        context = {'addresses': addresses, 'items': items, 'sub_total': sub_total}
+        return render(request, 'shop/purchase.html', context)
+
+
+def coming_soon_view(request):
+    return render(request, 'under_development.html')
+
+
+def payment_redirect_view(request):
+    if request.method == 'POST' and request.user.is_authenticated:
+        if request.POST.get("address_id", None):
+            address = CustomerAddress.objects.get(id=int(request.POST.get("address_id")))
+            items = CartProductQuantity.objects.filter(cart__customer__user=request.user)
+            sub_total = 0
+            for item in items:
+                sub_total += item.total_price
+            order = Order.objects.create(customer=CustomerProfile.objects.get(user=request.user),
+                                         total_price=sub_total,
+                                         order_status=Order.ORDER_STATUS_CHOICES[0][0],
+                                         delivery_phone_number=address.delivery_phone_number,
+                                         address=address,
+                                         district=address.district,
+                                         city=address.city,
+                                         address_text=address.address,
+                                         postal_code=address.postal_code)
+
+            for item in items:
+                BoughtProduct.objects.create(order=order, product=item.product, quantity=item.quantity,
+                                             name=item.product.name, price=item.sell_price,
+                                             total_price=item.total_price)
+            post_copy = request.POST.copy()
+            post_copy["order_id"] = order.id
+            post_copy['code'] = "200"
+            request.session['_post_data'] = post_copy
+            return redirect("payment_confirmation")
+
+    raise Http404
+
+
+def payment_confirmation_view(request):
+    if request.user.is_authenticated:
+        # TODO properly handle api callback
+        if request.session['_post_data']['code'] == "200" and request.session['_post_data']['order_id']:
+            order = Order.objects.get(id=int(request.session['_post_data']["order_id"]))
+            order.order_status = Order.ORDER_STATUS_CHOICES[1][0]
+            order.save()
+            CartProductQuantity.objects.filter(cart__customer__user=request.user).delete()
+            return redirect("home")
+    raise ValidationError("error")
+
+
+def addresses_view(request):
+    if request.user.is_authenticated:
+        if request.POST.get("state", None):
+            CustomerAddress.objects.create(customer=CustomerProfile.objects.get(user=request.user),
+                                           delivery_phone_number=request.POST.get("mobile", 0),
+                                           district=request.POST.get("state"),
+                                           city=request.POST.get("city"),
+                                           address=request.POST.get("address"),
+                                           postal_code=request.POST.get("postal_code"))
+
+        addresses = CustomerAddress.objects.filter(customer__user=request.user)
+        context = {'addresses': addresses}
+        if request.POST.get("state", None):
+            return redirect('address')
+        return render(request, 'user_profile/addresses.html', context)
+    # TODO
+    raise Http404
+
+
+def profile_info_view(request):
+    return render(request, 'user_profile/profile_info.html')
+
+
+def profile_purchase_history(request):
+    if request.user.is_authenticated:
+        orders = Order.objects.filter(customer__user=request.user)
+        context = {'orders': orders}
+        return render(request, 'user_profile/purchase-history.html', context)
+

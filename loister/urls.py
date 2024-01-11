@@ -44,6 +44,7 @@ def static(prefix, view=serve, **kwargs):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('shop.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
 handler404 = 'loister.views.http404'
 

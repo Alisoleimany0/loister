@@ -58,17 +58,17 @@
 {#                                </div>#}
                                 <table class="table">
                                     <tr>
-                                        <td colspan="{{ items }}">مجموع سبد</td>
+                                        <td colspan="2">مجموع سبد</td>
                                     </tr>
                                     <tr>
-                                        <td>3 محصول</td>
+                                        <td>{{ items.count }} محصول</td>
 {#                                        <td>0% تخفیف</td>#}
                                         <td>مجموع : {{ sub_total|intcomma }} تومان</td>
                                     </tr>
                                 </table>
                                 <div class="row justify-content-end">
                                     <div class="col-4">
-                                        <form class="global-form" action="">
+                                        <form class="global-form" action="{% url 'new_order' %}" method="get">
                                             <button type="submit">ادامه جهت تصویه حساب</button>
                                         </form>
                                     </div>

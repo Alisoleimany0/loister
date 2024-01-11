@@ -1,0 +1,29 @@
+{% extends 'user_profile/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block profile_content %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="purchase-history-profile-content p-3 mt-3 border rounded">
+                <table class="table text-center">
+                    <tr>
+                        <td>کد سفارش</td>
+                        <td>وضعیت</td>
+                        <td>تاریخ</td>
+                        <td>مبلغ به تومان</td>
+                        <td>مشاهده جزئیات</td>
+                    </tr>
+                    {% for order in orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.get_order_status_display }}</td>
+                            <td>{{ order.checkout_date }}</td>
+                            <td>{{ order.total_price|intcomma }}</td>
+                            <td><a href="#" id="delete-cart-item" class="text-danger"><i class="bi bi-eye"></i></a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,10 +1,13 @@
+from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxLengthValidator, MaxValueValidator
 from django.db import models
 from django.db.models import signals
 from django.utils import timezone
+from django_jalali.db import models as jmodels
 
-from customer.models import CustomerAddress, CustomerProfile
+from customer.models import CustomerProfile, CustomerAddress
 
 
 class Category(models.Model):
@@ -17,7 +20,7 @@ class Category(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=40)
     display_description = models.CharField(max_length=500, default='', blank=True, null=True)
-    description = models.TextField()
+    description = RichTextUploadingField()
     category = models.ManyToManyField(Category, blank=True)
     release_date = models.DateField(default=timezone.now)
     views = models.IntegerField(default=0)
@@ -77,31 +80,6 @@ class ProductOffers(models.Model):
         if not self.pk and HomepageCoverGroup.objects.exists():
             raise ValidationError("You can only create one instance of ProductOffers")
         return super(ProductOffers, self).save(*args, **kwargs)
-
-
-class Order(models.Model):
-    ORDER_STATUS_CHOICES = (
-        ("payment", "در انتظار پرداخت"),
-        ("processing", "در حال پردازش"),
-        ("sent", "ارسال شده"),
-    )
-    products = models.ManyToManyField(Product)
-    customer = models.ForeignKey(
-        CustomerProfile,
-        on_delete=models.CASCADE)
-    checkout_date = models.DateTimeField(default=timezone.now)
-    address = models.ForeignKey(
-        CustomerAddress,
-        on_delete=models.CASCADE,
-    )
-    delivery_details = models.TextField(blank=True)
-    order_status = models.CharField(choices=ORDER_STATUS_CHOICES, max_length=20)
-
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        super().save(force_insert, force_update, using, update_fields)
-
-    def __str__(self):
-        return self.id
 
 
 # failed to put cart model in customer app due to circular import issues
@@ -170,6 +148,54 @@ class HomepageCover(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Order(models.Model):
+    ORDER_STATUS_CHOICES = (
+        ("payment", "در انتظار پرداخت"),
+        ("processing", "پرداخت شده"),
+        ("sent", "ارسال شده"),
+    )
+    customer = models.ForeignKey(
+        CustomerProfile,
+        on_delete=models.DO_NOTHING)
+    address = models.ForeignKey(
+        CustomerAddress,
+        null=True,
+        on_delete=models.DO_NOTHING,
+    )
+    # TODO handle dating :-
+    checkout_date = jmodels.jDateField(blank=True, default=timezone.now)
+    invoice_date_time = jmodels.jDateField(default=timezone.now)
+    total_price = models.IntegerField()
+    delivery_phone_number = models.IntegerField()
+    district = models.CharField(max_length=20)
+    city = models.CharField(max_length=20)
+    address_text = models.TextField()
+    postal_code = models.IntegerField(null=False, default=0)
+    delivery_details = models.TextField(blank=True)
+    order_status = models.CharField(choices=ORDER_STATUS_CHOICES, max_length=20)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super().save(force_insert, force_update, using, update_fields)
+
+    def __str__(self):
+        return f"{self.id}"
+
+
+class BoughtProduct(models.Model):
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE
+    )
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.DO_NOTHING
+    )
+    name = models.CharField(max_length=50)
+    price = models.IntegerField()
+    total_price = models.IntegerField()
+    quantity = models.IntegerField()
 
 
 def pre_product_image_save(sender, instance, **kwargs):

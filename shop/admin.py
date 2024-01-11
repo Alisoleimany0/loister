@@ -1,3 +1,4 @@
+from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
 from django.contrib.admin.widgets import AdminFileWidget
@@ -6,9 +7,11 @@ from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
 from .models import HomepageCover, HomepageCoverGroup, ProductDetail, Product, Category, Order, ProductImage, \
-    ProductOffers, Cart, CartProductQuantity
+    ProductOffers, Cart, CartProductQuantity, BoughtProduct
 
 admin.site.register(Category)
+admin.site.register(BoughtProduct)
+
 
 class ProductDetailInline(admin.TabularInline):
     model = ProductDetail
@@ -96,6 +99,7 @@ class ProductAdminForm(forms.ModelForm):
 class ProductAdmin(admin.ModelAdmin):
     inlines = ProductDetailInline, ProductImageInline
     form = ProductAdminForm
+    summernote_fields = ("description",)
 
     def save_related(self, request, form, formsets, change):
         super(ProductAdmin, self).save_related(request, form, formsets, change)
