@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+{% load mathfilters %}
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="page-body bg-white p-3 rounded">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        {% if products %}
+                            <div class="purchase-table ">
+                                <table class="table">
+                                    <tr>
+                                        <td>ردیف</td>
+                                        <td>نام محصول</td>
+                                        <td>تصویر</td>
+                                        <td>قیمت</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    {% for product in products %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ product.name }}</td>
+                                            <td>
+                                                <img src="{{ product.default_image.image.url }}"
+                                                     alt="{{ product.name }}">
+                                            </td>
+                                            <td>{{ product.sell_price|intcomma }} تومان</td>
+                                            <td>
+                                                <form action="{% url 'product' product.id %}">
+                                                    <button type="submit" class="btn btn-outline-info">مشاهده</button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                {#                                                <a href="#" id="delete-cart-item" class="text-danger"><i#}
+                                                {#                                                        class="bi bi-trash"></i></a>#}
+                                                <form action="#" method="get">
+                                                    <input type="hidden" name="remove_favourite" value="{{ product.id }}">
+                                                    <button class="btn btn-outline-danger bi-trash"></button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-danger">
+                                کالا های مورد علاقه شما خالی است
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

@@ -2,6 +2,7 @@
 {% load humanize %}
 {% load static %}
 {% load mathfilters %}
+{% load shop_tags %}
 {% block content %}
     <section class="index-services mb-3">
         <div class="container-fluid">
@@ -87,16 +88,17 @@
                                                         data-bs-toggle="tooltip"
                                                         data-bs-placement="top"
                                                         title="مشاهده محصول">
-                                                        <a href="#" class="d-inline-block rounded">
+                                                        <a href="{% url 'product' product.id %}"
+                                                           class="d-inline-block rounded">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
                                                     </li>
                                                     <li class="d-inline-block"
                                                         data-bs-toggle="tooltip"
                                                         data-bs-placement="top"
-                                                        title="افزودن به علاقه مندی">
+                                                        title="{% if user|is_favourite:product %}حذف کردن از علاقه‌مندی{% else %}افزودن به علاقه‌مندی{% endif %}">
                                                         <a href="#" class="d-inline-block rounded">
-                                                            <i class="bi bi-heart"></i>
+                                                            <i class="bi {% if user|is_favourite:product %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -163,9 +165,9 @@
                                                     <li class="d-inline-block"
                                                         data-bs-toggle="tooltip"
                                                         data-bs-placement="top"
-                                                        title="افزودن به علاقه مندی">
+                                                        title="{% if user|is_favourite:product %}حذف کردن از علاقه‌مندی{% else %}افزودن به علاقه‌مندی{% endif %}">
                                                         <a href="#" class="d-inline-block rounded">
-                                                            <i class="bi bi-heart"></i>
+                                                            <i class="bi {% if user|is_favourite:product %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -232,9 +234,9 @@
                                                     <li class="d-inline-block"
                                                         data-bs-toggle="tooltip"
                                                         data-bs-placement="top"
-                                                        title="افزودن به علاقه مندی">
+                                                        title="{% if user|is_favourite:product %}حذف کردن از علاقه‌مندی{% else %}افزودن به علاقه‌مندی{% endif %}">
                                                         <a href="#" class="d-inline-block rounded">
-                                                            <i class="bi bi-heart"></i>
+                                                            <i class="bi {% if user|is_favourite:product %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -284,14 +286,16 @@
             <div class="row">
                 <div class="col-md-7">
                     <div class="offer-box bg-white p-5">
-                        <div class="timer-box timer d-flex justify-content-center" data-seconds-left="{{ offer_seconds_remaining }}">
+                        <div class="timer-box timer d-flex justify-content-center"
+                             data-seconds-left="{{ offer_seconds_remaining }}">
                         </div>
                         <div class="slider-item owl-carousel owl-theme">
                             {% for product in offered_products %}
                                 <div class="product-item p-3 bg-white rounded my-3">
                                     <a href="#">
                                         <figure class="w-100 position-relative overflow-hidden border-bottom">
-                                            <img src="{{ product.default_image.image.url }}" alt="" class="d-table mx-auto">
+                                            <img src="{{ product.default_image.image.url }}" alt=""
+                                                 class="d-table mx-auto">
                                             <figcaption class="position-absolute w-100 h-100 text-center">
                                                 <ul class="p-0">
                                                     <li class="d-inline-block"
@@ -305,9 +309,9 @@
                                                     <li class="d-inline-block"
                                                         data-bs-toggle="tooltip"
                                                         data-bs-placement="top"
-                                                        title="افزودن به علاقه مندی">
+                                                        title="{% if user|is_favourite:product %}حذف کردن از علاقه‌مندی{% else %}افزودن به علاقه‌مندی{% endif %}">
                                                         <a href="#" class="d-inline-block rounded">
-                                                            <i class="bi bi-heart"></i>
+                                                            <i class="bi {% if user|is_favourite:product %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -376,142 +380,142 @@
         </div>
     </section>
 
-    <section class="d-inline-block w-100 my-3">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <div class="site-title-box">
-                        <span class="d-block">زعفران درجه یک</span>
-                        <span class="d-block ps-3">
-                        <a href="#">مشاهده همه&nbsp;<i class="bi bi-arrow-left"></i></a>
-                    </span>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="cat-slider-item owl-carousel owl-theme">
-                        <div class="product-item p-3 bg-white rounded my-3">
-                            <a href="#">
-                                <figure class="w-100 position-relative overflow-hidden border-bottom">
-                                    <img src="{% static 'img/saffron.png' %}" alt="" class="d-table mx-auto">
-                                    <figcaption class="position-absolute w-100 h-100 text-center">
-                                        <ul class="p-0">
-                                            <li class="d-inline-block"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
-                                                title="مشاهده محصول"><a href="#" class="d-inline-block rounded"><i
-                                                    class="bi bi-eye"></i></a></li>
-                                            <li class="d-inline-block"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
-                                                title="افزودن به علاقه مندی"><a href="#" class="d-inline-block rounded"><i
-                                                    class="bi bi-heart"></i></a></li>
-                                        </ul>
-                                    </figcaption>
-                                </figure>
-                            </a>
-                            <a href="#">
-                                <h5 class="m-0 py-2 text-center overflow-hidden">محصول تست شماره 28</h5>
-                            </a>
-                            <p class="text-center overflow-hidden mt-2">Lorem ipsum dolor sit amet, consectetur
-                                adipisicing
-                                elit. Adipisci beatae blanditiis consectetur cupiditate dolorem, eaque error et eum
-                                exercitationem, ipsum laborum nam nemo placeat quidem rem repudiandae soluta vel
-                                voluptates!</p>
-                            <div class="product-rate text-center mb-2">
-                                <i class="bi bi-star text-warning"></i>
-                                <i class="bi bi-star text-warning"></i>
-                                <i class="bi bi-star text-warning"></i>
-                                <i class="bi bi-star text-warning"></i>
-                                <i class="bi bi-star text-dark"></i>
-                            </div>
-                            <div class="product-price d-flex">
-                                <span class="d-inline-block w-100 text-start">2.000.000 تومان</span>
-                                <del class="d-inline-block w-100 text-end">2.540.000 تومان</del>
-                            </div>
-                        </div>
-                        <div class="product-item p-3 bg-white rounded my-3">
-                            <a href="#">
-                                <figure class="w-100 position-relative overflow-hidden border-bottom">
-                                    <img src="{% static 'img/saffron.png' %}" alt="" class="d-table mx-auto">
-                                    <figcaption class="position-absolute w-100 h-100 text-center">
-                                        <ul class="p-0">
-                                            <li class="d-inline-block"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
-                                                title="مشاهده محصول"><a href="#" class="d-inline-block rounded"><i
-                                                    class="bi bi-eye"></i></a></li>
-                                            <li class="d-inline-block"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
-                                                title="افزودن به علاقه مندی"><a href="#" class="d-inline-block rounded"><i
-                                                    class="bi bi-heart"></i></a></li>
-                                        </ul>
-                                    </figcaption>
-                                </figure>
-                            </a>
-                            <a href="#">
-                                <h5 class="m-0 py-2 text-center overflow-hidden">محصول تست شماره 29</h5>
-                            </a>
-                            <p class="text-center overflow-hidden mt-2">Lorem ipsum dolor sit amet, consectetur
-                                adipisicing
-                                elit. Adipisci beatae blanditiis consectetur cupiditate dolorem, eaque error et eum
-                                exercitationem, ipsum laborum nam nemo placeat quidem rem repudiandae soluta vel
-                                voluptates!</p>
-                            <div class="product-rate text-center mb-2">
-                                <i class="bi bi-star text-warning"></i>
-                                <i class="bi bi-star text-warning"></i>
-                                <i class="bi bi-star text-warning"></i>
-                                <i class="bi bi-star text-warning"></i>
-                                <i class="bi bi-star text-dark"></i>
-                            </div>
-                            <div class="product-price d-flex">
-                                <span class="d-inline-block w-100 text-start">2.000.000 تومان</span>
-                                <del class="d-inline-block w-100 text-end">2.540.000 تومان</del>
-                            </div>
-                        </div>
-                        <div class="product-item p-3 bg-white rounded my-3">
-                            <a href="#">
-                                <figure class="w-100 position-relative overflow-hidden border-bottom">
-                                    <img src="{% static 'img/saffron.png' %}" alt="" class="d-table mx-auto">
-                                    <figcaption class="position-absolute w-100 h-100 text-center">
-                                        <ul class="p-0">
-                                            <li class="d-inline-block"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
-                                                title="مشاهده محصول"><a href="#" class="d-inline-block rounded"><i
-                                                    class="bi bi-eye"></i></a></li>
-                                            <li class="d-inline-block"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
-                                                title="افزودن به علاقه مندی"><a href="#" class="d-inline-block rounded"><i
-                                                    class="bi bi-heart"></i></a></li>
-                                        </ul>
-                                    </figcaption>
-                                </figure>
-                            </a>
-                            <a href="#">
-                                <h5 class="m-0 py-2 text-center overflow-hidden">محصول تست شماره 30</h5>
-                            </a>
-                            <p class="text-center overflow-hidden mt-2">Lorem ipsum dolor sit amet, consectetur
-                                adipisicing
-                                elit. Adipisci beatae blanditiis consectetur cupiditate dolorem, eaque error et eum
-                                exercitationem, ipsum laborum nam nemo placeat quidem rem repudiandae soluta vel
-                                voluptates!</p>
-                            <div class="product-rate text-center mb-2">
-                                <i class="bi bi-star text-warning"></i>
-                                <i class="bi bi-star text-warning"></i>
-                                <i class="bi bi-star text-warning"></i>
-                                <i class="bi bi-star text-warning"></i>
-                                <i class="bi bi-star text-dark"></i>
-                            </div>
-                            <div class="product-price d-flex">
-                                <span class="d-inline-block w-100 text-start">2.000.000 تومان</span>
-                                <del class="d-inline-block w-100 text-end">2.540.000 تومان</del>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    {#    <section class="d-inline-block w-100 my-3">#}
+    {#        <div class="container-fluid">#}
+    {#            <div class="row">#}
+    {#                <div class="col-12">#}
+    {#                    <div class="site-title-box">#}
+    {#                        <span class="d-block">زعفران درجه یک</span>#}
+    {#                        <span class="d-block ps-3">#}
+    {#                        <a href="#">مشاهده همه&nbsp;<i class="bi bi-arrow-left"></i></a>#}
+    {#                    </span>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#                <div class="col-12">#}
+    {#                    <div class="cat-slider-item owl-carousel owl-theme">#}
+    {#                        <div class="product-item p-3 bg-white rounded my-3">#}
+    {#                            <a href="#">#}
+    {#                                <figure class="w-100 position-relative overflow-hidden border-bottom">#}
+    {#                                    <img src="{% static 'img/saffron.png' %}" alt="" class="d-table mx-auto">#}
+    {#                                    <figcaption class="position-absolute w-100 h-100 text-center">#}
+    {#                                        <ul class="p-0">#}
+    {#                                            <li class="d-inline-block"#}
+    {#                                                data-bs-toggle="tooltip"#}
+    {#                                                data-bs-placement="top"#}
+    {#                                                title="مشاهده محصول"><a href="#" class="d-inline-block rounded"><i#}
+    {#                                                    class="bi bi-eye"></i></a></li>#}
+    {#                                            <li class="d-inline-block"#}
+    {#                                                data-bs-toggle="tooltip"#}
+    {#                                                data-bs-placement="top"#}
+    {#                                                title="افزودن به علاقه مندی"><a href="#" class="d-inline-block rounded"><i#}
+    {#                                                    class="bi bi-heart"></i></a></li>#}
+    {#                                        </ul>#}
+    {#                                    </figcaption>#}
+    {#                                </figure>#}
+    {#                            </a>#}
+    {#                            <a href="#">#}
+    {#                                <h5 class="m-0 py-2 text-center overflow-hidden">محصول تست شماره 28</h5>#}
+    {#                            </a>#}
+    {#                            <p class="text-center overflow-hidden mt-2">Lorem ipsum dolor sit amet, consectetur#}
+    {#                                adipisicing#}
+    {#                                elit. Adipisci beatae blanditiis consectetur cupiditate dolorem, eaque error et eum#}
+    {#                                exercitationem, ipsum laborum nam nemo placeat quidem rem repudiandae soluta vel#}
+    {#                                voluptates!</p>#}
+    {#                            <div class="product-rate text-center mb-2">#}
+    {#                                <i class="bi bi-star text-warning"></i>#}
+    {#                                <i class="bi bi-star text-warning"></i>#}
+    {#                                <i class="bi bi-star text-warning"></i>#}
+    {#                                <i class="bi bi-star text-warning"></i>#}
+    {#                                <i class="bi bi-star text-dark"></i>#}
+    {#                            </div>#}
+    {#                            <div class="product-price d-flex">#}
+    {#                                <span class="d-inline-block w-100 text-start">2.000.000 تومان</span>#}
+    {#                                <del class="d-inline-block w-100 text-end">2.540.000 تومان</del>#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                        <div class="product-item p-3 bg-white rounded my-3">#}
+    {#                            <a href="#">#}
+    {#                                <figure class="w-100 position-relative overflow-hidden border-bottom">#}
+    {#                                    <img src="{% static 'img/saffron.png' %}" alt="" class="d-table mx-auto">#}
+    {#                                    <figcaption class="position-absolute w-100 h-100 text-center">#}
+    {#                                        <ul class="p-0">#}
+    {#                                            <li class="d-inline-block"#}
+    {#                                                data-bs-toggle="tooltip"#}
+    {#                                                data-bs-placement="top"#}
+    {#                                                title="مشاهده محصول"><a href="#" class="d-inline-block rounded"><i#}
+    {#                                                    class="bi bi-eye"></i></a></li>#}
+    {#                                            <li class="d-inline-block"#}
+    {#                                                data-bs-toggle="tooltip"#}
+    {#                                                data-bs-placement="top"#}
+    {#                                                title="افزودن به علاقه مندی"><a href="#" class="d-inline-block rounded"><i#}
+    {#                                                    class="bi bi-heart"></i></a></li>#}
+    {#                                        </ul>#}
+    {#                                    </figcaption>#}
+    {#                                </figure>#}
+    {#                            </a>#}
+    {#                            <a href="#">#}
+    {#                                <h5 class="m-0 py-2 text-center overflow-hidden">محصول تست شماره 29</h5>#}
+    {#                            </a>#}
+    {#                            <p class="text-center overflow-hidden mt-2">Lorem ipsum dolor sit amet, consectetur#}
+    {#                                adipisicing#}
+    {#                                elit. Adipisci beatae blanditiis consectetur cupiditate dolorem, eaque error et eum#}
+    {#                                exercitationem, ipsum laborum nam nemo placeat quidem rem repudiandae soluta vel#}
+    {#                                voluptates!</p>#}
+    {#                            <div class="product-rate text-center mb-2">#}
+    {#                                <i class="bi bi-star text-warning"></i>#}
+    {#                                <i class="bi bi-star text-warning"></i>#}
+    {#                                <i class="bi bi-star text-warning"></i>#}
+    {#                                <i class="bi bi-star text-warning"></i>#}
+    {#                                <i class="bi bi-star text-dark"></i>#}
+    {#                            </div>#}
+    {#                            <div class="product-price d-flex">#}
+    {#                                <span class="d-inline-block w-100 text-start">2.000.000 تومان</span>#}
+    {#                                <del class="d-inline-block w-100 text-end">2.540.000 تومان</del>#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                        <div class="product-item p-3 bg-white rounded my-3">#}
+    {#                            <a href="#">#}
+    {#                                <figure class="w-100 position-relative overflow-hidden border-bottom">#}
+    {#                                    <img src="{% static 'img/saffron.png' %}" alt="" class="d-table mx-auto">#}
+    {#                                    <figcaption class="position-absolute w-100 h-100 text-center">#}
+    {#                                        <ul class="p-0">#}
+    {#                                            <li class="d-inline-block"#}
+    {#                                                data-bs-toggle="tooltip"#}
+    {#                                                data-bs-placement="top"#}
+    {#                                                title="مشاهده محصول"><a href="#" class="d-inline-block rounded"><i#}
+    {#                                                    class="bi bi-eye"></i></a></li>#}
+    {#                                            <li class="d-inline-block"#}
+    {#                                                data-bs-toggle="tooltip"#}
+    {#                                                data-bs-placement="top"#}
+    {#                                                title="افزودن به علاقه مندی"><a href="#" class="d-inline-block rounded"><i#}
+    {#                                                    class="bi bi-heart"></i></a></li>#}
+    {#                                        </ul>#}
+    {#                                    </figcaption>#}
+    {#                                </figure>#}
+    {#                            </a>#}
+    {#                            <a href="#">#}
+    {#                                <h5 class="m-0 py-2 text-center overflow-hidden">محصول تست شماره 30</h5>#}
+    {#                            </a>#}
+    {#                            <p class="text-center overflow-hidden mt-2">Lorem ipsum dolor sit amet, consectetur#}
+    {#                                adipisicing#}
+    {#                                elit. Adipisci beatae blanditiis consectetur cupiditate dolorem, eaque error et eum#}
+    {#                                exercitationem, ipsum laborum nam nemo placeat quidem rem repudiandae soluta vel#}
+    {#                                voluptates!</p>#}
+    {#                            <div class="product-rate text-center mb-2">#}
+    {#                                <i class="bi bi-star text-warning"></i>#}
+    {#                                <i class="bi bi-star text-warning"></i>#}
+    {#                                <i class="bi bi-star text-warning"></i>#}
+    {#                                <i class="bi bi-star text-warning"></i>#}
+    {#                                <i class="bi bi-star text-dark"></i>#}
+    {#                            </div>#}
+    {#                            <div class="product-price d-flex">#}
+    {#                                <span class="d-inline-block w-100 text-start">2.000.000 تومان</span>#}
+    {#                                <del class="d-inline-block w-100 text-end">2.540.000 تومان</del>#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </section>#}
 {% endblock content %}

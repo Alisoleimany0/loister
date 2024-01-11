@@ -1,10 +1,135 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+{% load shop_tags %}
 
-</body>
-</html>
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-4">
+                    <aside>
+                        <div class="blog-sidebar bg-white p-3">
+                            <span class="title border-bottom position-relative d-block pb-3 mb-3">دسته بندی</span>
+                            <ul>
+                                <li><a href="#">خرید و فروش</a></li>
+                                <li><a href="#">مقالات سایت</a></li>
+                                <li><a href="#">هل و زعفران</a></li>
+                                <li><a href="#">تنقلات</a></li>
+                            </ul>
+                            <div class="search-blog mt-5">
+                                <form class="global-form" action="">
+                                    <input type="text" placeholder="جستجوی محصول..." class="m-0">
+                                    <button><i class="bi bi-search"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="blog-sidebar bg-white p-3">
+                        <span class="title border-bottom position-relative d-block pb-3 mb-3">
+                            فیلتر بر اساس نوع
+                        </span>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    زعفران
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+                                <label class="form-check-label" for="flexCheckChecked">
+                                    تنقلات
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+                                <label class="form-check-label" for="flexCheckChecked">
+                                    هل
+                                </label>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+                <div class="col-lg-9 col-md-8">
+                    <div class="bg-white p-3 rounded">
+                        <div class="row">
+                            {% for product in products %}
+                                <div class="col-md-4">
+                                    <div class="product-item p-3 bg-white rounded my-3">
+                                        <a href="{% url 'product' product.id %}">
+                                            <figure class="w-100 position-relative overflow-hidden border-bottom">
+                                                <!-- Product image-->
+                                                <img src="{{ product.default_image.image.url }}" alt=""
+                                                     class="d-table mx-auto">
+                                                <!-- Product details-->
+                                                <figcaption class="position-absolute w-100 h-100 text-center">
+                                                    <ul class="p-0">
+                                                        <li class="d-inline-block"
+                                                            data-bs-toggle="tooltip"
+                                                            data-bs-placement="top"
+                                                            title="مشاهده محصول">
+                                                            <a href="#" class="d-inline-block rounded">
+                                                                <i class="bi bi-eye"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li class="d-inline-block"
+                                                            data-bs-toggle="tooltip"
+                                                            data-bs-placement="top"
+                                                            title="افزودن به علاقه مندی">
+                                                            <a href="#" class="d-inline-block rounded">
+                                                                <i class="bi bi-heart"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </figcaption>
+                                            </figure>
+                                        </a>
+                                        <!-- Product name-->
+                                        <a href="{% url 'product' product.id %}">
+                                            <h5 class="m-0 py-2 text-center overflow-hidden">{{ product.name }}</h5>
+                                        </a>
+                                        <p class="text-center overflow-hidden mt-2">{{ product.display_description }}</p>
+                                        <div class="product-rate text-center mb-2">
+                                            {% with product.star as stars %}
+                                                {% with remaining=5|sub:stars %}
+                                                    {% for _ in ''|center:remaining %}
+                                                        <i class="bi bi-star text-dark"></i>
+                                                    {% endfor %}
+                                                {% endwith %}
+                                                {% for _ in ''|center:stars %}
+                                                    <i class="bi bi-star text-warning"></i>
+                                                {% endfor %}
+                                            {% endwith %}
+                                        </div>
+                                        <!-- Product price-->
+                                        {% if product.is_on_sale %}
+                                            <div class="product-price d-flex">
+                                                <span class="d-inline-block w-100 text-start">{{ product.sale_price | intcomma }} تومان</span>
+                                                <del class="d-inline-block w-100 text-end">
+                                                    <strike>{{ product.price | intcomma }}
+                                                        تومان </strike> <br></del>
+                                            </div>
+                                        {% else %}
+                                            <div class="product-price d-flex">
+                                                <span class="d-inline-block w-100 text-start">{{ product.price | intcomma }} تومان</span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                </div>
+                            {% endfor %}
+                            <div class="col-12">
+                                <div class="pagination-box my-3">
+                                    <span class="current">1</span>
+                                    {#                                <a href="#">2</a>#}
+                                    {#                                <a href="#">3</a>#}
+                                    {#                                <a href="#">4</a>#}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

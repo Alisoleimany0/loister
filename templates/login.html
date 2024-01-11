@@ -1,19 +1,19 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
-{% load humanize %}
-{% block content %}
 
+{% block content %}
 <section class="bg-section">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-4">
                 <div class="login-register-div p-3 rounded">
                     <span class="d-block text-center display-3 mt-3"><i class="bi bi-box-arrow-in-left"></i></span>
-                    <span class="d-block text-center my-3">ورود یه حساب</span>
+                    <span class="d-block text-center my-3">ورود به حساب</span>
                     <div class="form-div">
-                        <form action="">
-                            <input class="rounded" type="text" placeholder="نام کاربری یا ایمیل">
-                            <input class="rounded" type="password" placeholder="رمز عبور">
+                        <form class="global-form" action="#" method="post">
+                            {% csrf_token %}
+                            <input class="rounded" type="text" name="username" placeholder="نام کاربری یا ایمیل">
+                            <input class="rounded" type="password" name="password" placeholder="رمز عبور">
                             <div class="form-check my-1 pb-2 pt-1">
                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefult">
                                 <label class="form-check-label text-light" for="flexCheckDefult">
@@ -33,7 +33,7 @@
                     <span class="d-block text-center display-3 mt-3"><i class="bi bi-person"></i></span>
                     <span class="d-block text-center my-3">ثبت نام</span>
                     <div class="form-div">
-                        <form action="">
+                        <form class="global-form" action="">
                             <input class="rounded" type="text" placeholder="نام کاربری یا ایمیل">
                             <input class="rounded" type="password" placeholder="رمز عبور">
                             <input class="rounded" type="password" placeholder="تکرار کلمه عبور">
@@ -45,4 +45,4 @@
         </div>
     </div>
 </section>
-{% endblock content %}
+{% endblock %}

@@ -10,7 +10,6 @@ from .models import HomepageCover, HomepageCoverGroup, ProductDetail, Product, C
     ProductOffers, Cart, CartProductQuantity, BoughtProduct
 
 admin.site.register(Category)
-admin.site.register(BoughtProduct)
 
 
 class ProductDetailInline(admin.TabularInline):
@@ -125,14 +124,3 @@ class ProductOffersAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     pass
-
-
-class CartProductQuantityInline(admin.TabularInline):
-    model = CartProductQuantity
-    extra = 1
-
-
-@admin.register(Cart)
-class CartAdmin(admin.ModelAdmin):
-    filter_horizontal = ("products",)
-    inlines = CartProductQuantityInline,

@@ -30,6 +30,13 @@ class Product(models.Model):
     sale_price = models.DecimalField(default=0, decimal_places=0, max_digits=12)
 
     @property
+    def sell_price(self):
+        if self.is_on_sale:
+            return self.sale_price
+        else:
+            return self.price
+
+    @property
     def units_sold(self):
         return 0
 

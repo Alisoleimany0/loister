@@ -28,9 +28,13 @@
                                             <a class="nav-link {% if request.resolver_match.view_name == "profile_addresses" %}active{% endif %}"
                                                href="{% url 'profile_addresses' %}">آدرس</a>
                                         </li>
-{#                                        <li class="nav-item">#}
-{#                                            <a class="nav-link {% if request.resolver_match.view_name == "profile_info" %}active{% endif %}" aria-disabled="true">خروج </a>#}
-{#                                        </li>#}
+                                        <li class="nav-item">
+                                            <a class="nav-link {% if request.resolver_match.view_name == "profile_info" %}active{% endif %}"
+                                               aria-disabled="true"
+                                               href="{% url 'logout' %}">
+                                                خروج
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>

@@ -1,11 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import IntegrityError
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.contrib.auth.hashers import make_password
 
 from customer.models import CustomerProfile, CustomerAddress
 from .forms import SignupForm
@@ -66,26 +68,9 @@ def about(request):
     return render(request, 'shop/about.html')
 
 
-def login_user(request):
-    if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            messages.success(request, "با موفقیت وارد شدید")
-            return redirect("home")
-        else:
-            messages.error(request, "اشکال در ورود")
-            return redirect("login")
-    else:
-        return render(request, 'shop/login.html')
-
-
 def logout_user(request):
     logout(request)
-    messages.success(request, ("با موفقیت خارج شدید!"))
+    messages.success(request, "با موفقیت خارج شدید!")
     return redirect("home")
 
 
@@ -198,7 +183,7 @@ def payment_confirmation_view(request):
     raise ValidationError("error")
 
 
-def addresses_view(request):
+def profile_addresses_view(request):
     if request.user.is_authenticated:
         if request.POST.get("state", None):
             CustomerAddress.objects.create(customer=CustomerProfile.objects.get(user=request.user),
@@ -211,14 +196,15 @@ def addresses_view(request):
         addresses = CustomerAddress.objects.filter(customer__user=request.user)
         context = {'addresses': addresses}
         if request.POST.get("state", None):
-            return redirect('address')
+            return redirect('profile_addresses')
         return render(request, 'user_profile/addresses.html', context)
-    # TODO
-    raise Http404
+    return redirect("logup")
 
 
 def profile_info_view(request):
-    return render(request, 'user_profile/profile_info.html')
+    if request.user.is_authenticated:
+        return render(request, 'user_profile/profile_info.html')
+    return redirect("logup")
 
 
 def profile_purchase_history(request):
@@ -226,4 +212,41 @@ def profile_purchase_history(request):
         orders = Order.objects.filter(customer__user=request.user)
         context = {'orders': orders}
         return render(request, 'user_profile/purchase-history.html', context)
+    return redirect("logup")
 
+
+def browse_view(request):
+    all_products = Product.objects.all()
+    all_categories = Category.objects.all()
+
+    context = {"all_categories": all_categories, 'products': all_products}
+
+    return render(request, "shop/browse.html", context)
+
+
+def wishlist_view(request):
+    if request.user.is_authenticated:
+        favourites = CustomerProfile.objects.get(user=request.user).favourites
+        products = favourites.all()
+        if request.GET.get("remove_favourite", None):
+            favourites.remove(request.GET.get("remove_favourite"))
+        context = {'products': products}
+        return render(request, "shop/wishlist.html", context)
+    raise Http404
+
+
+def logup_view(request):
+    if request.user.is_authenticated:
+        return redirect("profile_info")
+    if request.method == "POST":
+        if request.POST.get("username", None) and request.POST.get("password", None):
+            user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+            if user:
+                login(request, user)
+                return redirect("home")
+            else:
+                raise ValidationError("wrong credentials")
+        else:
+            raise ValidationError("fill fields")
+    context = {'login_page': True}
+    return render(request, 'login.html', context)
