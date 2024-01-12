@@ -203,7 +203,9 @@ def profile_addresses_view(request):
 
 def profile_info_view(request):
     if request.user.is_authenticated:
-        return render(request, 'user_profile/profile_info.html')
+        customer = CustomerProfile.objects.get(user=request.user)
+        context = {'user': request.user, 'customer': customer}
+        return render(request, 'user_profile/profile_info.html', context)
     return redirect("logup")
 
 
