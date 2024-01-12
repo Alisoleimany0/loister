@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import signals
 
 
 class CustomerProfile(models.Model):
@@ -27,3 +28,10 @@ class CustomerAddress(models.Model):
     city = models.CharField(max_length=20)
     address = models.TextField()
     postal_code = models.IntegerField(null=False, default=0)
+
+
+
+# def create_cart
+#
+#
+# signals.pre_save.connect()

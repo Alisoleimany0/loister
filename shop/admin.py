@@ -10,6 +10,7 @@ from .models import HomepageCover, HomepageCoverGroup, ProductDetail, Product, C
     ProductOffers, Cart, CartProductQuantity, BoughtProduct
 
 admin.site.register(Category)
+admin.site.register(Cart)
 
 
 class ProductDetailInline(admin.TabularInline):

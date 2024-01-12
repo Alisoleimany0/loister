@@ -1,12 +1,12 @@
-from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxLengthValidator, MaxValueValidator
 from django.db import models
-from django.db.models import signals
+from django.db.models import signals, Model
 from django.utils import timezone
 from django_jalali.db import models as jmodels
 
+import customer
 from customer.models import CustomerProfile, CustomerAddress
 
 
@@ -214,7 +214,9 @@ signals.pre_save.connect(pre_product_image_save, sender=ProductImage)
 
 
 def customer_post_save(instance: CustomerProfile, *args, **kwargs):
-    if not instance.cart:
+    try:
+        cart = instance.cart
+    except Cart.DoesNotExist as e:
         cart = Cart.objects.create(customer=instance)
         cart.save()
 
