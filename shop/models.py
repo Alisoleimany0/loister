@@ -84,8 +84,9 @@ class ProductOffers(models.Model):
 
     def save(self, *args, **kwargs):
         # make sure we're not updating
-        if not self.pk and HomepageCoverGroup.objects.exists():
-            raise ValidationError("You can only create one instance of ProductOffers")
+        print(HomepageCoverGroup.objects.exists())
+        # if not self.pk and HomepageCoverGroup.objects.exists():
+        #     raise ValidationError("You can only create one instance of ProductOffers")
         return super(ProductOffers, self).save(*args, **kwargs)
 
 
