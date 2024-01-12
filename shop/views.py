@@ -24,7 +24,9 @@ def index_view(request):
     all_categories = Category.objects.all()
     covers = HomepageCover.objects.all()
     product_offers = ProductOffers.objects.first()
-    offer_seconds_remaining = (product_offers.finish_time - timezone.now()).seconds
+    offer_seconds_remaining = None
+    if product_offers:
+        offer_seconds_remaining = (product_offers.finish_time - timezone.now()).seconds
 
     context = {'products_by_date': order_by_date, 'products_by_sold': order_by_units_sold,
                'products_by_views': order_by_views, 'covers': covers,
