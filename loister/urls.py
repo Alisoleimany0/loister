@@ -17,7 +17,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import settings
-# from django.conf.urls.static import static
 
 import re
 from urllib.parse import urlsplit
@@ -44,6 +43,7 @@ def static(prefix, view=serve, **kwargs):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('shop.urls')),
+    path('customer', include('customer.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
 handler404 = 'loister.views.http404'
