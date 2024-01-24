@@ -47,11 +47,14 @@ def product_single(request, pk):
     images = ProductImage.objects.filter(product=product)
     category = Product.category
     properties = ProductDetail.objects.filter(product=product)
+
+    context = {'in_cart': 0}
+
     if request.user.is_authenticated:
+        cart = Cart.objects.filter(customer__user=request.user)
+        if not cart:
+            raise PermissionDenied()
         if request.POST.get("quantity", None):
-            cart = Cart.objects.filter(customer__user=request.user)
-            if not cart:
-                raise PermissionDenied()
             try:
                 CartProductQuantity.objects.create(product_id=pk, cart=cart[0], quantity=request.POST.get("quantity"))
             except IntegrityError as exception:
@@ -63,11 +66,16 @@ def product_single(request, pk):
             CustomerProfile.objects.get(user=request.user).favourites.add(product)
         elif request.GET.get("remove_favourite", None):
             CustomerProfile.objects.get(user=request.user).favourites.remove(product)
-
-    return render(request, "shop/product_single.html",
-                  {'product': product, 'product_images': images, 'category': category,
-                   'product_properties': properties,
-                   'user': request.user})
+        product_quantity = CartProductQuantity.objects.filter(product=product, cart=cart[0])
+        if product_quantity:
+            number_in_cart = product_quantity[0].quantity
+            context['in_cart'] = number_in_cart
+    context['product'] = product
+    context['product_images'] = images
+    context['category'] = category
+    context['product_properties'] = properties
+    context['user'] = request.user
+    return render(request, "shop/product_single.html", context)
 
 
 def about(request):
