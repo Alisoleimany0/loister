@@ -1,8 +1,5 @@
 from django.contrib import admin
 from customer.models import CustomerProfile, CustomerAddress, Review
-admin.site.register(Review)
-
-
 
 
 class AddressInline(admin.TabularInline):
@@ -18,3 +15,8 @@ class CustomerProfileAdmin(admin.ModelAdmin):
             return ['user']
         else:
             return []
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ['author', 'action_checkbox', 'approved']
