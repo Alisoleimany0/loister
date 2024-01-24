@@ -81,6 +81,7 @@ class ProductImage(models.Model):
 class ProductOffers(models.Model):
     products = models.ManyToManyField(Product)
     finish_time = models.DateTimeField(default=timezone.now)
+    # description = models.CharField(max_length=100)
 
     def save(self, *args, **kwargs):
         # make sure we're not updating

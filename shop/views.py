@@ -12,7 +12,7 @@ from django.contrib.auth.hashers import make_password
 from customer.models import CustomerProfile, CustomerAddress
 from .forms import SignupForm
 from .models import Category, Product, HomepageCover, ProductImage, ProductOffers, ProductDetail, Cart, \
-    CartProductQuantity, Order, BoughtProduct
+    CartProductQuantity, Order, BoughtProduct  
 
 
 def index_view(request):
@@ -24,6 +24,8 @@ def index_view(request):
     all_categories = Category.objects.all()
     covers = HomepageCover.objects.all()
     product_offers = ProductOffers.objects.first()
+    description = Product.objects.all()
+    # description_value = product_offers.description
     offer_seconds_remaining = None
     if product_offers:
         offer_seconds_remaining = (product_offers.finish_time - timezone.now()).seconds
@@ -32,6 +34,8 @@ def index_view(request):
                'products_by_views': order_by_views, 'covers': covers,
                "all_categories": all_categories,
                'offered_products': product_offers.products.all() if product_offers else (),
+               'description' : description,
+            #    'description': description_value,
                'offer_seconds_remaining': offer_seconds_remaining,
                'index': True}
 

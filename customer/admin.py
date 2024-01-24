@@ -1,5 +1,8 @@
 from django.contrib import admin
-from customer.models import CustomerProfile, CustomerAddress
+from customer.models import CustomerProfile, CustomerAddress, Review
+admin.site.register(Review)
+
+
 
 
 class AddressInline(admin.TabularInline):

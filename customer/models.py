@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import signals
 
+from django.utils import timezone
+
 
 class CustomerProfile(models.Model):
     user = models.OneToOneField(
@@ -30,8 +32,24 @@ class CustomerAddress(models.Model):
     postal_code = models.IntegerField(null=False, default=0)
 
 
-
 # def create_cart
 #
 #
 # signals.pre_save.connect()
+
+
+class Review(models.Model):
+    product = models.ForeignKey('shop.Product', on_delete=models.CASCADE)
+    author = models.ForeignKey('CustomerProfile', on_delete=models.DO_NOTHING)
+    parent = models.ForeignKey('self', null=True , blank=True, on_delete=models.CASCADE)
+    content = models.TextField(null=True, blank=True)
+    rating = models.IntegerField(default=0, null=True)
+    date_time_field = models.DateTimeField(default=timezone.now)
+    approved = models.BooleanField(default=False)
+
+    def approve(self):
+        self.approved = True
+        self.save()
+
+    def __str__(self):
+        return self.author.user.username

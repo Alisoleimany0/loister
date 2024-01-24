@@ -284,64 +284,64 @@
                              data-seconds-left="{{ offer_seconds_remaining }}">
                         </div>
                         <div class="slider-item owl-carousel owl-theme">
-                            {% for product in offered_products %}
                                 <div class="product-item p-3 bg-white rounded my-3">
-                                    <a href="#">
-                                        <figure class="w-100 position-relative overflow-hidden border-bottom">
-                                            <img src="{{ product.default_image.image.url }}" alt=""
-                                                 class="d-table mx-auto">
-                                            <figcaption class="position-absolute w-100 h-100 text-center">
-                                                <ul class="p-0">
-                                                    <li class="d-inline-block"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-placement="top"
-                                                        title="مشاهده محصول">
-                                                        <a href="#" class="d-inline-block rounded">
-                                                            <i class="bi bi-eye"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="d-inline-block"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-placement="top"
-                                                        title="{% if user|is_favourite:product %}حذف کردن از علاقه‌مندی{% else %}افزودن به علاقه‌مندی{% endif %}">
-                                                        <a href="#" class="d-inline-block rounded">
-                                                            <i class="bi {% if user|is_favourite:product %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </figcaption>
-                                        </figure>
-                                    </a>
-                                    <a href="#">
-                                        <h5 class="m-0 py-2 text-center overflow-hidden">{{ product.name }}</h5>
-                                    </a>
-                                    <p class="text-center overflow-hidden mt-2">{{ product.display_description }}</p>
-                                    <div class="product-rate text-center mb-2">
-                                        {% with product.star as stars %}
-                                            {% with remaining=5|sub:stars %}
-                                                {% for _ in ''|center:remaining %}
-                                                    <i class="bi bi-star text-dark"></i>
+                                    {% for product in offered_products %}
+                                        <a href="#">
+                                            <figure class="w-100 position-relative overflow-hidden border-bottom">
+                                                <img src="{{ product.default_image.image.url }}" alt=""
+                                                    class="d-table mx-auto">
+                                                <figcaption class="position-absolute w-100 h-100 text-center">
+                                                    <ul class="p-0">
+                                                        <li class="d-inline-block"
+                                                            data-bs-toggle="tooltip"
+                                                            data-bs-placement="top"
+                                                            title="مشاهده محصول">
+                                                            <a href="#" class="d-inline-block rounded">
+                                                                <i class="bi bi-eye"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li class="d-inline-block"
+                                                            data-bs-toggle="tooltip"
+                                                            data-bs-placement="top"
+                                                            title="{% if user|is_favourite:product %}حذف کردن از علاقه‌مندی{% else %}افزودن به علاقه‌مندی{% endif %}">
+                                                            <a href="#" class="d-inline-block rounded">
+                                                                <i class="bi {% if user|is_favourite:product %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </figcaption>
+                                            </figure>
+                                        </a>
+                                        <a href="#">
+                                            <h5 class="m-0 py-2 text-center overflow-hidden">{{ product.name }}</h5>
+                                        </a>
+                                        <p class="text-center overflow-hidden mt-2">{{ product.display_description }}</p>
+                                        <div class="product-rate text-center mb-2">
+                                            {% with product.star as stars %}
+                                                {% with remaining=5|sub:stars %}
+                                                    {% for _ in ''|center:remaining %}
+                                                        <i class="bi bi-star text-dark"></i>
+                                                    {% endfor %}
+                                                {% endwith %}
+                                                {% for _ in ''|center:stars %}
+                                                    <i class="bi bi-star text-warning"></i>
                                                 {% endfor %}
                                             {% endwith %}
-                                            {% for _ in ''|center:stars %}
-                                                <i class="bi bi-star text-warning"></i>
-                                            {% endfor %}
-                                        {% endwith %}
-                                    </div>
-                                    {% if product.is_on_sale %}
-                                        <div class="product-price d-flex">
-                                            <span class="d-inline-block w-100 text-start">{{ product.sale_price | intcomma }} تومان</span>
-                                            <del class="d-inline-block w-100 text-end">
-                                                <strike>{{ product.price | intcomma }}
-                                                    تومان </strike> <br></del>
                                         </div>
-                                    {% else %}
-                                        <div class="product-price d-flex">
-                                            <span class="d-inline-block w-100 text-start">{{ product.price | intcomma }} تومان</span>
-                                        </div>
-                                    {% endif %}
+                                        {% if product.is_on_sale %}
+                                            <div class="product-price d-flex">
+                                                <span class="d-inline-block w-100 text-start">{{ product.sale_price | intcomma }} تومان</span>
+                                                <del class="d-inline-block w-100 text-end">
+                                                    <strike>{{ product.price | intcomma }}
+                                                        تومان </strike> <br></del>
+                                            </div>
+                                        {% else %}
+                                            <div class="product-price d-flex">
+                                                <span class="d-inline-block w-100 text-start">{{ product.price | intcomma }} تومان</span>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
                                 </div>
-                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -349,20 +349,7 @@
                     <div class="text-item bg-white rounded p-5">
                         <h3 class="p-0 my-3">محصول ویژه هفته</h3>
                         <h5 class="p-0 pb-3 my-2 position-relative">بسته 100 گرمی هل</h5>
-                        <p class="my-3">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از
-                            طراحان
-                            گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط
-                            فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، کتابهای
-                            زیادی
-                            در شصت و سه درصد گذشته حال و آینده، شناخت فراوان جامعه و متخصصان را می طلبد، تا با نرم
-                            افزارها
-                            شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی، و فرهنگ پیشرو در زبان فارسی
-                            ایجاد
-                            کرد</p>
-                        <p class="my-3">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از
-                            طراحان
-                            گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط
-                            فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد</p>
+                        <p class="my-3">{{product.description}}</p>
                         <div class="text-end">
                             <a href="#" class="d-inline-block py-2 px-4 text-light bg-info rounded mt-2">
                                 اطلاعات بیشتر
