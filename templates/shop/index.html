@@ -53,14 +53,24 @@
         <div class="container-fluid">
             
             <ul class="nav nav-pills mb-2 justify-content-center" id="pills-tab" role="tablist">
-                {% for category in all_categories %}
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill"
                             data-bs-target="#pills-home"
-                            type="button" role="tab" aria-controls="pills-home" aria-selected="true">{{category.name}}
+                            type="button" role="tab" aria-controls="pills-home" aria-selected="true">جدیدترین ها
                     </button>
                 </li>
-                {% endfor %}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-profile"
+                            type="button" role="tab" aria-controls="pills-profile" aria-selected="false">پرفروش ها
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-contact"
+                            type="button" role="tab" aria-controls="pills-contact" aria-selected="false">پربازدید ها
+                    </button>
+                </li>
             </ul>
             
             <div class="tab-content" id="pills-tabContent">
@@ -212,7 +222,7 @@
                                     <a href="{% url 'product' product.id %}">
                                         <figure class="w-100 position-relative overflow-hidden border-bottom">
                                             <!-- Product image-->
-                                            <img src="{{ item.default_image.image.url }}" alt=""
+                                            <img src="{{ product.default_image.image.url }}" alt=""
                                                  class="d-table mx-auto">
                                             <!-- Product details-->
                                             <figcaption class="position-absolute w-100 h-100 text-center">
