@@ -1,18 +1,19 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError, PermissionDenied
+from django.core.exceptions import ValidationError, PermissionDenied, SuspiciousOperation
 from django.db import IntegrityError
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
+from django.utils.datastructures import MultiValueDictKeyError
 
-from customer.models import CustomerProfile, CustomerAddress
+from customer.models import CustomerProfile, CustomerAddress, Review
 from .forms import SignupForm
 from .models import Category, Product, HomepageCover, ProductImage, ProductOffers, ProductDetail, Cart, \
-    CartProductQuantity, Order, BoughtProduct  
+    CartProductQuantity, Order, BoughtProduct
 
 
 def index_view(request):
@@ -34,8 +35,8 @@ def index_view(request):
                'products_by_views': order_by_views, 'covers': covers,
                "all_categories": all_categories,
                'offered_products': product_offers.products.all() if product_offers else (),
-               'description' : description,
-            #    'description': description_value,
+               'description': description,
+               #    'description': description_value,
                'offer_seconds_remaining': offer_seconds_remaining,
                'index': True}
 
@@ -47,8 +48,9 @@ def product_single(request, pk):
     images = ProductImage.objects.filter(product=product)
     category = Product.category
     properties = ProductDetail.objects.filter(product=product)
+    reviews = Review.objects.filter(product=product, approved=True, parent=None)
 
-    context = {'in_cart': 0}
+    context = {'in_cart': 0, 'reviews': reviews}
 
     if request.user.is_authenticated:
         cart = Cart.objects.filter(customer__user=request.user)
@@ -266,3 +268,17 @@ def logup_view(request):
             raise ValidationError("fill fields")
     context = {'login_page': True}
     return render(request, 'login.html', context)
+
+
+def new_review(request, pk):
+    if request.POST and request.user.is_authenticated:
+        try:
+            author = CustomerProfile.objects.get(user=request.user)
+            rating = request.POST.get("rating", None)
+            content = request.POST['content']
+            Review.objects.create(product_id=pk, author=author, rating=rating, content=content)
+            return redirect('product', pk)
+        except MultiValueDictKeyError:
+            pass
+
+    raise SuspiciousOperation()

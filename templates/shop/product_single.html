@@ -96,7 +96,8 @@
                     </div>
                     <div class="col-lg-5 col-md-6">
                         <div class="global-form product-review-form bg-white rounded p-3 mt-3">
-                            <form action="">
+                            <form action="{% url 'product_review' product.id %}" method="post">
+                                {% csrf_token %}
                                 <div class="set-rate d-flex rounded">
                                     <span class="d-inline-block pe-3">امتیاز شما</span>
                                     <div class="box-rate w-100 text-end">
@@ -112,10 +113,8 @@
                                         <label for="1"></label>
                                     </div>
                                 </div>
-                                <input class="rounded" type="text" placeholder="نام شما (الزامی)">
-                                <input class="rounded" type="email" placeholder="ایمیل شما (الزامی)">
-                                <textarea class="rounded" placeholder="نظر شما ..."></textarea>
-                                <button class="rounded">ارسال دیدگاه</button>
+                                <textarea class="rounded" name="content" placeholder="نظر شما ..."></textarea>
+                                <button type="submit" class="rounded">ارسال دیدگاه</button>
                             </form>
                         </div>
                     </div>
@@ -162,104 +161,45 @@
                                 </div>
                                 <div class="tab-pane fade p-3" id="pills-contact" role="tabpanel"
                                      aria-labelledby="pills-contact-tab">
-                                    <div class="review-item-box border-bottom mb-3 mt-3">
-                                        <div class="review-parent pb-3">
-                                            <div class="row">
-                                                <div class="col-2">
-                                                    <div class="review-avatar">
-                                                        <img src="" alt="">
+                                    {% for review in reviews %}
+                                        <div class="review-item-box border-bottom mb-3 mt-3">
+                                            <div class="review-parent pb-3">
+                                                <div class="row">
+                                                    <div class="col-2">
+                                                        <div class="review-avatar">
+                                                            <img src="{% static 'img/default_pfp.png' %}" alt="avatar">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-10">
+                                                        <span class="d-inline-block pe-5">{{ review.author.full_name }}</span>
+                                                        <span class="d-inline-block pe-5">
+                                                            {% if review.rating %}
+                                                                {% with review.rating as stars %}
+                                                                    {% with remaining=5|sub:stars %}
+                                                                        {% for _ in ''|center:remaining %}
+                                                                            <i class="bi bi-star text-dark"></i>
+                                                                        {% endfor %}
+                                                                    {% endwith %}
+                                                                    {% for _ in ''|center:stars %}
+                                                                        <i class="bi bi-star text-warning"></i>
+                                                                    {% endfor %}
+                                                                {% endwith %}
+                                                            {% endif %}
+                                                        </span>
+                                                        <p>{{ review.content }}</p>
                                                     </div>
                                                 </div>
-                                                <div class="col-10">
-                                                    <span class="d-inline-block pe-5">علیرضا</span>
-                                                    <span class="d-inline-block pe-5">
-                                                <i class="bi bi-star text-warning"></i>
-                                                <i class="bi bi-star text-warning"></i>
-                                                <i class="bi bi-star text-warning"></i>
-                                                <i class="bi bi-star text-warning"></i>
-                                                <i class="bi bi-star text-dark"></i>
-                                            </span>
-                                                    <P>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با
-                                                        استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله
-                                                        در ستون و سطرآنچنان که لازم است</P>
-                                                </div>
                                             </div>
+                                            {% review_reply_widget review %}
                                         </div>
-                                        <div class="review-parent ms-5 mb-3">
-                                            <div class="row">
-                                                <div class="col-2">
-                                                    <div class="review-avatar">
-                                                        <img src="" alt="">
-                                                    </div>
-                                                </div>
-                                                <div class="col-10">
-                                                    <span class="d-inline-block pe-5">علیرضا</span>
-                                                    <span class="d-inline-block pe-5">
-                                                <i class="bi bi-star text-warning"></i>
-                                                <i class="bi bi-star text-warning"></i>
-                                                <i class="bi bi-star text-warning"></i>
-                                                <i class="bi bi-star text-warning"></i>
-                                                <i class="bi bi-star text-dark"></i>
-                                            </span>
-                                                    <P>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با
-                                                        استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله
-                                                        در ستون و سطرآنچنان که لازم است</P>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="review-item-box border-bottom mb-3">
-                                        <div class="review-parent pb-3">
-                                            <div class="row">
-                                                <div class="col-2">
-                                                    <div class="review-avatar">
-                                                        <img src="" alt="">
-                                                    </div>
-                                                </div>
-                                                <div class="col-10">
-                                                    <span class="d-inline-block pe-5">متین</span>
-                                                    <span class="d-inline-block pe-5">
-                                                <i class="bi bi-star text-warning"></i>
-                                                <i class="bi bi-star text-warning"></i>
-                                                <i class="bi bi-star text-warning"></i>
-                                                <i class="bi bi-star text-warning"></i>
-                                                <i class="bi bi-star text-dark"></i>
-                                            </span>
-                                                    <P>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با
-                                                        استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله
-                                                        در ستون و سطرآنچنان که لازم است</P>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="review-parent ms-5 mb-3">
-                                            <div class="row">
-                                                <div class="col-2">
-                                                    <div class="review-avatar">
-                                                        <img src="" alt="">
-                                                    </div>
-                                                </div>
-                                                <div class="col-10">
-                                                    <span class="d-inline-block pe-5">متین</span>
-                                                    <span class="d-inline-block pe-5">
-                                                <i class="bi bi-star text-warning"></i>
-                                                <i class="bi bi-star text-warning"></i>
-                                                <i class="bi bi-star text-warning"></i>
-                                                <i class="bi bi-star text-warning"></i>
-                                                <i class="bi bi-star text-dark"></i>
-                                            </span>
-                                                    <P>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با
-                                                        استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله
-                                                        در ستون و سطرآنچنان که لازم است</P>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </section>
     <section class="d-inline-block w-100">

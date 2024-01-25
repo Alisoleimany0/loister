@@ -15,6 +15,10 @@ class CustomerProfile(models.Model):
     user_phone_number = models.CharField(max_length=20)
     favourites = models.ManyToManyField("shop.Product", blank=True)
 
+    @property
+    def full_name(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+
     def __str__(self):
         return f'{self.user.username}'
 
@@ -41,9 +45,9 @@ class CustomerAddress(models.Model):
 class Review(models.Model):
     product = models.ForeignKey('shop.Product', on_delete=models.CASCADE)
     author = models.ForeignKey('CustomerProfile', on_delete=models.DO_NOTHING)
-    parent = models.ForeignKey('self', null=True , blank=True, on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
     content = models.TextField(null=True, blank=True)
-    rating = models.IntegerField(default=0, null=True)
+    rating = models.IntegerField(default=0, null=True, blank=True)
     date_time_field = models.DateTimeField(default=timezone.now)
     approved = models.BooleanField(default=False)
 
