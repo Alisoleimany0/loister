@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_jalali',
     'ckeditor',
+    'ckeditor_uploader',
     'mathfilters',
     'shop',
     'customer',
