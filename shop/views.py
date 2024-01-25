@@ -280,5 +280,4 @@ def new_review(request, pk):
             return redirect('product', pk)
         except MultiValueDictKeyError:
             pass
-
     raise SuspiciousOperation()
