@@ -3,9 +3,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied, SuspiciousOperation
 from django.db import IntegrityError
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
 from django.utils.datastructures import MultiValueDictKeyError
@@ -31,8 +32,10 @@ def index_view(request):
     if product_offers:
         offer_seconds_remaining = (product_offers.finish_time - timezone.now()).seconds
 
-    context = {'products_by_date': order_by_date, 'products_by_sold': order_by_units_sold,
-               'products_by_views': order_by_views, 'covers': covers,
+    context = {'products_by_date': order_by_date,
+               'products_by_sold': order_by_units_sold,
+               'products_by_views': order_by_views,
+               'covers': covers,
                "all_categories": all_categories,
                'offered_products': product_offers.products.all() if product_offers else (),
                'description': description,
@@ -281,3 +284,23 @@ def new_review(request, pk):
         except MultiValueDictKeyError:
             pass
     raise SuspiciousOperation()
+
+
+def toggle_wishlist(request, is_favourite, pk, next):
+    if request.user.is_authenticated:
+        if eval(is_favourite):
+            CustomerProfile.objects.get(user=request.user).favourites.remove(Product.objects.get(id=pk))
+        else:
+            CustomerProfile.objects.get(user=request.user).favourites.add(Product.objects.get(id=pk))
+
+    # url = reverse(next)
+    # # Append the fragment
+    # url_with_fragment = f'{url}#product{pk}'
+    # # Redirect to the URL with the fragment
+    # return redirect(url_with_fragment)
+    return HttpResponse("""<script>   
+    console.log("hey");
+    sessionStorage.setItem('reload', 'true');
+    history.back();
+    </script>
+    """)
