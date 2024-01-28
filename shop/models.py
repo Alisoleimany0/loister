@@ -20,7 +20,7 @@ class Category(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=40)
     display_description = models.CharField(max_length=500, default='', blank=True, null=True)
-    description = RichTextUploadingField()
+    description = RichTextUploadingField(null=True, blank=True)
     category = models.ManyToManyField(Category, blank=True)
     release_date = models.DateField(default=timezone.now)
     views = models.IntegerField(default=0)

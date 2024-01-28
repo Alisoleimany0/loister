@@ -64,23 +64,6 @@
                             </div>
                             <span>تعداد در سبد: {{ in_cart }}</span>
                             <div class="add-to-wish mb-3">
-                                {#                                <form class="link-offset-3-hover link-danger"#}
-                                {#                                      action="#" method="get">#}
-                                {#                                    {% with user|is_favourite:product as is_favourite %}#}
-                                {#                                        <input type="hidden"#}
-                                {#                                               name="{% if is_favourite %}remove_favourite{% else %}add_favourite{% endif %}"#}
-                                {#                                               value=" ">#}
-                                {#                                        <button type="submit"#}
-                                {#                                                class="btn {% if is_favourite %}bi-heart-fill{% else %}bi-heart{% endif %}">#}
-                                {#                                            {% if is_favourite %}#}
-                                {#                                                حذف کردن از علاقه‌مندی#}
-                                {#                                            {% else %}#}
-                                {#                                                افزودن به علاقه‌مندی#}
-                                {#                                            {% endif %}#}
-                                {#                                        </button>#}
-                                {#                                    {% endwith %}#}
-                                {#                                </form>#}
-                                {#                                <iframe name="hiddenFrame" style="display: none;"></iframe>#}
                                 {% with user|is_favourite:product as is_favourite %}
                                     <a href="{% url 'toggle_wishlist' is_favourite product.id request.resolver_match.url_name %}"
                                        class="d-inline-block rounded link-danger">

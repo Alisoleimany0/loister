@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied, SuspiciousOperation
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db import IntegrityError
 from django.http import Http404, HttpResponse
 from django.shortcuts import render, redirect
@@ -236,11 +237,23 @@ def profile_purchase_history(request):
     return redirect("logup")
 
 
-def browse_view(request):
-    all_products = Product.objects.all()
+def browse_view(request, ):
+    products = Product.objects.all()
     all_categories = Category.objects.all()
-
-    context = {"all_categories": all_categories, 'products': all_products}
+    category = None
+    if request.GET.get("cat", None):
+        category = Category.objects.get(id=request.GET['cat'])
+        products = products.filter(category=category)
+    paginator = Paginator(products, 10)
+    try:
+        page_num = request.GET.get('page')
+        page_object = paginator.page(page_num)
+    except PageNotAnInteger:
+        page_object = paginator.page(1)
+    except EmptyPage:
+        page_object = paginator.page(1)
+    products = page_object
+    context = {"categories": all_categories, 'products': products, 'category': category}
 
     return render(request, "shop/browse.html", context)
 
