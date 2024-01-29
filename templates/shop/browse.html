@@ -16,7 +16,8 @@
                             <ul>
                                 {% for category in categories %}
                                     <li><a class="is-nav-selected"
-                                           href="?page={{ products.number }}&cat={{ category.id }}">{{ category.name }}</a>
+                                           href="?cat=
+                                                   {{ category.id }}{% if last_query %}&query={{ last_query }}{% endif %}">{{ category.name }}</a>
                                     </li>
                                 {% endfor %}
                             </ul>
@@ -59,6 +60,9 @@
                     {% if last_query %}
                         <p>نتایج برای "{{ last_query }}"</p>
                     {% endif %}
+                    {% if category %}
+                        <p>دسته بندی {{ category }}</p>
+                    {% endif %}
                     <div class="bg-white p-3 rounded">
                         <div class="row">
                             {% for product in products %}
@@ -73,7 +77,8 @@
                                                 {% if i == products.number %}
                                                     class="current"
                                                 {% else %}
-                                                    href="?page={{ i }}{% if category %}&cat={{ category.id }}{% endif %}{% if last_query %}&query={{ last_query }}{% endif %}"
+                                                    href="?page=
+                                                            {{ i }}{% if category %}&cat={{ category.id }}{% endif %}{% if last_query %}&query={{ last_query }}{% endif %}"
                                                 {% endif %}>
                                             {{ i }}
                                         </{% if i == products.number %}span{% else %}a{% endif %}>
