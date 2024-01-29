@@ -1,7 +1,9 @@
+import datetime
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError, PermissionDenied, SuspiciousOperation
+from django.core.exceptions import ValidationError, PermissionDenied, SuspiciousOperation, ObjectDoesNotExist
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db import IntegrityError
 from django.http import Http404, HttpResponse
@@ -28,27 +30,33 @@ def index_view(request):
     covers = HomepageCover.objects.all()
     product_offers = ProductOffers.objects.first()
     description = Product.objects.all()
-    # description_value = product_offers.description
-    offer_seconds_remaining = None
+    offer_seconds_remaining = offer_days_remaining = None
     if product_offers:
-        offer_seconds_remaining = (product_offers.finish_time - timezone.now()).seconds
+        offer_remaining = (product_offers.finish_time - timezone.now())
+        offer_seconds_remaining = offer_remaining.seconds
+        offer_days_remaining = offer_remaining.days
+        if offer_days_remaining < 0:
+            offer_seconds_remaining = 0
+            offer_days_remaining = 0
 
     context = {'products_by_date': order_by_date,
                'products_by_sold': order_by_units_sold,
                'products_by_views': order_by_views,
                'covers': covers,
                "all_categories": all_categories,
+               'product_offers': product_offers,
                'offered_products': product_offers.products.all() if product_offers else (),
                'description': description,
                #    'description': description_value,
                'offer_seconds_remaining': offer_seconds_remaining,
+               'offer_days_remaining': offer_days_remaining,
                'index': True}
 
     return render(request, "shop/index.html", context)
 
 
-def product_single(request, pk):
-    product = Product.objects.get(id=pk)
+def product_single(request, slug):
+    product = get_object_or_404(Product, slug=slug)
     images = ProductImage.objects.filter(product=product)
     category = Product.category
     properties = ProductDetail.objects.filter(product=product)
@@ -59,23 +67,15 @@ def product_single(request, pk):
     if request.user.is_authenticated:
         cart = Cart.objects.filter(customer__user=request.user)
         if not cart:
-            raise PermissionDenied()
-        if request.POST.get("quantity", None):
-            try:
-                CartProductQuantity.objects.create(product_id=pk, cart=cart[0], quantity=request.POST.get("quantity"))
-            except IntegrityError as exception:
-                if "UNIQUE constraint failed" in exception.__str__():
-                    cart_product = CartProductQuantity.objects.get(product_id=pk, cart=cart[0])
-                    cart_product.quantity += int(request.POST.get("quantity"))
-                    cart_product.save()
-        if request.GET.get("add_favourite", None):
-            CustomerProfile.objects.get(user=request.user).favourites.add(product)
-        elif request.GET.get("remove_favourite", None):
-            CustomerProfile.objects.get(user=request.user).favourites.remove(product)
-        product_quantity = CartProductQuantity.objects.filter(product=product, cart=cart[0])
-        if product_quantity:
-            number_in_cart = product_quantity[0].quantity
+            raise SuspiciousOperation()
+
+        try:
+            product_quantity = CartProductQuantity.objects.get(product=product, cart=cart[0])
+            number_in_cart = product_quantity.quantity
             context['in_cart'] = number_in_cart
+        except ObjectDoesNotExist:
+            pass
+
     context['product'] = product
     context['product_images'] = images
     context['category'] = category
@@ -131,17 +131,28 @@ def cart_view(request):
     raise Http404
 
 
-# TODO this is stupid. merge it with cart view
+def add_cart_view(request):
+    if request.user.is_authenticated:
+        if request.GET.get("id", None) and request.GET.get("quantity", None):
+            product = get_object_or_404(Product, id=request.GET['id'])
+            cart = Cart.objects.filter(customer__user=request.user)
+            if not cart:
+                raise SuspiciousOperation()
+
+            cart_product = CartProductQuantity.objects.get_or_create(product=product, cart=cart[0])[0]
+            cart_product.quantity += int(request.GET['quantity'])
+            cart_product.save()
+            return redirect("product", product.slug)
+    # TODO say user is not signed in
+    return HttpResponse("User not Logged in")
+
+
 def remove_cart_item_view(request):
     if request.user.is_authenticated:
-        items = CartProductQuantity.objects.filter(cart__customer__user=request.user)
         if request.POST.get("item_id", None):
-            items.get(id=request.POST.get("item_id")).delete()
-        sub_total = 0
-        for item in items:
-            sub_total += item.total_price
-        context = {'items': items, 'sub_total': sub_total}
-        return render(request, "shop/cart.html", context)
+            get_object_or_404(CartProductQuantity, id=request.POST.get("item_id")).delete()
+
+        return redirect("cart")
     raise Http404
 
 
@@ -221,6 +232,18 @@ def profile_addresses_view(request):
     return redirect("logup")
 
 
+def remove_address_view(request, pk):
+    if request.user.is_authenticated:
+        get_object_or_404(CustomerAddress, id=pk).delete()
+        return HttpResponse("""
+                            <script>
+                            sessionStorage.setItem('reload', 'true');
+                            history.back();
+                            </script>
+                            """)
+    return redirect("logup")
+
+
 def profile_info_view(request):
     if request.user.is_authenticated:
         customer = CustomerProfile.objects.get(user=request.user)
@@ -286,14 +309,16 @@ def logup_view(request):
     return render(request, 'login.html', context)
 
 
-def new_review(request, pk):
+def new_review(request, slug):
     if request.POST and request.user.is_authenticated:
         try:
             author = CustomerProfile.objects.get(user=request.user)
             rating = request.POST.get("rating", None)
             content = request.POST['content']
-            Review.objects.create(product_id=pk, author=author, rating=rating, content=content)
-            return redirect('product', pk)
+
+            Review.objects.create(product=get_object_or_404(Product, slug=slug), author=author, rating=rating,
+                                  content=content)
+            return redirect('product', slug)
         except MultiValueDictKeyError:
             pass
     raise SuspiciousOperation()
@@ -311,9 +336,9 @@ def toggle_wishlist(request, is_favourite, pk, next):
     # url_with_fragment = f'{url}#product{pk}'
     # # Redirect to the URL with the fragment
     # return redirect(url_with_fragment)
-    return HttpResponse("""<script>   
-    console.log("hey");
-    sessionStorage.setItem('reload', 'true');
-    history.back();
-    </script>
-    """)
+    return HttpResponse("""
+                        <script>
+                        sessionStorage.setItem('reload', 'true');
+                        history.back();
+                        </script>
+                        """)

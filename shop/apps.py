@@ -1,6 +1,19 @@
 from django.apps import AppConfig
+from django.db.models.signals import post_migrate
 
 
 class ShopConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'shop'
+    verbose_name = '3. Shop'
+
+    def ready(self):
+        post_migrate.connect(create_required_objects, sender=self)
+
+
+def create_required_objects(sender, **kwargs):
+    from site_configs.models import ContactUs, SocialLink, SiteFace
+    if not ContactUs.objects.all():
+        ContactUs.objects.create()
+    if not SiteFace.objects.all():
+        SiteFace.objects.create()

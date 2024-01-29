@@ -30,15 +30,16 @@
                                             </td>
                                             <td>{{ product.sell_price|intcomma }} تومان</td>
                                             <td>
-                                                <form action="{% url 'product' product.id %}">
-                                                    <button type="submit" class="btn btn-outline-info">مشاهده</button>
-                                                </form>
+                                                <a href="{% url 'product' product.slug %}" class="btn btn-outline-info">
+                                                    مشاهده
+                                                </a>
                                             </td>
                                             <td>
                                                 {#                                                <a href="#" id="delete-cart-item" class="text-danger"><i#}
                                                 {#                                                        class="bi bi-trash"></i></a>#}
                                                 <form action="#" method="get">
-                                                    <input type="hidden" name="remove_favourite" value="{{ product.id }}">
+                                                    <input type="hidden" name="remove_favourite"
+                                                           value="{{ product.id }}">
                                                     <button class="btn btn-outline-danger bi-trash"></button>
                                                 </form>
                                             </td>

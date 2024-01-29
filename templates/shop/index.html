@@ -99,38 +99,42 @@
         </div>
     </section>
     {#                                                                                    Product Offer               #}
-    <section class="product-view">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-7">
-                    <div class="offer-box bg-white p-5">
-                        <div class="timer-box timer d-flex justify-content-center"
-                             data-seconds-left="{{ offer_seconds_remaining }}">
-                        </div>
-                        <div class="slider-item owl-carousel owl-theme">
-                            {% for product in offered_products %}
-                                {% product_card_widget product user request 'remove_div' %}
+    {% if product_offers %}
+        <section class="product-view">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="offer-box bg-white p-5">
+                            <div class="timer-box timer d-flex justify-content-center"
+                                 data-seconds-left="{{ offer_seconds_remaining }}">
+                                <div class="d-flex justify-content-center" style="margin-inline-start: 20px;">
+                                    {{ offer_days_remaining }} روز
+                                </div>
+                            </div>
 
-                            {% endfor %}
+                            <div class="slider-item owl-carousel owl-theme">
+                                {% for product in offered_products %}
+                                    {% product_card_widget product user request 'remove_div' %}
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-5">
-                    <div class="text-item bg-white rounded p-5">
-                        <h3 class="p-0 my-3">محصول ویژه هفته</h3>
-                        <h5 class="p-0 pb-3 my-2 position-relative">بسته 100 گرمی هل</h5>
-                        <p class="my-3">{{ product.description }}</p>
-                        <div class="text-end">
-                            <a href="#" class="d-inline-block py-2 px-4 text-light bg-info rounded mt-2">
-                                اطلاعات بیشتر
-                            </a>
+                    <div class="col-md-5">
+                        <div class="text-item bg-white rounded p-5">
+                            <h3 class="p-0 my-3">پشنهاد ویژه</h3>
+                            <h5 class="p-0 pb-3 my-2 position-relative">{{ product_offers.title }}</h5>
+                            <p class="my-3">{{ product_offers.description }}</p>
+                            <div class="text-end">
+                                <a href="#" class="d-inline-block py-2 px-4 text-light bg-info rounded mt-2">
+                                    اطلاعات بیشتر
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
+        </section>
+    {% endif %}
     {#    <section class="d-inline-block w-100 my-3">#}
     {#        <div class="container-fluid">#}
     {#            <div class="row">#}

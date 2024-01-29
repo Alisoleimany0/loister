@@ -101,7 +101,8 @@
                                                    href="{% url 'coming_soon' %}">{{ address.address }}</a>
                                             </td>
                                             <td>
-                                                <button class="btn bi-trash btn-outline-danger"></button>
+                                                <a href="{% url 'remove_address' address.id %}"
+                                                   class="btn bi-trash btn-outline-danger"></a>
                                             </td>
                                             </tr>
                                         {% endwith %}

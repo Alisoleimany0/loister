@@ -1,8 +1,8 @@
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator, MaxLengthValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.db.models import signals, Model
+from django.db.models import signals
 from django.utils import timezone
 from django_jalali.db import models as jmodels
 
@@ -19,6 +19,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=40)
+    slug = models.SlugField(unique=True, allow_unicode=True, max_length=255)
     display_description = models.CharField(max_length=500, default='', blank=True, null=True)
     description = RichTextUploadingField(null=True, blank=True)
     category = models.ManyToManyField(Category, blank=True)
@@ -38,7 +39,11 @@ class Product(models.Model):
 
     @property
     def units_sold(self):
-        return 0
+        bought_products = BoughtProduct.objects.filter(product=self)
+        total = 0
+        for bought_product in bought_products:
+            total += bought_product.quantity
+        return total
 
     @property
     def default_image(self):
@@ -81,7 +86,8 @@ class ProductImage(models.Model):
 class ProductOffers(models.Model):
     products = models.ManyToManyField(Product)
     finish_time = models.DateTimeField(default=timezone.now)
-    # description = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         # make sure we're not updating
@@ -113,7 +119,7 @@ class CartProductQuantity(models.Model):
         Cart,
         on_delete=models.CASCADE
     )
-    quantity = models.IntegerField(default=1)
+    quantity = models.IntegerField(default=0)
 
     @property
     def total_price(self):
@@ -136,6 +142,7 @@ class CartProductQuantity(models.Model):
 
 
 class HomepageCoverGroup(models.Model):
+    # TODO create instance on migration
     def save(self, *args, **kwargs):
         if not self.pk and HomepageCoverGroup.objects.exists():
             raise ValidationError("You can only create one instance of HomepageCovers")

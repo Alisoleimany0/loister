@@ -7,7 +7,7 @@
 {% endif %}
 <!-- Product actions-->
 <div class="product-item p-3 bg-white rounded my-3">
-    <a id="product{{ product.id }}" href="{% url 'product' product.id %}">
+    <a id="product{{ product.id }}" href="{% url 'product' product.slug %}">
         <figure class="w-100 position-relative overflow-hidden border-bottom">
             <!-- Product image-->
             <img src="{{ product.default_image.image.url }}" alt=""
@@ -19,7 +19,7 @@
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
                         title="مشاهده محصول">
-                        <a href="{% url 'product' product.id %}"
+                        <a href="{% url 'product' product.slug %}"
                            class="d-inline-block rounded">
                             <i class="bi bi-eye"></i>
                         </a>
@@ -41,7 +41,7 @@
         </figure>
     </a>
     <!-- Product name-->
-    <a href="{% url 'product' product.id %}">
+    <a href="{% url 'product' product.slug %}">
         <h5 class="m-0 py-2 text-center overflow-hidden">{{ product.name }}</h5>
     </a>
     <p class="text-center overflow-hidden mt-2">{{ product.display_description }}</p>

@@ -98,6 +98,7 @@ class ProductAdminForm(forms.ModelForm):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['id', 'name']
+    prepopulated_fields = {'slug': ('name',), }
     inlines = ProductDetailInline, ProductImageInline
     form = ProductAdminForm
     summernote_fields = ("description",)

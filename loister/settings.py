@@ -42,8 +42,9 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'mathfilters',
-    'shop',
-    'customer',
+    'site_configs.apps.SiteConfigsConfig',
+    'shop.apps.ShopConfig',
+    'customer.apps.CustomerConfig',
 ]
 
 MIDDLEWARE = [
@@ -165,8 +166,6 @@ CKEDITOR_CONFIGS = {
             {'name': 'yourcustomtools', 'items': [
                 # put the name of your editor.ui.addButton here
                 'Preview',
-                'Maximize',
-
             ]},
         ],
         'toolbar': 'YourCustomToolbarConfig',  # put selected toolbar config here
