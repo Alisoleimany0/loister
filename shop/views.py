@@ -267,6 +267,8 @@ def browse_view(request, ):
     if request.GET.get("cat", None):
         category = Category.objects.get(id=request.GET['cat'])
         products = products.filter(category=category)
+    if request.GET.get("query", None):
+        products = products.filter(name__iregex=request.GET['query'])
     paginator = Paginator(products, 10)
     try:
         page_num = request.GET.get('page')
@@ -276,7 +278,8 @@ def browse_view(request, ):
     except EmptyPage:
         page_object = paginator.page(1)
     products = page_object
-    context = {"categories": all_categories, 'products': products, 'category': category}
+    context = {"categories": all_categories, 'products': products, 'category': category,
+               'last_query': request.GET.get("query", None)}
 
     return render(request, "shop/browse.html", context)
 

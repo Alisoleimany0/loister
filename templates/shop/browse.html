@@ -8,6 +8,7 @@
     <section>
         <div class="container">
             <div class="row">
+
                 <div class="col-lg-3 col-md-4">
                     <aside>
                         <div class="blog-sidebar bg-white p-3">
@@ -20,9 +21,12 @@
                                 {% endfor %}
                             </ul>
                             <div class="search-blog mt-5">
-                                <form class="global-form" action="">
-                                    <input type="text" placeholder="جستجوی محصول..." class="m-0">
-                                    <button><i class="bi bi-search"></i></button>
+                                <form class="global-form" action="{{ request.path }}">
+                                    <input type="text" name="query" placeholder="جستجوی محصول..." class="m-0">
+                                    {% if category %}
+                                        <input type="hidden" name="cat" value="{{ category.id }}">
+                                    {% endif %}
+                                    <button type="submit"><i class="bi bi-search"></i></button>
                                 </form>
                             </div>
                         </div>
@@ -52,6 +56,9 @@
                     </aside>
                 </div>
                 <div class="col-lg-9 col-md-8">
+                    {% if last_query %}
+                        <p>نتایج برای "{{ last_query }}"</p>
+                    {% endif %}
                     <div class="bg-white p-3 rounded">
                         <div class="row">
                             {% for product in products %}
@@ -66,8 +73,7 @@
                                                 {% if i == products.number %}
                                                     class="current"
                                                 {% else %}
-                                                    href="?page=
-                                                            {{ i }}{% if category %}&cat={{ category.id }}{% endif %}"
+                                                    href="?page={{ i }}{% if category %}&cat={{ category.id }}{% endif %}{% if last_query %}&query={{ last_query }}{% endif %}"
                                                 {% endif %}>
                                             {{ i }}
                                         </{% if i == products.number %}span{% else %}a{% endif %}>
