@@ -1,18 +1,13 @@
-import datetime
-
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError, PermissionDenied, SuspiciousOperation, ObjectDoesNotExist
+from django.core.exceptions import ValidationError, SuspiciousOperation, ObjectDoesNotExist
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db import IntegrityError
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
 from django.utils import timezone
-from django.contrib.auth.hashers import make_password
 from django.utils.datastructures import MultiValueDictKeyError
+from django.views.decorators.http import require_http_methods
 
 from customer.models import CustomerProfile, CustomerAddress, Review
 from .forms import SignupForm
@@ -20,6 +15,15 @@ from .models import Category, Product, HomepageCover, ProductImage, ProductOffer
     CartProductQuantity, Order, BoughtProduct
 
 
+def expire_session(func):
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            request.session.set_expiry(86400)
+        return func(request, *args, **kwargs)
+    return wrapper
+
+
+@expire_session
 def index_view(request):
     all_products = Product.objects.all()
     order_by_date = all_products.order_by("release_date")[0:7]
@@ -55,6 +59,7 @@ def index_view(request):
     return render(request, "shop/index.html", context)
 
 
+@expire_session
 def product_single(request, slug):
     product = get_object_or_404(Product, slug=slug)
     images = ProductImage.objects.filter(product=product)
@@ -70,7 +75,7 @@ def product_single(request, slug):
         cart = Cart.objects.filter(session=request.session.session_key, customer=None)
 
     try:
-        product_quantity = CartProductQuantity.objects.get(product=product, cart=cart[0])
+        product_quantity = CartProductQuantity.objects.get(product=product, cart=cart.first())
         number_in_cart = product_quantity.quantity
         context['in_cart'] = number_in_cart
     except ObjectDoesNotExist:
@@ -84,16 +89,19 @@ def product_single(request, slug):
     return render(request, "shop/product_single.html", context)
 
 
+@expire_session
 def about(request):
     return render(request, 'shop/about.html')
 
 
+@expire_session
 def logout_user(request):
     logout(request)
     messages.success(request, "با موفقیت خارج شدید!")
     return redirect("home")
 
 
+@expire_session
 def signup_user(request):
     form = SignupForm()
     if request.method == "POST":
@@ -110,6 +118,7 @@ def signup_user(request):
         return render(request, "shop/signup.html", {'form': form})
 
 
+@expire_session
 def category_view(request, cat):
     cat = cat.replace("-", " ")
     category = get_object_or_404(Category, name=cat)
@@ -119,6 +128,7 @@ def category_view(request, cat):
                   {'products': products, "category": category, "all_categories": all_categories})
 
 
+@expire_session
 def cart_view(request):
     if request.user.is_authenticated:
         items = CartProductQuantity.objects.filter(cart__customer__user=request.user)
@@ -129,6 +139,8 @@ def cart_view(request):
         return render(request, "shop/cart.html", context)
     # TODO properly handle this
     else:
+        if not request.session.session_key:
+            request.session.save()
         if Cart.objects.filter(session=request.session.session_key, customer=None):
             cart = Cart.objects.get(session=request.session.session_key, customer=None)
         else:
@@ -141,6 +153,7 @@ def cart_view(request):
         return render(request, "shop/cart.html", context)
 
 
+@expire_session
 def add_cart_view(request):
     if request.user.is_authenticated:
         if request.GET.get("id", None) and request.GET.get("quantity", None):
@@ -149,11 +162,13 @@ def add_cart_view(request):
             if not cart:
                 raise SuspiciousOperation()
 
-            cart_product = CartProductQuantity.objects.get_or_create(product=product, cart=cart[0])[0]
+            cart_product = CartProductQuantity.objects.get_or_create(product=product, cart=cart.first())[0]
             cart_product.quantity += int(request.GET['quantity'])
             cart_product.save()
             return redirect("product", product.slug)
     else:
+        if not request.session.session_key:
+            request.session.save()
         if request.GET.get("id", None) and request.GET.get("quantity", None):
             product = get_object_or_404(Product, id=request.GET['id'])
             anonymous_cart = Cart.objects.get_or_create(session=request.session.session_key, customer=None)
@@ -163,6 +178,7 @@ def add_cart_view(request):
             return redirect("product", product.slug)
 
 
+@expire_session
 def remove_cart_item_view(request):
     if request.POST.get("item_id", None):
         get_object_or_404(CartProductQuantity, id=request.POST.get("item_id")).delete()
@@ -170,41 +186,53 @@ def remove_cart_item_view(request):
     return redirect("cart")
 
 
+@expire_session
 def new_order_view(request):
     addresses = None
+    customer = None
     if request.user.is_authenticated:
         items = CartProductQuantity.objects.filter(cart__customer__user=request.user)
         addresses = CustomerAddress.objects.filter(customer__user=request.user)
+        customer = CustomerProfile.objects.filter(user=request.user).first()
     else:
         items = CartProductQuantity.objects.filter(cart__session=request.session.session_key)
     sub_total = 0
     for item in items:
         sub_total += item.total_price
-    context = {'addresses': addresses, 'items': items, 'sub_total': sub_total}
+    context = {'addresses': addresses, 'items': items, 'sub_total': sub_total, 'customer': customer}
     return render(request, 'shop/purchase.html', context)
 
 
+@expire_session
 def coming_soon_view(request):
     return render(request, 'under_development.html')
 
 
+@expire_session
 def payment_redirect_view(request):
-    if request.method == 'POST' and request.user.is_authenticated:
-        if request.POST.get("address_id", None):
-            address = CustomerAddress.objects.get(id=int(request.POST.get("address_id")))
-            items = CartProductQuantity.objects.filter(cart__customer__user=request.user)
+    if request.method == 'POST':
+        if request.POST.get("state", None):
+            customer = None
+            session = None
+            if request.user.is_authenticated:
+                customer = CustomerProfile.objects.get(user=request.user)
+                items = CartProductQuantity.objects.filter(cart__customer__user=request.user)
+            else:
+                session = request.session.session_key
+                items = CartProductQuantity.objects.filter(cart__session=session)
             sub_total = 0
             for item in items:
                 sub_total += item.total_price
-            order = Order.objects.create(customer=CustomerProfile.objects.get(user=request.user),
+            order = Order.objects.create(customer=customer,
+                                         session=session,
                                          total_price=sub_total,
                                          order_status=Order.ORDER_STATUS_CHOICES[0][0],
-                                         delivery_phone_number=address.delivery_phone_number,
-                                         address=address,
-                                         district=address.district,
-                                         city=address.city,
-                                         address_text=address.address,
-                                         postal_code=address.postal_code)
+                                         customer_full_name=request.POST['full_name'],
+                                         delivery_phone_number=request.POST['mobile'],
+                                         district=request.POST['state'],
+                                         city=request.POST['city'],
+                                         postal_code=request.POST['postal_code'],
+                                         address_text=request.POST['address'])
 
             for item in items:
                 BoughtProduct.objects.create(order=order, product=item.product, quantity=item.quantity,
@@ -212,25 +240,29 @@ def payment_redirect_view(request):
                                              total_price=item.total_price)
             post_copy = request.POST.copy()
             post_copy["order_id"] = order.id
+            # TODO this is for testing. Remove after implementing payment
             post_copy['code'] = "200"
             request.session['_post_data'] = post_copy
             return redirect("payment_confirmation")
 
-    raise Http404
 
-
+@expire_session
 def payment_confirmation_view(request):
-    if request.user.is_authenticated:
-        # TODO properly handle api callback
-        if request.session['_post_data']['code'] == "200" and request.session['_post_data']['order_id']:
-            order = Order.objects.get(id=int(request.session['_post_data']["order_id"]))
-            order.order_status = Order.ORDER_STATUS_CHOICES[1][0]
-            order.save()
+    """method that handle bank's API callback"""
+    # TODO properly handle api callback
+    if request.session['_post_data']['code'] == "200" and request.session['_post_data']['order_id']:
+        order = Order.objects.get(id=int(request.session['_post_data']["order_id"]))
+        order.order_status = Order.ORDER_STATUS_CHOICES[1][0]
+        order.save()
+        if request.user.is_authenticated:
             CartProductQuantity.objects.filter(cart__customer__user=request.user).delete()
-            return redirect("home")
-    raise ValidationError("error")
+        else:
+            CartProductQuantity.objects.filter(cart__session=request.session.session_key, cart__customer=None).delete()
+
+        return redirect("home")
 
 
+@expire_session
 def profile_addresses_view(request):
     if request.user.is_authenticated:
         if request.POST.get("state", None):
@@ -249,6 +281,7 @@ def profile_addresses_view(request):
     return redirect("logup")
 
 
+@expire_session
 def remove_address_view(request, pk):
     if request.user.is_authenticated:
         get_object_or_404(CustomerAddress, id=pk).delete()
@@ -261,6 +294,7 @@ def remove_address_view(request, pk):
     return redirect("logup")
 
 
+@expire_session
 def profile_info_view(request):
     if request.user.is_authenticated:
         customer = CustomerProfile.objects.get(user=request.user)
@@ -269,6 +303,7 @@ def profile_info_view(request):
     return redirect("logup")
 
 
+@expire_session
 def profile_purchase_history(request):
     if request.user.is_authenticated:
         orders = Order.objects.filter(customer__user=request.user)
@@ -277,6 +312,7 @@ def profile_purchase_history(request):
     return redirect("logup")
 
 
+@expire_session
 def browse_view(request, ):
     products = Product.objects.all()
     all_categories = Category.objects.all()
@@ -301,6 +337,7 @@ def browse_view(request, ):
     return render(request, "shop/browse.html", context)
 
 
+@expire_session
 def wishlist_view(request):
     if request.user.is_authenticated:
         favourites = CustomerProfile.objects.get(user=request.user).favourites
@@ -309,9 +346,10 @@ def wishlist_view(request):
             favourites.remove(request.GET.get("remove_favourite"))
         context = {'products': products}
         return render(request, "shop/wishlist.html", context)
-    raise Http404
+    return HttpResponse("<script>history.back();</script>")
 
 
+@expire_session
 def logup_view(request):
     if request.user.is_authenticated:
         return redirect("profile_info")
@@ -329,6 +367,7 @@ def logup_view(request):
     return render(request, 'login.html', context)
 
 
+@expire_session
 def new_review(request, slug):
     if request.POST and request.user.is_authenticated:
         try:
@@ -344,6 +383,7 @@ def new_review(request, slug):
     raise SuspiciousOperation()
 
 
+@expire_session
 def toggle_wishlist(request, is_favourite, pk, next):
     if request.user.is_authenticated:
         if eval(is_favourite):

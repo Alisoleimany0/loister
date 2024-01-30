@@ -169,21 +169,18 @@ class HomepageCover(models.Model):
 
 class Order(models.Model):
     ORDER_STATUS_CHOICES = (
-        ("payment", "در انتظار پرداخت"),
-        ("processing", "پرداخت شده"),
-        ("sent", "ارسال شده"),
+        ("1processing", "پرداخت شده"),
+        ("2payment", "در انتظار پرداخت"),
+        ("3sent", "ارسال شده"),
     )
     customer = models.ForeignKey(
         CustomerProfile,
         null=True,
         on_delete=models.SET_NULL)
-    address = models.ForeignKey(
-        CustomerAddress,
-        null=True,
-        on_delete=models.SET_NULL,
-    )
-    # TODO handle dating :-
+    session = models.CharField(max_length=100, null=True)
+    # TODO handle dating :- after API implementation
     checkout_date = jmodels.jDateField(blank=True, default=timezone.now)
+    customer_full_name = models.CharField(max_length=50, null=True, blank=True)
     invoice_date_time = jmodels.jDateField(default=timezone.now)
     total_price = models.IntegerField()
     delivery_phone_number = models.IntegerField()

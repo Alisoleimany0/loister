@@ -72,12 +72,14 @@
                                                     <td>{{ address.delivery_phone_number }}</td>
                                                     <td>{{ address.address }}</td>
                                                     <td>
-                                                        <input type="radio" id="address{{ address.id }}" name="address"
-                                                               value="{{ address.id }}"
-                                                               {% if forloop.first %}checked{% endif %}>
+                                                        <input type="radio" id="address{{ address.id }}" name="address">
                                                         <script>
                                                             document.getElementById('address{{ address.id }}').addEventListener('change', function () {
-                                                                document.getElementById('address_id_input').value = this.value
+                                                                document.getElementById('final_state').value = "{{ address.district }}"
+                                                                document.getElementById('final_city').value = "{{ address.city }}"
+                                                                document.getElementById('final_address').value = "{{ address.address }}"
+                                                                document.getElementById('final_postal_code').value = "{{ address.postal_code }}"
+                                                                document.getElementById('final_mobile').value = "{{ address.delivery_phone_number }}"
                                                             });
                                                         </script>
                                                     </td>
@@ -142,22 +144,21 @@
                         </div>
                         <form class="global-form" action="{% url 'payment_redirect' %}" method="post">
                             {% csrf_token %}
+
+                            <input type="text" name="full_name" placeholder="نام و نام خانوادگی را وارد کنید"
+                            value="{% if user.is_authenticated %}{{ customer.full_name }}{% endif %}">
+                            <input type="text" name="state" id="final_state"
+                                   placeholder="استان را وارد کنید">
+                            <input type="text" name="city" id="final_city" placeholder="شهر را وارد کنید">
+                            <input type="text" name="address" id="final_address" placeholder="آدرس دقیق را وارد کنید">
+                            <input type="text" name="postal_code" id="final_postal_code"
+                                   placeholder="کد پستی را وارد کنید">
+                            <input type="text" name="mobile" id="final_mobile" placeholder="شماره موبایل را وارد کنید">
                             <textarea placeholder="توضیحات اضافی"></textarea>
-                            <input type="hidden" id="address_id_input" name="address_id">
                             <button id="submit_button" class="bg-danger">{{ sub_total|intcomma }} تومان - پرداخت
                                 انلاین
                             </button>
                         </form>
-                        <script>
-                            document.getElementById('submit_button').addEventListener('click', function () {
-                                document.getElementsByName('address').forEach((item, index) => {
-                                    if (item.checked) {
-                                        document.getElementById('address_id_input').value = item.value
-                                    }
-                                })
-                            });
-
-                        </script>
                     </div>
                 </div>
             </div>

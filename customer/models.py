@@ -14,6 +14,7 @@ class CustomerProfile(models.Model):
     )
     user_phone_number = models.CharField(max_length=20)
     favourites = models.ManyToManyField("shop.Product", blank=True)
+    remember_me = models.BooleanField(default=False)
 
     @property
     def full_name(self):

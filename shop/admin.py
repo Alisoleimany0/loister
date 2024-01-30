@@ -2,6 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.contrib.admin.widgets import AdminFileWidget
 from django.db import models
+from django.db.models import F, QuerySet
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
@@ -125,4 +126,9 @@ class ProductOffersAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'customer_full_name', 'delivery_phone_number', 'checkout_date', 'total_price', 'order_status']
+    readonly_fields = ['customer', 'session']
+
+    def get_queryset(self, request):
+        qs = super(OrderAdmin, self).get_queryset(request).order_by('order_status')
+        return qs
