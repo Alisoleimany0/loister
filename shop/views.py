@@ -66,15 +66,15 @@ def product_single(request, slug):
 
     if request.user.is_authenticated:
         cart = Cart.objects.filter(customer__user=request.user)
-        if not cart:
-            raise SuspiciousOperation()
+    else:
+        cart = Cart.objects.filter(session=request.session.session_key, customer=None)
 
-        try:
-            product_quantity = CartProductQuantity.objects.get(product=product, cart=cart[0])
-            number_in_cart = product_quantity.quantity
-            context['in_cart'] = number_in_cart
-        except ObjectDoesNotExist:
-            pass
+    try:
+        product_quantity = CartProductQuantity.objects.get(product=product, cart=cart[0])
+        number_in_cart = product_quantity.quantity
+        context['in_cart'] = number_in_cart
+    except ObjectDoesNotExist:
+        pass
 
     context['product'] = product
     context['product_images'] = images
@@ -128,7 +128,17 @@ def cart_view(request):
         context = {'items': items, 'sub_total': sub_total}
         return render(request, "shop/cart.html", context)
     # TODO properly handle this
-    raise Http404
+    else:
+        if Cart.objects.filter(session=request.session.session_key, customer=None):
+            cart = Cart.objects.get(session=request.session.session_key, customer=None)
+        else:
+            cart = Cart.objects.create(session=request.session.session_key)
+        items = CartProductQuantity.objects.filter(cart=cart)
+        sub_total = 0
+        for item in items:
+            sub_total += item.total_price
+        context = {'items': items, 'sub_total': sub_total}
+        return render(request, "shop/cart.html", context)
 
 
 def add_cart_view(request):
@@ -143,28 +153,35 @@ def add_cart_view(request):
             cart_product.quantity += int(request.GET['quantity'])
             cart_product.save()
             return redirect("product", product.slug)
-    # TODO say user is not signed in
-    return HttpResponse("User not Logged in")
+    else:
+        if request.GET.get("id", None) and request.GET.get("quantity", None):
+            product = get_object_or_404(Product, id=request.GET['id'])
+            anonymous_cart = Cart.objects.get_or_create(session=request.session.session_key, customer=None)
+            cart_product = CartProductQuantity.objects.get_or_create(product=product, cart=anonymous_cart[0])[0]
+            cart_product.quantity += int(request.GET['quantity'])
+            cart_product.save()
+            return redirect("product", product.slug)
 
 
 def remove_cart_item_view(request):
-    if request.user.is_authenticated:
-        if request.POST.get("item_id", None):
-            get_object_or_404(CartProductQuantity, id=request.POST.get("item_id")).delete()
+    if request.POST.get("item_id", None):
+        get_object_or_404(CartProductQuantity, id=request.POST.get("item_id")).delete()
 
-        return redirect("cart")
-    raise Http404
+    return redirect("cart")
 
 
 def new_order_view(request):
+    addresses = None
     if request.user.is_authenticated:
         items = CartProductQuantity.objects.filter(cart__customer__user=request.user)
         addresses = CustomerAddress.objects.filter(customer__user=request.user)
-        sub_total = 0
-        for item in items:
-            sub_total += item.total_price
-        context = {'addresses': addresses, 'items': items, 'sub_total': sub_total}
-        return render(request, 'shop/purchase.html', context)
+    else:
+        items = CartProductQuantity.objects.filter(cart__session=request.session.session_key)
+    sub_total = 0
+    for item in items:
+        sub_total += item.total_price
+    context = {'addresses': addresses, 'items': items, 'sub_total': sub_total}
+    return render(request, 'shop/purchase.html', context)
 
 
 def coming_soon_view(request):

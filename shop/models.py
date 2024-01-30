@@ -100,8 +100,10 @@ class ProductOffers(models.Model):
 class Cart(models.Model):
     customer = models.OneToOneField(
         CustomerProfile,
+        null=True,
         on_delete=models.CASCADE
     )
+    session = models.CharField(max_length=100, null=True, blank=True)
     products = models.ManyToManyField(Product, through='CartProductQuantity')
 
 
@@ -173,11 +175,12 @@ class Order(models.Model):
     )
     customer = models.ForeignKey(
         CustomerProfile,
-        on_delete=models.DO_NOTHING)
+        null=True,
+        on_delete=models.SET_NULL)
     address = models.ForeignKey(
         CustomerAddress,
         null=True,
-        on_delete=models.DO_NOTHING,
+        on_delete=models.SET_NULL,
     )
     # TODO handle dating :-
     checkout_date = jmodels.jDateField(blank=True, default=timezone.now)
@@ -205,7 +208,8 @@ class BoughtProduct(models.Model):
     )
     product = models.ForeignKey(
         Product,
-        on_delete=models.DO_NOTHING
+        null=True,
+        on_delete=models.SET_NULL
     )
     name = models.CharField(max_length=50)
     price = models.IntegerField()

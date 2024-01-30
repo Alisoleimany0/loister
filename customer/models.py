@@ -44,7 +44,7 @@ class CustomerAddress(models.Model):
 
 class Review(models.Model):
     product = models.ForeignKey('shop.Product', on_delete=models.CASCADE)
-    author = models.ForeignKey('CustomerProfile', on_delete=models.DO_NOTHING)
+    author = models.ForeignKey('CustomerProfile', null=True, on_delete=models.SET_NULL)
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
     content = models.TextField(null=True, blank=True)
     rating = models.IntegerField(default=0, null=True, blank=True)
@@ -56,4 +56,7 @@ class Review(models.Model):
         self.save()
 
     def __str__(self):
-        return self.author.user.username
+        if self.author:
+            return self.author.full_name
+        else:
+            return "کاربر حذف شده"
