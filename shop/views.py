@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from site_configs.models import SiteFace, SocialLink, ContactUs
+from site_configs.models import SocialLink, ContactUs, SiteInfo
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views.decorators.http import require_http_methods
 
@@ -65,7 +65,7 @@ def index_view(request):
 def base(request):
     social_link = SocialLink.objects.all()
     contact_us = ContactUs.objects.all()
-    site_face = SiteFace.objects.all()
+    site_face = SiteInfo.objects.all()
 
     context = {
         'site_face': site_face,
