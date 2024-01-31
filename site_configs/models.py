@@ -30,6 +30,7 @@ class SocialLink(models.Model):
         return self.name if self.name else "Social Link"
 
 
+# TODO change name to SiteInfo
 class SiteFace(models.Model):
     logo_image = models.ImageField(upload_to='logo/', blank=True, null=True)
     site_name = models.CharField(max_length=50, null=True)
