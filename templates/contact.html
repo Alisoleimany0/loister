@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="page-body bg-white p-3 rounded">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="contact-text p-3">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <span class="title d-block my-5">راه های ارتباطی</span>
+                                    <span class="d-block my-3"><i
+                                            class="bi bi-telephone">&nbsp;{{ info.phone_number_field }}</i></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="title d-block my-5">ایمیل</span>
+                                    <span class="d-block my-3"><i
+                                            class="bi bi-envelope">&nbsp;{{ info.contact_email }}</i></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="title d-block my-5">آدرس شرکت</span>
+                                    <span class="d-block my-3"><i
+                                            class="bi bi-geo-alt">&nbsp;{{ info.addresses_field }}</i></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="title d-block my-5">شبکه های اجتماعی ما</span>
+                                    {% for link in links %}
+                                        <li class="d-inline-block m-1">
+                                            <a href="{% if not 'https://' in link.link_address and not 'http://' in link.link_address %}
+                                            https://{% endif %}{{ link.link_address }}"
+                                               target="_blank" class="d-inline-block text-info">
+                                                {% if link.name %}{{ link.name }}{% else %}
+                                                    {{ link.link_address }}{% endif %}</a>
+                                        </li>
+                                        <br>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-12">
+                                    <p>
+                                        {{ info.extra_info }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="product-review-form bg-white rounded p-3 mt-3">
+                            <form class="global-form" action="">
+                                <input class="rounded" type="text" placeholder="نام شما (الزامی)">
+                                <input class="rounded" type="email" placeholder="ایمیل شما (الزامی)">
+                                <textarea class="rounded" placeholder="پیام شما ..."></textarea>
+                                <button class="rounded">ارسال</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,4 +1,5 @@
 from ckeditor_uploader.fields import RichTextUploadingField
+from denorm import denormalized
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
@@ -31,7 +32,7 @@ class Product(models.Model):
     description = RichTextUploadingField(null=True, blank=True)
     category = models.ManyToManyField(Category, blank=True)
     release_date = models.DateField(default=timezone.now)
-    views = models.IntegerField(default=0)
+    views = models.BigIntegerField(default=0)
     star = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
     price = models.DecimalField(default=0, decimal_places=0, max_digits=12)
     is_on_sale = models.BooleanField(default=False)
@@ -44,7 +45,7 @@ class Product(models.Model):
         else:
             return self.price
 
-    @property
+    @denormalized(models.IntegerField, default=0)
     def units_sold(self):
         bought_products = BoughtProduct.objects.filter(product=self)
         total = 0
