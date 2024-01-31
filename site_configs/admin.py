@@ -1,9 +1,19 @@
 from django.contrib import admin
+from django.db import models
 
-from site_configs.models import ContactUs, SocialLink, SiteFace
+from shop.admin import ImageWidget
+from site_configs.models import ContactUs, SocialLink, SiteFace, HomepageCoverGroup, HomepageCover, Rules
 
 
-# Register your models here.
+class HomepageCoverInline(admin.TabularInline):
+    model = HomepageCover
+    formfield_overrides = {models.ImageField: {'widget': ImageWidget}}
+
+
+@admin.register(HomepageCoverGroup)
+class HomepageCoverGroupAdmin(admin.ModelAdmin):
+    inlines = HomepageCoverInline,
+
 
 @admin.register(ContactUs)
 class ContactUsAdmin(admin.ModelAdmin):
@@ -12,9 +22,14 @@ class ContactUsAdmin(admin.ModelAdmin):
 
 @admin.register(SocialLink)
 class LinkAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['name', 'link_address']
 
 
 @admin.register(SiteFace)
-class ContactUsAdmin(admin.ModelAdmin):
+class SiteFaceAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Rules)
+class RulesAdmin(admin.ModelAdmin):
     pass

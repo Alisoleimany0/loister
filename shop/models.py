@@ -95,6 +95,13 @@ class ProductOffers(models.Model):
             raise ValidationError("You can only create one instance of ProductOffers")
         return super(ProductOffers, self).save(*args, **kwargs)
 
+    class Meta:
+        verbose_name = "Product Offers"
+        verbose_name_plural = "Product Offers"
+
+    def __str__(self):
+        return "Product Offers"
+
 
 # failed to put cart model in customer app due to circular import issues
 class Cart(models.Model):
@@ -141,30 +148,6 @@ class CartProductQuantity(models.Model):
 
     def __str__(self):
         return f"{self.product} : {self.quantity}"
-
-
-class HomepageCoverGroup(models.Model):
-    # TODO create instance on migration
-    def save(self, *args, **kwargs):
-        if not self.pk and HomepageCoverGroup.objects.exists():
-            raise ValidationError("You can only create one instance of HomepageCovers")
-        return super(HomepageCoverGroup, self).save(*args, **kwargs)
-
-    def __str__(self):
-        return "Homepage Covers"
-
-
-class HomepageCover(models.Model):
-    group = models.ForeignKey(
-        HomepageCoverGroup,
-        on_delete=models.CASCADE
-    )
-    title = models.CharField(blank=True, max_length=30)
-    description = models.CharField(blank=True, max_length=100)
-    image = models.ImageField(null=True)
-
-    def __str__(self):
-        return self.title
 
 
 class Order(models.Model):

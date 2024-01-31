@@ -158,13 +158,14 @@
                     <span class="title py-3 pb-4 d-block position-relative">تماس با ما</span>
                     <ul class="p-0">
                         <li class="d-block w-100 py-2">
-                            <span><i class="bi bi-telephone-inbound"></i>&nbsp;0211111111</span>
+                            <span><i
+                                    class="bi bi-telephone-inbound"></i>&nbsp;{{ contact_us.phone_number_field }}</span>
                         </li>
                         <li class="d-block w-100 py-2">
-                            <span><i class="bi bi-geo-alt"></i>&nbsp;تبریز خیابان المهدی کوی المهدی جنب بیمارستان پلاک 4</span>
+                            <span><i class="bi bi-geo-alt"></i>&nbsp;{{ contact_us.address_field }}</span>
                         </li>
                         <li class="d-block w-100 py-2">
-                            <span><i class="bi bi-envelope-at"></i>&nbsp;info@lorem.com</span>
+                            <span><i class="bi bi-envelope-at"></i>&nbsp;{{ contact_us.contact_email }}</span>
                         </li>
                     </ul>
                 </div>
@@ -193,17 +194,8 @@
             </div>
             <div class="col-md-4">
                 <div class="footer-box">
-                    <span class="title py-3 pb-4 d-block position-relative">سایت فروش هل و زعفران</span>
-                    <ul class="p-0">
-                        <li class="d-block w-100 py-2">
-                            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.
-                            چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی
-                            تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد.
-                        </li>
-                        <li class="d-block w-100 py-2">
-                            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.
-                        </li>
-                    </ul>
+                    <span class="title py-3 pb-4 d-block position-relative">{{ site_face.site_name }}</span>
+                    {{ site_face.introduction_text|safe }}
                 </div>
             </div>
         </div>

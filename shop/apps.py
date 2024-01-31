@@ -12,8 +12,6 @@ class ShopConfig(AppConfig):
 
 
 def create_required_objects(sender, **kwargs):
-    from site_configs.models import ContactUs, SocialLink, SiteFace
-    if not ContactUs.objects.all():
-        ContactUs.objects.create()
-    if not SiteFace.objects.all():
-        SiteFace.objects.create()
+    from shop.models import ProductOffers
+    if not ProductOffers.objects.all():
+        ProductOffers.objects.create()

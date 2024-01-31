@@ -1,4 +1,5 @@
 from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -31,7 +32,8 @@ class SocialLink(models.Model):
 
 class SiteFace(models.Model):
     logo_image = models.ImageField(upload_to='logo/', blank=True, null=True)
-    bottom_text = RichTextField(max_length=600, blank=True, null=True)
+    site_name = models.CharField(max_length=50, null=True)
+    introduction_text = RichTextField(max_length=600, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Site Face'
@@ -44,3 +46,41 @@ class SiteFace(models.Model):
 
     def __str__(self):
         return "Site Face"
+
+
+class Rules(models.Model):
+    rules = RichTextUploadingField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Rules'
+        verbose_name_plural = 'Rules'
+
+    def __str__(self):
+        return "Rules"
+
+
+class HomepageCoverGroup(models.Model):
+    def save(self, *args, **kwargs):
+        if not self.pk and HomepageCoverGroup.objects.exists():
+            raise ValidationError("You can only create one instance of HomepageCovers")
+        return super(HomepageCoverGroup, self).save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Homepage Covers"
+        verbose_name_plural = "Homepage Covers"
+
+    def __str__(self):
+        return "Homepage Covers"
+
+
+class HomepageCover(models.Model):
+    group = models.ForeignKey(
+        HomepageCoverGroup,
+        on_delete=models.CASCADE
+    )
+    title = models.CharField(blank=True, max_length=30)
+    description = models.CharField(blank=True, max_length=100)
+    image = models.ImageField(null=True)
+
+    def __str__(self):
+        return self.title

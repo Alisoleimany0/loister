@@ -10,8 +10,9 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.views.decorators.http import require_http_methods
 
 from customer.models import CustomerProfile, CustomerAddress, Review
+from site_configs.models import HomepageCover
 from .forms import SignupForm
-from .models import Category, Product, HomepageCover, ProductImage, ProductOffers, ProductDetail, Cart, \
+from .models import Category, Product, ProductImage, ProductOffers, ProductDetail, Cart, \
     CartProductQuantity, Order, BoughtProduct
 
 

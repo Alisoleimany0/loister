@@ -6,7 +6,7 @@ from django.db.models import F, QuerySet
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
-from .models import HomepageCover, HomepageCoverGroup, ProductDetail, Product, Category, Order, ProductImage, \
+from .models import ProductDetail, Product, Category, Order, ProductImage, \
     ProductOffers, Cart, CartProductQuantity, BoughtProduct
 
 admin.site.register(Category)
@@ -37,11 +37,6 @@ class ProductImageInline(admin.TabularInline):
     formfield_overrides = {
         models.ImageField: {'widget': ImageWidget}}
     classes = ('collapse',)
-
-
-class HomepageCoverInline(admin.TabularInline):
-    model = HomepageCover
-    formfield_overrides = {models.ImageField: {'widget': ImageWidget}}
 
 
 class CustomChoiceField(forms.ModelChoiceField):
@@ -101,7 +96,6 @@ class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',), }
     inlines = ProductDetailInline, ProductImageInline
     form = ProductAdminForm
-    summernote_fields = ("description",)
 
     def save_related(self, request, form, formsets, change):
         super(ProductAdmin, self).save_related(request, form, formsets, change)
@@ -112,11 +106,6 @@ class ProductAdmin(admin.ModelAdmin):
                         # Unset previous default pictures
                         ProductImage.objects.filter(product=form.instance.product_single).exclude(pk=form.instance.pk) \
                             .update(is_default=False)
-
-
-@admin.register(HomepageCoverGroup)
-class HomepageCoverGroupAdmin(admin.ModelAdmin):
-    inlines = HomepageCoverInline,
 
 
 @admin.register(ProductOffers)
