@@ -7,10 +7,9 @@ from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
 from .models import ProductDetail, Product, Category, Order, ProductImage, \
-    ProductOffers, Cart, CartProductQuantity, BoughtProduct
+    ProductOffers
 
 admin.site.register(Category)
-admin.site.register(Cart)
 
 
 class ProductDetailInline(admin.TabularInline):

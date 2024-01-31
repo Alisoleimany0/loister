@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'site_configs.apps.SiteConfigsConfig',
     'shop.apps.ShopConfig',
     'customer.apps.CustomerConfig',
+    'cart.apps.CartConfig',
 ]
 
 MIDDLEWARE = [

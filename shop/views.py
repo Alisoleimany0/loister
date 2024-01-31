@@ -12,8 +12,8 @@ from django.views.decorators.http import require_http_methods
 from customer.models import CustomerProfile, CustomerAddress, Review
 from site_configs.models import HomepageCover
 from .forms import SignupForm
-from .models import Category, Product, ProductImage, ProductOffers, ProductDetail, Cart, \
-    CartProductQuantity, Order, BoughtProduct
+from .models import Category, Product, ProductImage, ProductOffers, ProductDetail, Order, BoughtProduct
+from cart.models import Cart, CartProductQuantity
 
 
 def expire_session(func):
