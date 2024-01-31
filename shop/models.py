@@ -122,8 +122,8 @@ class ProductOffers(models.Model):
 
 class Order(models.Model):
     ORDER_STATUS_CHOICES = (
-        ("1processing", "پرداخت شده"),
         ("2payment", "در انتظار پرداخت"),
+        ("1processing", "پرداخت شده"),
         ("3sent", "ارسال شده"),
     )
     customer = models.ForeignKey(
@@ -141,7 +141,7 @@ class Order(models.Model):
     city = models.CharField(max_length=20)
     address_text = models.TextField()
     postal_code = models.IntegerField(null=False, default=0)
-    delivery_details = models.TextField(blank=True)
+    additional_info = models.TextField(blank=True)
     order_status = models.CharField(choices=ORDER_STATUS_CHOICES, max_length=20)
 
     class Meta:

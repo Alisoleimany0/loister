@@ -236,7 +236,8 @@ def payment_redirect_view(request):
                                          district=request.POST['state'],
                                          city=request.POST['city'],
                                          postal_code=request.POST['postal_code'],
-                                         address_text=request.POST['address'])
+                                         address_text=request.POST['address'],
+                                         additional_info=request.POST.get("additional_info"))
 
             for item in items:
                 BoughtProduct.objects.create(order=order, product=item.product, quantity=item.quantity,

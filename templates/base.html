@@ -21,7 +21,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-3 text-center">
-                    <img src="{% static 'img/test.png' %}" alt="logo" width="60" height="24">
+                    {% if site_info.logo_image %}
+                        <img src="{{ site_info.logo_image.url }}" alt="logo" style="margin-top: 20px; max-height: 60px; max-width: 60px;">
+                    {% endif %}
                 </div>
                 <div class="col-md-6">
                     <div class="main-menu">
@@ -36,7 +38,7 @@
                             {#                                    <li><a href="">تماس</a></li>#}
                             {#                                </ul>#}
                             {#                            </li>#}
-                            <li><a href="{% url 'contact' %}">تماس</a></li>
+                            <li><a href="{% url 'contact' %}">تماس با ما</a></li>
                         </ul>
                     </div>
                 </div>
@@ -68,7 +70,8 @@
                                 data-bs-toggle="tooltip"
                                 data-bs-placement="bottom"
                                 title="جستجو">
-                                <a href="#" class="text-light d-inline-block"><i class="bi bi-search"></i></a>
+                                <a href="{% url 'browse' %}" class="text-light d-inline-block"><i
+                                        class="bi bi-search"></i></a>
                             </li>
                         </ul>
                     </div>
@@ -121,13 +124,13 @@
     {% if not index and not login_page %}
         <div class="container-fluid px-0">
             <div class="page-title-box text-center">
-                <div class="bread-crumb-box pb-3">
-                    <ol>
-                        <li><a href="">خانه</a></li>
-                        <li><a href="#">خشکبار</a></li>
-                        <li><span>آجیل 500 گرمی</span></li>
-                    </ol>
-                </div>
+                {#                <div class="bread-crumb-box pb-3">#}
+                {#                    <ol>#}
+                {#                        <li><a href="">خانه</a></li>#}
+                {#                        <li><a href="#">خشکبار</a></li>#}
+                {#                        <li><span>آجیل 500 گرمی</span></li>#}
+                {#                    </ol>#}
+                {#                </div>#}
             </div>
         </div>
     {% endif %}
@@ -173,19 +176,19 @@
                 <div class="footer-box text-center">
                     <span class="title py-3 pb-4 d-block position-relative">همراه ما باشید</span>
                     <ul class="p-0 social-ul">
-             {% for link in social_links %}
-            <li class="d-inline-block m-1">
-                <a href="{{ link.link_address }}" class="d-inline-block p-2">
-                    {% if link.name == 'Instagram' %}
-                    <i class="bi bi-instagram"></i>
-                    {% elif link.name == 'LinkedIn' %}
-                    <i class="bi bi-linkedin"></i>
-                    {% elif link.name == 'Twitter' %}
-                    <i class="bi bi-twitter"></i>
-                    {% endif %}
-                </a>
-            </li>
-            {% endfor %}
+                        {% for link in social_links %}
+                            <li class="d-inline-block m-1">
+                                <a href="{{ link.link_address }}" class="d-inline-block p-2">
+                                    {% if link.name == 'Instagram' %}
+                                        <i class="bi bi-instagram"></i>
+                                    {% elif link.name == 'LinkedIn' %}
+                                        <i class="bi bi-linkedin"></i>
+                                    {% elif link.name == 'Twitter' %}
+                                        <i class="bi bi-twitter"></i>
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>

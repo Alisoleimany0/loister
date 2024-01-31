@@ -112,7 +112,7 @@ class OrderAdmin(admin.ModelAdmin):
     readonly_fields = ['customer', 'session']
 
     def get_queryset(self, request):
-        qs = super(OrderAdmin, self).get_queryset(request).order_by('order_status')
+        qs = super(OrderAdmin, self).get_queryset(request).order_by('order_status', '-checkout_date')
         return qs
 
 
