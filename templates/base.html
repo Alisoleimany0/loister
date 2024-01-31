@@ -174,21 +174,19 @@
                 <div class="footer-box text-center">
                     <span class="title py-3 pb-4 d-block position-relative">همراه ما باشید</span>
                     <ul class="p-0 social-ul">
-                        <li class="d-inline-block m-1">
-                            <a href="#" class="d-inline-block p-2">
-                                <i class="bi bi-instagram"></i>
-                            </a>
-                        </li>
-                        <li class="d-inline-block m-1">
-                            <a href="#" class="d-inline-block p-2">
-                                <i class="bi bi-linkedin"></i>
-                            </a>
-                        </li>
-                        <li class="d-inline-block m-1">
-                            <a href="#" class="d-inline-block p-2">
-                                <i class="bi bi-twitter"></i>
-                            </a>
-                        </li>
+             {% for link in social_links %}
+            <li class="d-inline-block m-1">
+                <a href="{{ link.link_address }}" class="d-inline-block p-2">
+                    {% if link.name == 'Instagram' %}
+                    <i class="bi bi-instagram"></i>
+                    {% elif link.name == 'LinkedIn' %}
+                    <i class="bi bi-linkedin"></i>
+                    {% elif link.name == 'Twitter' %}
+                    <i class="bi bi-twitter"></i>
+                    {% endif %}
+                </a>
+            </li>
+            {% endfor %}
                     </ul>
                 </div>
             </div>
