@@ -6,8 +6,7 @@ from django.db.models import signals
 from django.utils import timezone
 from django_jalali.db import models as jmodels
 
-import customer
-from customer.models import CustomerProfile, CustomerAddress
+from customer.models import CustomerProfile
 
 
 class Category(models.Model):
@@ -17,9 +16,17 @@ class Category(models.Model):
         return self.name
 
 
+class ProductType(models.Model):
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+
+
 class Product(models.Model):
     name = models.CharField(max_length=40)
     slug = models.SlugField(unique=True, allow_unicode=True, max_length=255)
+    type = models.ForeignKey(ProductType, blank=True, null=True, on_delete=models.SET_NULL)
     display_description = models.CharField(max_length=500, default='', blank=True, null=True)
     description = RichTextUploadingField(null=True, blank=True)
     category = models.ManyToManyField(Category, blank=True)
@@ -156,14 +163,3 @@ def pre_product_image_save(sender, instance, **kwargs):
 
 
 signals.pre_save.connect(pre_product_image_save, sender=ProductImage)
-
-
-def customer_post_save(instance: CustomerProfile, *args, **kwargs):
-    try:
-        cart = instance.cart
-    except Cart.DoesNotExist as e:
-        cart = Cart.objects.create(customer=instance)
-        cart.save()
-
-
-signals.post_save.connect(customer_post_save, sender=CustomerProfile)

@@ -61,3 +61,15 @@ class Review(models.Model):
             return self.author.full_name
         else:
             return "کاربر حذف شده"
+
+
+def customer_post_save(instance: CustomerProfile, *args, **kwargs):
+    from cart.models import Cart
+    try:
+        cart = instance.cart
+    except Cart.DoesNotExist as e:
+        cart = Cart.objects.create(customer=instance)
+        cart.save()
+
+
+signals.post_save.connect(customer_post_save, sender=CustomerProfile)

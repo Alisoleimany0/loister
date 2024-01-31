@@ -79,33 +79,26 @@
                                 </tr>
                                 {% for address in addresses %}
                                     <tr>
-                                        {% with address_link="fdg" %}
-                                            <td>
-                                                <a class="link-dark link-opacity-75-hover"
-                                                   href="{% url 'coming_soon' %}">{{ address.district }}</a>
-                                            </td>
-                                            <td>
-                                                <a class="link-dark link-opacity-75-hover"
-                                                   href="{% url 'coming_soon' %}">{{ address.city }}</a>
-                                            </td>
-                                            <td>
-                                                <a class="link-dark link-opacity-75-hover"
-                                                   href="{% url 'coming_soon' %}">{{ address.postal_code }}</a>
-                                            </td>
-                                            <td>
-                                                <a class="link-dark link-opacity-75-hover"
-                                                   href="{% url 'coming_soon' %}">{{ address.delivery_phone_number }}</a>
-                                            </td>
-                                            <td>
-                                                <a class="link-dark link-opacity-75-hover"
-                                                   href="{% url 'coming_soon' %}">{{ address.address }}</a>
-                                            </td>
-                                            <td>
-                                                <a href="{% url 'remove_address' address.id %}"
-                                                   class="btn bi-trash btn-outline-danger"></a>
-                                            </td>
-                                            </tr>
-                                        {% endwith %}
+                                        <td>
+                                            {{ address.district }}
+                                        </td>
+                                        <td>
+                                            {{ address.city }}
+                                        </td>
+                                        <td>
+                                            {{ address.postal_code }}
+                                        </td>
+                                        <td>
+                                            {{ address.delivery_phone_number }}
+                                        </td>
+                                        <td>
+                                            {{ address.address }}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'remove_address' address.id %}"
+                                               class="btn bi-trash btn-outline-danger"></a>
+                                        </td>
+                                    </tr>
                                 {% endfor %}
                             </table>
                         </div>

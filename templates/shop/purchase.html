@@ -144,7 +144,6 @@
                         </div>
                         <form class="global-form" action="{% url 'payment_redirect' %}" method="post">
                             {% csrf_token %}
-
                             <input type="text" name="full_name" placeholder="نام و نام خانوادگی را وارد کنید"
                             value="{% if user.is_authenticated %}{{ customer.full_name }}{% endif %}">
                             <input type="text" name="state" id="final_state"
