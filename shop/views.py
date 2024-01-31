@@ -62,20 +62,6 @@ def index_view(request):
 
 
 @expire_session
-def base(request):
-    social_link = SocialLink.objects.all()
-    contact_us = ContactUs.objects.all()
-    site_face = SiteInfo.objects.all()
-
-    context = {
-        'site_face': site_face,
-        'social_link': social_link,
-        'contact_us': contact_us,
-    }
-    return render(request, "base.html", context)
-
-
-@expire_session
 def product_single(request, slug):
     product = get_object_or_404(Product, slug=slug)
     images = ProductImage.objects.filter(product=product)

@@ -8,3 +8,4 @@ def contact_us(request):
     links = SocialLink.objects.all()
     context = {'info': info, 'links': links}
     return render(request, "contact.html", context)
+
