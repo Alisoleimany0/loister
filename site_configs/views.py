@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from site_configs.models import ContactUs, SocialLink, UserContactMessage
+from site_configs.models import ContactUs, SocialLink, UserContactMessage, AboutUs, Rules
 
 
 def contact_us_view(request):
@@ -12,7 +12,8 @@ def contact_us_view(request):
 
 
 def about_us_view(request):
-    context = {}
+    about = AboutUs.objects.first()
+    context = {'about': about}
     return render(request, "about.html", context=context)
 
 
@@ -26,3 +27,9 @@ def contact_message_view(request):
 
     # TODO: success
     return redirect("contact")
+
+
+def rules_view(request):
+    rules = Rules.objects.first()
+    context = {'rules': rules}
+    return render(request, "rules.html", context=context)

@@ -15,18 +15,26 @@
                             <span class="title border-bottom position-relative d-block pb-3 mb-3">دسته بندی</span>
                             <ul>
                                 {% for category in categories %}
-                                    <li><a class="is-nav-selected"
-                                           href="?cat=
-                                                   {{ category.id }}{% if last_query %}&query={{ last_query }}{% endif %}">{{ category.name }}</a>
+                                    <li>
+                                        <!--@formatter:off-->
+                                        <a class="is-nav-selected"
+                                           href="?cat={{ category.id }}{% for key, value in last_query.items %}{% if not key == "cat" and not key == "ptype" %}&{{ key }}={{ value }}{% elif key == "ptype" %}{% for val in value %}&{{ key }}={{ val }}{% endfor %}{% endif %}{% endfor %}">{{ category.name }}</a>
+                                        <!--@formatter:on-->
                                     </li>
                                 {% endfor %}
                             </ul>
                             <div class="search-blog mt-5">
                                 <form class="global-form" action="{{ request.path }}">
-                                    <input type="text" name="query" placeholder="جستجوی محصول..." class="m-0">
-                                    {% if category %}
-                                        <input type="hidden" name="cat" value="{{ category.id }}">
-                                    {% endif %}
+                                    <input type="text" name="search" value="{{ last_query.search }}" placeholder="جستجوی محصول..." class="m-0">
+                                    {% for key, value in last_query.items %}
+                                        {% if not key == "search" and not key == "ptype" %}
+                                            <input type="hidden" name="{{ key }}" value="{{ value }}">
+                                        {% elif key == "ptype" %}
+                                            {% for val in value %}
+                                                <input type="hidden" name="{{ key }}" value="{{ val }}">
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
                                     <button type="submit"><i class="bi bi-search"></i></button>
                                 </form>
                             </div>
@@ -35,32 +43,36 @@
                         <span class="title border-bottom position-relative d-block pb-3 mb-3">
                             فیلتر بر اساس نوع
                         </span>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">
-                                    زعفران
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
-                                <label class="form-check-label" for="flexCheckChecked">
-                                    تنقلات
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
-                                <label class="form-check-label" for="flexCheckChecked">
-                                    هل
-                                </label>
-                            </div>
+                            <form class="global-form" action="{{ request.path }}">
+                                {% for ptype in ptypes %}
+                                    <input class="form-check-input" type="checkbox" name="ptype"
+                                           value="{{ ptype.name }}"
+                                           id="flexCheckDefault"
+                                            {% for key, list in last_query.items %}
+                                                {% if ptype.name in list %}
+                                           checked
+                                                {% endif %}
+                                            {% endfor %}>
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        {{ ptype.name }}
+                                    </label>
+                                    <br>
+                                {% endfor %}
+                                {% for key, value in last_query.items %}
+                                    {% if not key == "ptype" %}
+                                        <input type="hidden" name="{{ key }}" value="{{ value }}">
+                                    {% endif %}
+                                {% endfor %}
+                                <button type="submit">اعمال</button>
+                            </form>
                         </div>
                     </aside>
                 </div>
                 <div class="col-lg-9 col-md-8">
-                    {% if last_query %}
-                        <p>نتایج برای "{{ last_query }}"</p>
+                    {% if search %}
+                        <p>نتایج برای "{{ search }}"</p>
                     {% endif %}
-                    {% if category %}
+                    {% if search %}
                         <p>دسته بندی {{ category }}</p>
                     {% endif %}
                     <div class="bg-white p-3 rounded">
@@ -78,7 +90,20 @@
                                                     class="current"
                                                 {% else %}
                                                     href="?page=
-                                                            {{ i }}{% if category %}&cat={{ category.id }}{% endif %}{% if last_query %}&query={{ last_query }}{% endif %}"
+
+
+
+
+
+
+
+
+
+
+
+
+                                                            {{ i }}{% if category %}&cat=
+                                {{ category.id }}{% endif %}{% if last_query %}&query={{ last_query }}{% endif %}"
                                                 {% endif %}>
                                             {{ i }}
                                         </{% if i == products.number %}span{% else %}a{% endif %}>

@@ -14,7 +14,7 @@
     {% else %}
         <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
     {% endif %}
-    <title>فروشگاه</title>
+    <title>{{ site_info.site_name }}</title>
 </head>
 <header class="{% if not index and not login_page %}mb-5{% else %}mb-4{% endif %}">
     <div class="top-menu">
@@ -36,7 +36,7 @@
                             {#                                    <li><a href="">تماس</a></li>#}
                             {#                                </ul>#}
                             {#                            </li>#}
-                            <li><a href="">تماس</a></li>
+                            <li><a href="{% url 'contact' %}">تماس</a></li>
                         </ul>
                     </div>
                 </div>
@@ -146,10 +146,9 @@
             <div class="col-12">
                 <div class="footer-menu">
                     <ul class="p-0 my-3 text-center">
-                        <li><a href="#">مشتریان</a></li>
-                        <li><a href="#">قوانین</a></li>
-                        <li><a href="#">خرید کالا</a></li>
-                        <li><a href="#">فروشگاه</a></li>
+                        <li><a href="{% url 'rules' %}">قوانین</a></li>
+                        <li><a href="{% url 'contact' %}">تماس با ما</a></li>
+                        <li><a href="{% url 'about' %}">در باره ما</a></li>
                     </ul>
                 </div>
             </div>
@@ -192,8 +191,8 @@
             </div>
             <div class="col-md-4">
                 <div class="footer-box">
-                    <span class="title py-3 pb-4 d-block position-relative">{{ site_face.site_name }}</span>
-                    {{ site_face.introduction_text|safe }}
+                    <span class="title py-3 pb-4 d-block position-relative">{{ site_info.site_name }}</span>
+                    {{ site_info.introduction_text|safe }}
                 </div>
             </div>
         </div>

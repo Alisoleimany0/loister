@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+import sys
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ValidationError, SuspiciousOperation, ObjectDoesNotExist
@@ -13,7 +16,7 @@ from django.views.decorators.http import require_http_methods
 from customer.models import CustomerProfile, CustomerAddress, Review
 from site_configs.models import HomepageCover
 from .forms import SignupForm
-from .models import Category, Product, ProductImage, ProductOffers, ProductDetail, Order, BoughtProduct
+from .models import Category, Product, ProductImage, ProductOffers, ProductDetail, Order, BoughtProduct, ProductType
 from cart.models import Cart, CartProductQuantity
 
 
@@ -315,14 +318,16 @@ def profile_purchase_history(request):
 
 @expire_session
 def browse_view(request, ):
-    products = Product.objects.all()
+    products = Product.objects.all().order_by("release_date")
     all_categories = Category.objects.all()
     category = None
+    search = None
     if request.GET.get("cat", None):
         category = Category.objects.get(id=request.GET['cat'])
         products = products.filter(category=category)
-    if request.GET.get("query", None):
-        products = products.filter(name__iregex=request.GET['query'])
+    if request.GET.get("search", None):
+        products = products.filter(name__iregex=request.GET['search'])
+        search = request.GET['search']
     paginator = Paginator(products, 10)
     try:
         page_num = request.GET.get('page')
@@ -332,8 +337,13 @@ def browse_view(request, ):
     except EmptyPage:
         page_object = paginator.page(1)
     products = page_object
-    context = {"categories": all_categories, 'products': products, 'category': category,
-               'last_query': request.GET.get("query", None)}
+    ptypes = ProductType.objects.all()
+
+    last_query = request.GET.dict()
+    last_query['ptype'] = request.GET.getlist('ptype')
+
+    context = {"categories": all_categories, 'products': products, 'category': category, 'search': search,
+               'last_query': last_query, 'ptypes': ptypes}
 
     return render(request, "shop/browse.html", context)
 

@@ -13,12 +13,18 @@ from customer.models import CustomerProfile
 class Category(models.Model):
     name = models.CharField(max_length=20)
 
+    class Meta:
+        verbose_name_plural = "3. Category"
+
     def __str__(self):
         return self.name
 
 
 class ProductType(models.Model):
     name = models.CharField(max_length=20)
+
+    class Meta:
+        verbose_name_plural = "4. Product Type"
 
     def __str__(self):
         return self.name
@@ -37,6 +43,9 @@ class Product(models.Model):
     price = models.DecimalField(default=0, decimal_places=0, max_digits=12)
     is_on_sale = models.BooleanField(default=False)
     sale_price = models.DecimalField(default=0, decimal_places=0, max_digits=12)
+
+    class Meta:
+        verbose_name_plural = "1. Product"
 
     @property
     def sell_price(self):
@@ -134,6 +143,9 @@ class Order(models.Model):
     postal_code = models.IntegerField(null=False, default=0)
     delivery_details = models.TextField(blank=True)
     order_status = models.CharField(choices=ORDER_STATUS_CHOICES, max_length=20)
+
+    class Meta:
+        verbose_name_plural = "2. Order"
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super().save(force_insert, force_update, using, update_fields)

@@ -12,7 +12,7 @@ class SiteConfigsConfig(AppConfig):
 
 
 def create_required_objects(sender, **kwargs):
-    from site_configs.models import ContactUs, SiteInfo, HomepageCoverGroup, Rules
+    from site_configs.models import ContactUs, SiteInfo, HomepageCoverGroup, Rules, AboutUs
     if not ContactUs.objects.all():
         ContactUs.objects.create()
     if not SiteInfo.objects.all():
@@ -21,3 +21,5 @@ def create_required_objects(sender, **kwargs):
         HomepageCoverGroup.objects.create()
     if not Rules.objects.all():
         Rules.objects.create()
+    if not AboutUs.objects.all():
+        AboutUs.objects.create()

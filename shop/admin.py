@@ -7,7 +7,7 @@ from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
 from .models import ProductDetail, Product, Category, Order, ProductImage, \
-    ProductOffers
+    ProductOffers, ProductType
 
 admin.site.register(Category)
 
@@ -114,3 +114,8 @@ class OrderAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super(OrderAdmin, self).get_queryset(request).order_by('order_status')
         return qs
+
+
+@admin.register(ProductType)
+class ProductTypeAdmin(admin.ModelAdmin):
+    pass

@@ -12,7 +12,7 @@ class ContactUs(models.Model):
 
     class Meta:
         verbose_name = 'Contact Us'
-        verbose_name_plural = 'Contact Us'
+        verbose_name_plural = '3. Contact Us'
 
     def save(self, *args, **kwargs):
         if not self.pk and ContactUs.objects.exists():
@@ -32,6 +32,17 @@ class UserContactMessage(models.Model):
         return self.message
 
 
+class AboutUs(models.Model):
+    text = RichTextUploadingField()
+
+    class Meta:
+        verbose_name = "About Us"
+        verbose_name_plural = "2. About Us"
+
+    def __str__(self):
+        return "About Us"
+
+
 class SocialLink(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)
     link_address = models.CharField(max_length=50, blank=True, null=True)
@@ -48,7 +59,7 @@ class SiteInfo(models.Model):
 
     class Meta:
         verbose_name = 'Site Info'
-        verbose_name_plural = 'Site Info'
+        verbose_name_plural = '1. Site Info'
 
     def save(self, *args, **kwargs):
         if not self.pk and SiteInfo.objects.exists():
@@ -64,7 +75,7 @@ class Rules(models.Model):
 
     class Meta:
         verbose_name = 'Rules'
-        verbose_name_plural = 'Rules'
+        verbose_name_plural = '5. Rules'
 
     def __str__(self):
         return "Rules"
@@ -78,7 +89,7 @@ class HomepageCoverGroup(models.Model):
 
     class Meta:
         verbose_name = "Homepage Covers"
-        verbose_name_plural = "Homepage Covers"
+        verbose_name_plural = "4. Homepage Covers"
 
     def __str__(self):
         return "Homepage Covers"
