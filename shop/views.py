@@ -28,7 +28,6 @@ def expire_session(func):
 def index_view(request):
     all_products = Product.objects.all()
     order_by_date = all_products.order_by("release_date")[0:7]
-    # TODO: change to correct order by
     order_by_units_sold = all_products.order_by("units_sold")[0:7]
     order_by_views = all_products.order_by("views")[0:7]
     all_categories = Category.objects.all()
@@ -138,7 +137,6 @@ def cart_view(request):
             sub_total += item.total_price
         context = {'items': items, 'sub_total': sub_total}
         return render(request, "shop/cart.html", context)
-    # TODO properly handle this
     else:
         if not request.session.session_key:
             request.session.save()

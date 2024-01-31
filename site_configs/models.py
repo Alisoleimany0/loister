@@ -31,7 +31,7 @@ class SocialLink(models.Model):
 
 
 # TODO change name to SiteInfo
-class SiteFace(models.Model):
+class SiteInfo(models.Model):
     logo_image = models.ImageField(upload_to='logo/', blank=True, null=True)
     site_name = models.CharField(max_length=50, null=True)
     introduction_text = RichTextField(max_length=600, blank=True, null=True)
@@ -41,9 +41,9 @@ class SiteFace(models.Model):
         verbose_name_plural = 'Site Face'
 
     def save(self, *args, **kwargs):
-        if not self.pk and SiteFace.objects.exists():
+        if not self.pk and SiteInfo.objects.exists():
             raise ValidationError("You can only create one instance of SiteFace")
-        return super(SiteFace, self).save(*args, **kwargs)
+        return super(SiteInfo, self).save(*args, **kwargs)
 
     def __str__(self):
         return "Site Face"
