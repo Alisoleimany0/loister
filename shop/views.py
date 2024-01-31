@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from site_configs.models import SiteFace, SocialLink, ContactUs
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views.decorators.http import require_http_methods
 
@@ -21,6 +22,7 @@ def expire_session(func):
         if not request.user.is_authenticated:
             request.session.set_expiry(86400)
         return func(request, *args, **kwargs)
+
     return wrapper
 
 
@@ -58,6 +60,20 @@ def index_view(request):
                'index': True}
 
     return render(request, "shop/index.html", context)
+
+
+@expire_session
+def base(request):
+    social_link = SocialLink.objects.all()
+    contact_us = ContactUs.objects.all()
+    site_face = SiteFace.objects.all()
+
+    context = {
+        'site_face': site_face,
+        'social_link': social_link,
+        'contact_us': contact_us,
+    }
+    return render(request, "base.html", context)
 
 
 @expire_session
