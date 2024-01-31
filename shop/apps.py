@@ -14,4 +14,4 @@ class ShopConfig(AppConfig):
 def create_required_objects(sender, **kwargs):
     from shop.models import ProductOffers
     if not ProductOffers.objects.all():
-        ProductOffers.objects.create()
+        ProductOffers.objects.create(title="", description="")

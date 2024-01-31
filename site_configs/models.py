@@ -23,6 +23,15 @@ class ContactUs(models.Model):
         return "Contact Us"
 
 
+class UserContactMessage(models.Model):
+    name = models.CharField(max_length=50)
+    email = models.EmailField()
+    message = models.TextField()
+
+    def __str__(self):
+        return self.message
+
+
 class SocialLink(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)
     link_address = models.CharField(max_length=50, blank=True, null=True)
@@ -32,7 +41,6 @@ class SocialLink(models.Model):
         return self.name if self.name else "Social Link"
 
 
-# TODO change name to SiteInfo
 class SiteInfo(models.Model):
     logo_image = models.ImageField(upload_to='logo/', blank=True, null=True)
     site_name = models.CharField(max_length=50, null=True)

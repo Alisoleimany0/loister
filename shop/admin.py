@@ -51,12 +51,6 @@ class CustomChoiceField(forms.ModelChoiceField):
         return mark_safe(label)
 
 
-# class HorizontalRadioSelect(forms.RadioSelect):
-#     user renderer template. the IDE won't be able to locate it
-#     def render(self, name, value, attrs=None, renderer=None):
-#         super().render(name, value, attrs, renderer=renderer)
-
-
 class ProductAdminForm(forms.ModelForm):
     default_image_choice = CustomChoiceField(
         queryset=ProductImage.objects.none(),

@@ -92,7 +92,7 @@ class ProductImage(models.Model):
 
 
 class ProductOffers(models.Model):
-    products = models.ManyToManyField(Product)
+    products = models.ManyToManyField(Product, blank=True)
     finish_time = models.DateTimeField(default=timezone.now)
     title = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(null=True, blank=True)

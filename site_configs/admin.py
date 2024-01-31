@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.db import models
 
 from shop.admin import ImageWidget
-from site_configs.models import ContactUs, SocialLink, SiteInfo, HomepageCoverGroup, HomepageCover, Rules
+from site_configs.models import ContactUs, SocialLink, SiteInfo, HomepageCoverGroup, HomepageCover, Rules, \
+    UserContactMessage
 
 
 class HomepageCoverInline(admin.TabularInline):
@@ -31,4 +32,9 @@ class SiteFaceAdmin(admin.ModelAdmin):
 
 @admin.register(Rules)
 class RulesAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(UserContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
     pass
