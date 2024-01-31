@@ -20,10 +20,7 @@ urlpatterns = [
     path('soon/', views.coming_soon_view, name="coming_soon"),
     path('payment_redirect/', views.payment_redirect_view, name="payment_redirect"),
     path('payment_confirmation/', views.payment_confirmation_view, name="payment_confirmation"),
-    # path('browse/<int:page>', views.browse_view, name="browse_page"),
     path('browse/', views.browse_view, name="browse"),
-    # path('browse/<int:cat>/<int:page>/', views.category_view, name="category_page"),
-    # path('browse/<int:cat>/', views.browse_view, name="category"),
     path('wishlist/', views.wishlist_view, name="wishlist"),
     path('wishlist/<str:is_favourite>/<int:pk>/<str:next>/', views.toggle_wishlist, name="toggle_wishlist")
 ]

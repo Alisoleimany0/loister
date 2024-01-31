@@ -45,6 +45,7 @@ urlpatterns = [
     path('', include('shop.urls')),
     path('customer', include('customer.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('info/', include('site_configs.urls')),
 ]
 handler404 = 'loister.views.http404'
 

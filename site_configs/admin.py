@@ -10,6 +10,10 @@ class HomepageCoverInline(admin.TabularInline):
     formfield_overrides = {models.ImageField: {'widget': ImageWidget}}
 
 
+class SocialLinkInline(admin.TabularInline):
+    model = SocialLink
+
+
 @admin.register(HomepageCoverGroup)
 class HomepageCoverGroupAdmin(admin.ModelAdmin):
     inlines = HomepageCoverInline,
@@ -17,12 +21,7 @@ class HomepageCoverGroupAdmin(admin.ModelAdmin):
 
 @admin.register(ContactUs)
 class ContactUsAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(SocialLink)
-class LinkAdmin(admin.ModelAdmin):
-    list_display = ['name', 'link_address']
+    inlines = SocialLinkInline,
 
 
 @admin.register(SiteInfo)
