@@ -3,7 +3,8 @@ from django.contrib import admin
 from django.contrib.admin.widgets import AdminFileWidget
 from django.db import models
 from django.db.models import F, QuerySet
-from django.utils.html import conditional_escape
+from django.urls import reverse
+from django.utils.html import conditional_escape, format_html
 from django.utils.safestring import mark_safe
 
 from .models import ProductDetail, Product, Category, Order, ProductImage, \
@@ -108,8 +109,19 @@ class ProductOffersAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'customer_full_name', 'delivery_phone_number', 'checkout_date', 'total_price', 'order_status']
+    list_display = ['id', 'customer_full_name', 'delivery_phone_number', 'checkout_date', 'total_price', 'order_status', 'set_to_complete']
+    search_fields = ['customer_full_name', 'id', 'checkout_date']
+    list_filter = ['checkout_date']
     readonly_fields = ['customer', 'session']
+
+    def set_to_complete(self, obj):
+        if obj.order_status == Order.ORDER_STATUS_CHOICES[1][0]:
+            return format_html('<a class="button" href="{}">{}</a>', reverse('order_set_complete', args=[obj.pk]),
+                               'Complete')
+        elif obj.order_status == Order.ORDER_STATUS_CHOICES[0][0]:
+            return "Pending Payment"
+        else:
+            return "Completed"
 
     def get_queryset(self, request):
         qs = super(OrderAdmin, self).get_queryset(request).order_by('order_status', '-checkout_date')

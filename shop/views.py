@@ -8,6 +8,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.utils import timezone
 from site_configs.models import SocialLink, ContactUs, SiteInfo
 from django.utils.datastructures import MultiValueDictKeyError
@@ -414,3 +415,11 @@ def toggle_wishlist(request, is_favourite, pk, next):
                         history.back();
                         </script>
                         """)
+
+
+def order_set_complete_view(request, pk):
+    order = Order.objects.get(pk=pk)
+    order.order_status = Order.ORDER_STATUS_CHOICES[2][0]
+    order.save()
+    # return redirect(reverse('admin:shop_order_changelist'))
+    return HttpResponse("<script>history.back();</script>")
