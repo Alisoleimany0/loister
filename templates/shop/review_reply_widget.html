@@ -4,11 +4,6 @@
 {% for review in replies %}
     <div class="review-parent ms-5 mb-3">
         <div class="row">
-            <div class="col-2">
-                <div class="review-avatar">
-                    <img src="{% static 'img/default_pfp.png' %}" alt="avatar">
-                </div>
-            </div>
             <div class="col-10">
                 <span class="d-inline-block pe-5">{{ review.author.full_name }}</span>
                 <span class="d-inline-block pe-5">
@@ -26,8 +21,15 @@
                 {% endif %}
             </span>
                 <p>{{ review.content }}</p>
+                <div id="comment-{{ review.id }}" class="comment">
+                    <button onclick="replyComment('{{ review.id }}', '{% url 'product_review' product.slug %}', '{{ csrf_token }}')"
+                            id="reply-btn-{{ review.id }}"
+                            class="bi bi-reply-fill p-2 mb-2 reply-button">
+                        &nbsp;پاسخ
+                    </button>
+                </div>
             </div>
         </div>
-        {% review_reply_widget review %}
+        {% review_reply_widget review product %}
     </div>
 {% endfor %}

@@ -16,9 +16,9 @@ def is_favourite(user, product):
 
 
 @register.inclusion_tag("shop/review_reply_widget.html")
-def review_reply_widget(parent: Review):
+def review_reply_widget(parent: Review, product: Product):
     replies = Review.objects.filter(parent=parent, approved=True)
-    return {'replies': replies}
+    return {'replies': replies, 'product': product}
 
 
 @register.inclusion_tag("shop/product_card_widget.html")

@@ -389,12 +389,10 @@ def logup_view(request):
 def new_review(request, slug):
     if request.POST and request.user.is_authenticated:
         try:
-            author = CustomerProfile.objects.get(user=request.user)
-            rating = request.POST.get("rating", None)
-            content = request.POST['content']
-
-            Review.objects.create(product=get_object_or_404(Product, slug=slug), author=author, rating=rating,
-                                  content=content)
+            Review.objects.create(product=get_object_or_404(Product, slug=slug),
+                                  author=get_object_or_404(CustomerProfile, user=request.user),
+                                  parent_id=request.POST.get("parent", None), rating=request.POST.get("rating", None),
+                                  content=request.POST.get('content', None))
             return redirect('product', slug)
         except MultiValueDictKeyError:
             pass
@@ -402,7 +400,7 @@ def new_review(request, slug):
 
 
 @expire_session
-def toggle_wishlist(request, is_favourite, pk, next):
+def toggle_wishlist(request, is_favourite, pk):
     if request.user.is_authenticated:
         if eval(is_favourite):
             CustomerProfile.objects.get(user=request.user).favourites.remove(Product.objects.get(id=pk))

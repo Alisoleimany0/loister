@@ -5,11 +5,24 @@
 {% load shop_tags %}
 
 {% block content %}
+    {% if not index and not login_page %}
+        <div class="container-fluid px-2 col-10">
+            <div class="page-title-box">
+                <div class="bread-crumb-box">
+                    <ol>
+                        <li><a href="./index.html">خانه</a></li>
+                        <li><a href="#">خشکبار</a></li>
+                        <li><span>آجیل 500 گرمی</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     <section>
         <div class="container">
             <div class="page-content">
                 <div class="row">
-                    <div class="col-lg-5 col-md-6">
+                    <div class="page-content-section col-lg-5 col-md-6 bg-white">
                         <div class="product-img bg-white p-3 rounded">
                             <figure class="border-bottom mb-0">
                                 <img src="{{ product.default_image.image.url }}" alt="image" class="d-table mx-auto">
@@ -31,7 +44,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-7 col-6 bg-white rounded">
+                    <div class="page-content-section col-lg-7 col-md-6 bg-white">
                         <div class="product-detail p-3">
                             <h1 class="pb-4 pt-3 m-0">{{ product.name }}</h1>
                             <div class="product-rating mb-3">
@@ -65,10 +78,11 @@
                             <span>تعداد در سبد: {{ in_cart }}</span>
                             <div class="add-to-wish mb-3">
                                 {% with user|is_favourite:product as is_favourite %}
-                                    <a href="{% url 'toggle_wishlist' is_favourite product.id request.resolver_match.url_name %}"
+                                    <a href="{% url 'toggle_wishlist' is_favourite product.id %}"
                                        class="d-inline-block rounded link-danger">
                                         <i class="bi {% if is_favourite %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
-                                        {% if is_favourite %}حذف کردن از علاقه‌مندی{% else %}افزودن به علاقه‌مندی{% endif %}
+                                        {% if is_favourite %}حذف کردن از علاقه‌مندی{% else %}افزودن به
+                                            علاقه‌مندی{% endif %}
                                     </a>
                                 {% endwith %}
                             </div>
@@ -84,7 +98,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-5 col-md-6">
+                    <div class="page-content-section col-lg-5 col-md-6 bg-white">
                         <div class="global-form product-review-form bg-white rounded p-3 mt-3">
                             <form action="{% url 'product_review' product.slug %}" method="post">
                                 {% csrf_token %}
@@ -108,7 +122,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="col-lg-7 col-sm-6 p-0">
+                    <div class="page-content-section col-lg-7 col-md-6 bg-white">
                         <div class="product-content bg-white p-3 mt-3 rounded">
                             <ul class="nav nav-pills mb-2" id="pills-tab" role="tablist">
                                 <li class="nav-item" role="presentation">
@@ -155,11 +169,6 @@
                                         <div class="review-item-box border-bottom mb-3 mt-3">
                                             <div class="review-parent pb-3">
                                                 <div class="row">
-                                                    <div class="col-2">
-                                                        <div class="review-avatar">
-                                                            <img src="{% static 'img/default_pfp.png' %}" alt="avatar">
-                                                        </div>
-                                                    </div>
                                                     <div class="col-10">
                                                         <span class="d-inline-block pe-5">{{ review }}</span>
                                                         <span class="d-inline-block pe-5">
@@ -177,10 +186,17 @@
                                                             {% endif %}
                                                         </span>
                                                         <p>{{ review.content }}</p>
+                                                        <div id="comment-{{ review.id }}" class="comment">
+                                                            <button onclick="replyComment('{{ review.id }}', '{% url 'product_review' product.slug %}', '{{ csrf_token }}')"
+                                                                    id="reply-btn-{{ review.id }}"
+                                                                    class="bi bi-reply-fill p-2 mb-2 reply-button">
+                                                                &nbsp;پاسخ
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            {% review_reply_widget review %}
+                                            {% review_reply_widget review product %}
                                         </div>
                                     {% endfor %}
                                 </div>

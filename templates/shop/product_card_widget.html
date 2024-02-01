@@ -30,7 +30,7 @@
                             data-bs-placement="top"
                             title="{% if is_favourite %}حذف کردن از علاقه‌مندی{% else %}افزودن به علاقه‌مندی{% endif %}">
 
-                            <a href="{% url 'toggle_wishlist' is_favourite product.id request.resolver_match.url_name %}"
+                            <a href="{% url 'toggle_wishlist' is_favourite product.id %}"
                                class="d-inline-block rounded">
                                 <i class="bi {% if is_favourite %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
                             </a>

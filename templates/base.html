@@ -22,7 +22,7 @@
             <div class="row">
                 <div class="col-md-3 text-center">
                     {% if site_info.logo_image %}
-                        <img src="{{ site_info.logo_image.url }}" alt="logo" style="margin-top: 20px; max-height: 60px; max-width: 60px;">
+                        <img src="{{ site_info.logo_image.url }}" alt="logo" style="padding: 2%; max-height: 50px; max-width: 80px;">
                     {% endif %}
                 </div>
                 <div class="col-md-6">
@@ -121,19 +121,6 @@
             </div>
             </div>
         {% endif %}
-    {% if not index and not login_page %}
-        <div class="container-fluid px-0">
-            <div class="page-title-box text-center">
-                {#                <div class="bread-crumb-box pb-3">#}
-                {#                    <ol>#}
-                {#                        <li><a href="">خانه</a></li>#}
-                {#                        <li><a href="#">خشکبار</a></li>#}
-                {#                        <li><span>آجیل 500 گرمی</span></li>#}
-                {#                    </ol>#}
-                {#                </div>#}
-            </div>
-        </div>
-    {% endif %}
 </header>
 <body>
 

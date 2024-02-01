@@ -1272,3 +1272,57 @@ function showAddress() {
     var full_address = state + " - " + city + " - " + address + " - " + postal_code + " - " + mobile;
     document.getElementById("full_address").innerHTML = full_address;
 }
+
+function replyComment(parentId, url, csrfToken) {
+    let commentElementId = "comment-" + parentId;
+    let replyButtonId = "reply-btn-" + parentId;
+    console.log(commentElementId)
+    let commentElement = document.getElementById(commentElementId);
+    let replyForm = document.createElement("form");
+    let csrfTokenInput = document.createElement("input")
+    let replyParentInput = document.createElement("input");
+    let replyTextArea = document.createElement("textarea");
+    let replySendButton = document.createElement("button");
+
+    replyForm.className = "global-form";
+    replyForm.method = "post";
+    replyForm.action = url;
+
+    csrfTokenInput.name = "csrfmiddlewaretoken";
+    csrfTokenInput.type = "hidden";
+    console.log(csrfToken);
+    csrfTokenInput.value = csrfToken;
+
+    replyParentInput.value = parentId;
+    replyParentInput.name = "parent";
+    replyParentInput.type = "hidden";
+
+    replyTextArea.type = "text";
+    replyTextArea.name = "content";
+    replyTextArea.textarea = "پاسخ خود را بنویسید";
+    replyTextArea.placeholder = "پاسخ خود را بنویسید";
+
+    replySendButton.type = "submit";
+    replySendButton.innerText = "ارسال";
+    // replySendButton.addEventListener("click", function () {
+    //     showReplySentMessage(commentElement);
+    //     replyForm.remove();
+    //     return true;
+    // });
+
+    replyForm.appendChild(csrfTokenInput);
+    replyForm.appendChild(replyParentInput);
+    replyForm.appendChild(replyTextArea);
+    replyForm.appendChild(replySendButton);
+    commentElement.appendChild(replyForm);
+    document.getElementById(replyButtonId).remove();
+}
+
+function showReplySentMessage(commentElement) {
+    var messageElement = document.createElement("div");
+    messageElement.className = "message";
+    messageElement.className = "alert alert-success";
+    messageElement.innerText = " نظر شما ثبت شد و پس از تایید نمایش داده خواهد شد";
+    commentElement.appendChild(messageElement);
+}
+
