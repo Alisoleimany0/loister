@@ -3,7 +3,7 @@ from django.db import models
 
 from shop.admin import ImageWidget
 from site_configs.models import ContactUs, SocialLink, SiteInfo, HomepageCoverGroup, HomepageCover, Rules, \
-    UserContactMessage, AboutUs
+    UserContactMessage, AboutUs, ETrustSymbol
 
 
 class HomepageCoverInline(admin.TabularInline):
@@ -42,4 +42,9 @@ class ContactMessageAdmin(admin.ModelAdmin):
 
 @admin.register(AboutUs)
 class AboutUsAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(ETrustSymbol)
+class ETrustSymbolAdmin(admin.ModelAdmin):
     pass

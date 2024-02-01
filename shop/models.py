@@ -131,10 +131,9 @@ class Order(models.Model):
         null=True,
         on_delete=models.SET_NULL)
     session = models.CharField(max_length=100, null=True)
-    # TODO handle dating :- after API implementation
-    checkout_date = jmodels.jDateField(blank=True, default=timezone.now)
+    checkout_date = jmodels.jDateTimeField(blank=True, default=timezone.now)
     customer_full_name = models.CharField(max_length=50, null=True, blank=True)
-    invoice_date_time = jmodels.jDateField(default=timezone.now)
+    invoice_date_time = jmodels.jDateTimeField(default=timezone.now)
     total_price = models.IntegerField()
     delivery_phone_number = models.IntegerField()
     district = models.CharField(max_length=20)
@@ -146,6 +145,7 @@ class Order(models.Model):
 
     class Meta:
         verbose_name_plural = "2. Order"
+        ordering = ('-checkout_date',)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super().save(force_insert, force_update, using, update_fields)

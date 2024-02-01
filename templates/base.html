@@ -22,7 +22,8 @@
             <div class="row">
                 <div class="col-md-3 text-center">
                     {% if site_info.logo_image %}
-                        <img src="{{ site_info.logo_image.url }}" alt="logo" style="padding: 2%; max-height: 50px; max-width: 80px;">
+                        <img src="{{ site_info.logo_image.url }}" alt="logo"
+                             style="padding: 2%; max-height: 50px; max-width: 80px;">
                     {% endif %}
                 </div>
                 <div class="col-md-6">
@@ -176,6 +177,14 @@
                                 </a>
                             </li>
                         {% endfor %}
+                        {% for symbol in symbols %}
+                            <a class="logo-footer" referrerpolicy="origin" rel="nofollow" target="_blank"
+                               href="{% if not 'https://' in symbol.link and not 'http://' in symbol.link %}https://{% endif %}{{ symbol.link }}">
+                                <img referrerpolicy="origin" width="78px" height="82px" src="{{ symbol.image.url }}"
+                                     alt="{{ symbol.name }}"
+                                     style="cursor:pointer">
+                            </a>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
@@ -198,5 +207,9 @@
 <script src="{% static 'js/index.js' %}"></script>
 <script src="{% static 'js/jquery.elevatezoom.js' %}"></script>
 <script src="{% static 'js/fancybox.umd.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+
 </body>
 </html>

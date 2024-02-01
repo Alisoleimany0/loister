@@ -4,6 +4,7 @@ from django.contrib.admin.widgets import AdminFileWidget
 from django.db import models
 from django.db.models import F, QuerySet
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.html import conditional_escape, format_html
 from django.utils.safestring import mark_safe
 
@@ -109,7 +110,8 @@ class ProductOffersAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'customer_full_name', 'delivery_phone_number', 'checkout_date', 'total_price', 'order_status', 'set_to_complete']
+    list_display = ['id', 'customer_full_name', 'delivery_phone_number', 'formatted_date', 'total_price', 'order_status',
+                    'set_to_complete']
     search_fields = ['customer_full_name', 'id', 'checkout_date']
     list_filter = ['checkout_date']
     readonly_fields = ['customer', 'session']
@@ -122,6 +124,12 @@ class OrderAdmin(admin.ModelAdmin):
             return "Pending Payment"
         else:
             return "Completed"
+
+    def formatted_date(self, obj):
+        return obj.checkout_date.strftime('%Y-%m-%d %H:%M')  # Format the date as you like
+    formatted_date.admin_order_field = 'checkout_date'  # Allows column order sorting
+    formatted_date.short_description = 'Formatted Date'   # Column header
+
 
     def get_queryset(self, request):
         qs = super(OrderAdmin, self).get_queryset(request).order_by('order_status', '-checkout_date')

@@ -70,6 +70,15 @@ class SiteInfo(models.Model):
         return "Site Info"
 
 
+class ETrustSymbol(models.Model):
+    name = models.CharField(max_length=50)
+    image = models.ImageField()
+    link = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
+
 class Rules(models.Model):
     rules = RichTextUploadingField(blank=True, null=True)
 

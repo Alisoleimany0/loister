@@ -27,8 +27,7 @@
                                     <span class="title d-block my-5">شبکه های اجتماعی ما</span>
                                     {% for link in links %}
                                         <li class="d-inline-block m-1">
-                                            <a href="{% if not 'https://' in link.link_address and not 'http://' in link.link_address %}
-                                            https://{% endif %}{{ link.link_address }}"
+                                            <a href="{% if not 'https://' in link.link_address and not 'http://' in link.link_address %}https://{% endif %}{{ link.link_address }}"
                                                target="_blank" class="d-inline-block text-info">
                                                 {% if link.name %}{{ link.name }}{% else %}
                                                     {{ link.link_address }}{% endif %}</a>
@@ -36,7 +35,7 @@
                                         <br>
                                     {% endfor %}
                                 </div>
-                                <div class="col-12">
+                                <div class="border-top" style="margin-top: 20px; padding-top: 10px;">
                                     <p>
                                         {{ info.extra_info }}
                                     </p>

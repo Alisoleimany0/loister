@@ -5,16 +5,33 @@
         <div class="col-md-8">
             <div class="user-profile-content p-3 mt-3 border rounded">
                 <h5 class="m-3 p-2 border-bottom">اطلاعات من</h5>
-                <form class="global-form" action="">
-                    <input type="text" placeholder="نام" value="{{ user.first_name }}">
-                    <input type="text" placeholder="نام خانوادگی" value="{{ user.last_name }}">
-                    <input type="text" placeholder="شماره موبایل" value="{{ customer.user_phone_number }}">
-                    <input type="email" placeholder="ایمیل" value="{{ user.email_address }}">
+                <form class="global-form" action="{% url 'customer_update_profile' %}" method="post">
+                    {% csrf_token %}
+                    <input type="text" name="first_name" placeholder="نام" value="{{ user.first_name }}">
+                    <input type="text" name="last_name" placeholder="نام خانوادگی" value="{{ user.last_name }}">
+                    <input type="text" name="phone_number" placeholder="شماره موبایل"
+                           value="{{ customer.user_phone_number }}">
+                    <input type="email" name="email" placeholder="ایمیل" value="{{ user.email }}">
                     <h5 class="m-3 p-2 border-bottom">تغییر رمز عبور</h5>
-                    <input id="password" type="text" placeholder="کلمه عبور جدید" value="">
-                    <input id="password_confirm" type="text" placeholder="تکرار کلمه عبور جدید" value="">
+                    <input id="password" name="password" type="password" placeholder="کلمه عبور جدید" value="">
+                    <input id="password_confirm" type="password" placeholder="تکرار کلمه عبور جدید" value="">
                     <button id="submit" type="submit">ذخیره اطلاعات حساب</button>
                 </form>
+                <script>
+                    const password = document.getElementById("password")
+                        , confirm_password = document.getElementById("password_confirm");
+
+                    function validatePassword() {
+                        if (password.value !== confirm_password.value) {
+                            confirm_password.setCustomValidity("تکرار کلمه عبور نادرست است");
+                        } else {
+                            confirm_password.setCustomValidity('');
+                        }
+                    }
+
+                    password.onchange = validatePassword;
+                    confirm_password.onkeyup = validatePassword;
+                </script>
             </div>
         </div>
     </div>

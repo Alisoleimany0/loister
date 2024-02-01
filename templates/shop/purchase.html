@@ -96,56 +96,83 @@
                                 <p id="full_address"></p>
                             </div>
                             <p id="full_address"></p>
-                            <form class="global-form" action="" method="post">
-                                <h5 class="m-3 p-2 border-bottom">آدرس جدید</h5>
-                                <select name="state" onChange="iranwebsv(this.value);">
-                                    <option value="0">لطفا استان را انتخاب نمایید</option>
-                                    <option value="1">تهران</option>
-                                    <option value="2">گیلان</option>
-                                    <option value="3">آذربایجان شرقی</option>
-                                    <option value="4">خوزستان</option>
-                                    <option value="5">فارس</option>
-                                    <option value="6">اصفهان</option>
-                                    <option value="7">خراسان رضوی</option>
-                                    <option value="8">قزوین</option>
-                                    <option value="9">سمنان</option>
-                                    <option value="10">قم</option>
-                                    <option value="11">مرکزی</option>
-                                    <option value="12">زنجان</option>
-                                    <option value="13">مازندران</option>
-                                    <option value="14">گلستان</option>
-                                    <option value="15">اردبیل</option>
-                                    <option value="16">آذربایجان غربی</option>
-                                    <option value="17">همدان</option>
-                                    <option value="18">کردستان</option>
-                                    <option value="19">کرمانشاه</option>
-                                    <option value="20">لرستان</option>
-                                    <option value="21">بوشهر</option>
-                                    <option value="22">کرمان</option>
-                                    <option value="23">هرمزگان</option>
-                                    <option value="24">چهارمحال و بختیاری</option>
-                                    <option value="25">یزد</option>
-                                    <option value="26">سیستان و بلوچستان</option>
-                                    <option value="27">ایلام</option>
-                                    <option value="28">کهگلویه و بویراحمد</option>
-                                    <option value="29">خراسان شمالی</option>
-                                    <option value="30">خراسان جنوبی</option>
-                                    <option value="31">البرز</option>
-                                </select>
-                                <select name="city" id="city">
-                                    <option value="0">لطفا شهرستان را انتخاب نمایید</option>
-                                </select>
-                                <input type="text" name="address" id="address" placeholder="آدرس دقیق را وارد کنید">
-                                <input type="text" name="postal_code" id="postal_code"
-                                       placeholder="کد پستی را وارد کنید">
-                                <input type="text" name="mobile" id="mobile" placeholder="شماره موبایل را وارد کنید">
-                                <input type="submit" value="افزودن" onClick="showAddress()">
-                            </form>
+
+                            <a class="btn btn-outline-dark" data-bs-toggle="collapse" style="margin-inline-start: 40%;"
+                               href="#collapseExample"
+                               role="button" aria-expanded="false" aria-controls="collapseExample">
+                                اضافه کردن آدرس
+                            </a>
+                            <div class="collapse" id="collapseExample">
+                                <h5 class="m-3 p-2 border-bottom heading">
+                                    <form class="global-form" action="{% url 'add_address' %}" method="post">
+                                        {% csrf_token %}
+                                        <select id="state" onChange="iranwebsv(this.value);">
+                                            <option value="0">لطفا استان را انتخاب نمایید</option>
+                                            <option value="1">تهران</option>
+                                            <option value="2">گیلان</option>
+                                            <option value="3">آذربایجان شرقی</option>
+                                            <option value="4">خوزستان</option>
+                                            <option value="5">فارس</option>
+                                            <option value="6">اصفهان</option>
+                                            <option value="7">خراسان رضوی</option>
+                                            <option value="8">قزوین</option>
+                                            <option value="9">سمنان</option>
+                                            <option value="10">قم</option>
+                                            <option value="11">مرکزی</option>
+                                            <option value="12">زنجان</option>
+                                            <option value="13">مازندران</option>
+                                            <option value="14">گلستان</option>
+                                            <option value="15">اردبیل</option>
+                                            <option value="16">آذربایجان غربی</option>
+                                            <option value="17">همدان</option>
+                                            <option value="18">کردستان</option>
+                                            <option value="19">کرمانشاه</option>
+                                            <option value="20">لرستان</option>
+                                            <option value="21">بوشهر</option>
+                                            <option value="22">کرمان</option>
+                                            <option value="23">هرمزگان</option>
+                                            <option value="24">چهارمحال و بختیاری</option>
+                                            <option value="25">یزد</option>
+                                            <option value="26">سیستان و بلوچستان</option>
+                                            <option value="27">ایلام</option>
+                                            <option value="28">کهگلویه و بویراحمد</option>
+                                            <option value="29">خراسان شمالی</option>
+                                            <option value="30">خراسان جنوبی</option>
+                                            <option value="31">البرز</option>
+                                        </select>
+                                        <select id="city">
+                                            <option value="0">لطفا شهرستان را انتخاب نمایید</option>
+                                        </select>
+                                        <input id="selectedState" type="hidden" name="state">
+                                        <input id="selectedCity" type="hidden" name="city">
+                                        <input type="text" name="address" id="address"
+                                               placeholder="آدرس دقیق را وارد کنید">
+                                        <input type="text" name="postal_code" id="postal_code"
+                                               placeholder="کد پستی را وارد کنید">
+                                        <input type="text" name="mobile" id="mobile"
+                                               placeholder="شماره موبایل را وارد کنید">
+                                        <input class="rounded" type="submit" value="افزودن" onClick="showAddress()">
+                                    </form>
+                                    <script>
+                                        document.getElementById('state').addEventListener('change', function () {
+                                            // Option 1: Set the text as the value of a hidden input
+                                            document.getElementById('selectedState').value =
+                                                this.options[this.selectedIndex].text;
+                                        });
+                                        document.getElementById('city').addEventListener('change', function () {
+                                            // Option 1: Set the text as the value of a hidden input
+                                            document.getElementById('selectedCity').value =
+                                                this.options[this.selectedIndex].text;
+                                        });
+                                    </script>
+                                </h5>
+                            </div>
                         </div>
+                        <h5 class="m-3 p-2 border-bottom heading">تغییر آدرس</h5>
                         <form class="global-form" action="{% url 'payment_redirect' %}" method="post">
                             {% csrf_token %}
                             <input type="text" name="full_name" placeholder="نام و نام خانوادگی را وارد کنید"
-                            value="{% if user.is_authenticated %}{{ customer.full_name }}{% endif %}">
+                                   value="{% if user.is_authenticated %}{{ customer.full_name }}{% endif %}">
                             <input type="text" name="state" id="final_state"
                                    placeholder="استان را وارد کنید">
                             <input type="text" name="city" id="final_city" placeholder="شهر را وارد کنید">

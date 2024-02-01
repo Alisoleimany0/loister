@@ -254,6 +254,7 @@ def payment_redirect_view(request):
             # TODO this is for testing. Remove after implementing payment
             post_copy['code'] = "200"
             request.session['_post_data'] = post_copy
+            # TODO redirect user to
             return redirect("payment_confirmation")
 
 
@@ -264,6 +265,7 @@ def payment_confirmation_view(request):
     if request.session['_post_data']['code'] == "200" and request.session['_post_data']['order_id']:
         order = Order.objects.get(id=int(request.session['_post_data']["order_id"]))
         order.order_status = Order.ORDER_STATUS_CHOICES[1][0]
+        order.checkout_date = timezone.now()
         order.save()
         if request.user.is_authenticated:
             CartProductQuantity.objects.filter(cart__customer__user=request.user).delete()
@@ -276,20 +278,28 @@ def payment_confirmation_view(request):
 @expire_session
 def profile_addresses_view(request):
     if request.user.is_authenticated:
-        if request.POST.get("state", None):
-            CustomerAddress.objects.create(customer=CustomerProfile.objects.get(user=request.user),
-                                           delivery_phone_number=request.POST.get("mobile", 0),
-                                           district=request.POST.get("state"),
-                                           city=request.POST.get("city"),
-                                           address=request.POST.get("address"),
-                                           postal_code=request.POST.get("postal_code"))
-
         addresses = CustomerAddress.objects.filter(customer__user=request.user)
         context = {'addresses': addresses}
-        if request.POST.get("state", None):
-            return redirect('profile_addresses')
         return render(request, 'user_profile/addresses.html', context)
     return redirect("logup")
+
+
+@expire_session
+def add_address_view(request):
+    if request.POST:
+        CustomerAddress.objects.create(customer=CustomerProfile.objects.get(user=request.user),
+                                       delivery_phone_number=request.POST.get("mobile", 0),
+                                       district=request.POST.get("state"),
+                                       city=request.POST.get("city"),
+                                       address=request.POST.get("address"),
+                                       postal_code=request.POST.get("postal_code"))
+        return HttpResponse("""
+                           <script>
+                           sessionStorage.setItem('reload', 'true');
+                           history.back();
+                           </script>
+                           """)
+    return Http404
 
 
 @expire_session
@@ -376,7 +386,7 @@ def logup_view(request):
             user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
             if user:
                 login(request, user)
-                return redirect("home")
+                return redirect("profile_info")
             else:
                 raise ValidationError("wrong credentials")
         else:

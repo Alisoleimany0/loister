@@ -4,7 +4,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="purchase-address-profile-content p-3 mt-3 border rounded">
-                <form class="global-form" action="{% url 'profile_addresses' %}" method="post">
+                <form class="global-form" action="{% url 'add_address' %}" method="post">
                     {% csrf_token %}
                     <h5 class="m-3 p-2 border-bottom">افزودن آدرس جدید</h5>
                     <select id="state" onChange="iranwebsv(this.value);">
