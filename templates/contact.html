@@ -48,11 +48,13 @@
                         <div class="product-review-form bg-white rounded p-3 mt-3">
                             <form class="global-form" action="{% url 'contact_message' %}" method="post">
                                 {% csrf_token %}
-                                <input class="rounded" type="text" name="name" placeholder="نام شما (الزامی)">
+                                <input class="rounded" type="text" required="true" name="name"
+                                       placeholder="نام شما (الزامی)">
                                 <input class="rounded" type="email" name="email" placeholder="ایمیل شما (الزامی)">
                                 <textarea class="rounded" name="message" placeholder="پیام شما ..."></textarea>
                                 <button type="submit" class="rounded">ارسال</button>
                             </form>
+
                         </div>
                     </div>
                 </div>

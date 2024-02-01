@@ -12,7 +12,7 @@ class CustomerProfile(models.Model):
         null=False,
         on_delete=models.CASCADE,
     )
-    user_phone_number = models.CharField(max_length=20)
+    user_phone_number = models.CharField(max_length=20, null=True)
     favourites = models.ManyToManyField("shop.Product", blank=True)
     remember_me = models.BooleanField(default=False)
 
@@ -35,12 +35,6 @@ class CustomerAddress(models.Model):
     city = models.CharField(max_length=20)
     address = models.TextField()
     postal_code = models.IntegerField(null=False, default=0)
-
-
-# def create_cart
-#
-#
-# signals.pre_save.connect()
 
 
 class Review(models.Model):

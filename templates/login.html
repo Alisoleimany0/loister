@@ -2,47 +2,63 @@
 {% load static %}
 
 {% block content %}
-<section class="bg-section">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-4">
-                <div class="login-register-div p-3 rounded">
-                    <span class="d-block text-center display-3 mt-3"><i class="bi bi-box-arrow-in-left"></i></span>
-                    <span class="d-block text-center my-3">ورود به حساب</span>
-                    <div class="form-div">
-                        <form class="global-form" action="#" method="post">
-                            {% csrf_token %}
-                            <input class="rounded" type="text" name="username" placeholder="نام کاربری یا ایمیل">
-                            <input class="rounded" type="password" name="password" placeholder="رمز عبور">
-                            <div class="form-check my-1 pb-2 pt-1">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefult">
-                                <label class="form-check-label text-light" for="flexCheckDefult">
-                                    مرا به خاطر بسپار
-                                </label>
-                            </div>
-                            <input class="rounded" type="submit" value="ورود">
-                        </form>
-                    </div>
-                    <div class="forget-pass">
-                        <a href="#" class="text-light">فراموشی رمز عبور</a>
+    <section class="bg-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-4">
+                    <div class="login-register-div p-3 rounded">
+                        <span class="d-block text-center display-3 mt-3"><i class="bi bi-box-arrow-in-left"></i></span>
+                        <span class="d-block text-center my-3">ورود به حساب</span>
+                        <div class="form-div">
+                            <form class="global-form" action="#" method="post">
+                                {% csrf_token %}
+                                <input class="rounded" type="text" name="username" placeholder="نام کاربری یا ایمیل">
+                                <input class="rounded" type="password" name="password" placeholder="رمز عبور">
+                                <div class="form-check my-1 pb-2 pt-1">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefult">
+                                    <label class="form-check-label text-light" for="flexCheckDefult">
+                                        مرا به خاطر بسپار
+                                    </label>
+                                </div>
+                                <input class="rounded" type="submit" value="ورود">
+                            </form>
+                        </div>
+                        <div class="forget-pass">
+                            <a href="#" class="text-light">فراموشی رمز عبور</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="login-register-div p-3 rounded">
-                    <span class="d-block text-center display-3 mt-3"><i class="bi bi-person"></i></span>
-                    <span class="d-block text-center my-3">ثبت نام</span>
-                    <div class="form-div">
-                        <form class="global-form" action="">
-                            <input class="rounded" type="text" placeholder="نام کاربری یا ایمیل">
-                            <input class="rounded" type="password" placeholder="رمز عبور">
-                            <input class="rounded" type="password" placeholder="تکرار کلمه عبور">
-                            <input class="rounded" type="submit" value="ثبت نام">
-                        </form>
+                <div class="col-md-4">
+                    <div class="login-register-div p-3 rounded">
+                        <span class="d-block text-center display-3 mt-3"><i class="bi bi-person"></i></span>
+                        <span class="d-block text-center my-3">ثبت نام</span>
+                        <div class="form-div">
+                            <form class="global-form" action="{% url 'signup' %}" method="post">
+                                {% csrf_token %}
+                                <input class="rounded" required="true" type="text" name="username" placeholder="نام کاربری یا ایمیل">
+                                <input class="rounded" required="true" type="password" id="pass" name="password" placeholder="رمز عبور">
+                                <input class="rounded" required="true" type="password" id="confirm_pass" placeholder="تکرار کلمه عبور">
+                                <input class="rounded" required="true" type="submit" value="ثبت نام">
+                            </form>
+                            <script>
+                                const password = document.getElementById("pass")
+                                    , confirm_password = document.getElementById("confirm_pass");
+
+                                function validatePassword() {
+                                    if (password.value !== confirm_password.value) {
+                                        confirm_password.setCustomValidity("تکرار کلمه عبور نادرست است");
+                                    } else {
+                                        confirm_password.setCustomValidity('');
+                                    }
+                                }
+
+                                password.onchange = validatePassword;
+                                confirm_password.onkeyup = validatePassword;
+                            </script>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 {% endblock %}

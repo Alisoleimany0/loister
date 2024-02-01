@@ -3,9 +3,10 @@ import sys
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, SuspiciousOperation, ObjectDoesNotExist
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -109,19 +110,23 @@ def logout_user(request):
 
 @expire_session
 def signup_user(request):
-    form = SignupForm()
-    if request.method == "POST":
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            user = form.save()
+    if request.POST:
+        if not User.objects.filter(username=request.POST['username']).exists():
+            user = User.objects.create_user(username=request.POST['username'], password=request.POST['password'])
+            user.first_name = "کاربر"
+            user.save()
+            CustomerProfile.objects.create(user=user)
             login(request, user)
-            messages.success(request, "اکانت شما ساخته شد")
-            return redirect("home")
-        else:
-            messages.error(request, "مشکلی در ثبت نام شما وجود دارد")
-            return redirect("signup")
-    else:
-        return render(request, "shop/signup.html", {'form': form})
+            return HttpResponse("""
+                               <script>
+                               sessionStorage.setItem('reload', 'true');
+                               history.back();
+                               </script>
+                               """)
+
+        return HttpResponse("<script>history.back();</script>")
+    # TODO fix
+    raise Http404
 
 
 @expire_session
