@@ -34,9 +34,9 @@ def expire_session(func):
 @expire_session
 def index_view(request):
     all_products = Product.objects.all()
-    order_by_date = all_products.order_by("release_date")[0:7]
-    order_by_units_sold = all_products.order_by("units_sold")[0:7]
-    order_by_views = all_products.order_by("views")[0:7]
+    order_by_date = all_products.order_by("release_date")[0:8]
+    order_by_units_sold = all_products.order_by("units_sold")[0:8]
+    order_by_views = all_products.order_by("views")[0:8]
     all_categories = Category.objects.all()
     covers = HomepageCover.objects.all()
     product_offers = ProductOffers.objects.first()

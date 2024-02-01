@@ -3,14 +3,14 @@
 {% load mathfilters %}
 {% load shop_tags %}
 {% if not remove_div %}
-    <div class="col-lg-3 col-md-4 col-sm-2">
+    <div class="col-lg-3 col-md-4 col-sm-4">
 {% endif %}
 <!-- Product actions-->
 <div class="product-item p-3 bg-white rounded my-3">
     <a id="product{{ product.id }}" href="{% url 'product' product.slug %}">
         <figure class="w-100 position-relative overflow-hidden border-bottom">
             <!-- Product image-->
-            <img src="{{ product.default_image.image.url }}" alt=""
+            <img src="{{ product.defaut_image.image.url }}" alt=""
                  class="d-table mx-auto">
             <!-- Product details-->
             <figcaption class="position-absolute w-100 h-100 text-center">
@@ -59,7 +59,7 @@
     </div>
     <!-- Product price-->
     {% if product.is_on_sale %}
-        <div class="product-price d-flex">
+        <div class="product-price flex-column-reverse">
             <span class="d-inline-block w-100 text-start">{{ product.sale_price | intcomma }} تومان</span>
             <del class="d-inline-block w-100 text-end">
                 <strike>{{ product.price | intcomma }}
