@@ -110,7 +110,7 @@ class ProductOffersAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'customer_full_name', 'delivery_phone_number', 'formatted_date', 'total_price', 'order_status',
+    list_display = ['id', 'customer_full_name', 'delivery_phone_number', 'formatted_date', 'total_price',
                     'set_to_complete']
     search_fields = ['customer_full_name', 'id', 'checkout_date']
     list_filter = ['checkout_date']
@@ -119,15 +119,17 @@ class OrderAdmin(admin.ModelAdmin):
     def set_to_complete(self, obj):
         if obj.order_status == Order.ORDER_STATUS_CHOICES[1][0]:
             return format_html('<a class="button" href="{}">{}</a>', reverse('order_set_complete', args=[obj.pk]),
-                               'Complete')
+                               'تکمیل سفارش')
         elif obj.order_status == Order.ORDER_STATUS_CHOICES[0][0]:
-            return "Pending Payment"
+            return "در انتظار پرداخت"
         else:
-            return "Completed"
+            return "تکمیل شده"
+    set_to_complete.short_description = 'وضعیت سفارش'
 
     def formatted_date(self, obj):
         return obj.checkout_date.strftime('%Y-%m-%d %H:%M')  # Format the date as you like
-    formatted_date.short_description = 'تاریخ پرداخت'   # Column header
+
+    formatted_date.short_description = 'تاریخ پرداخت'  # Column header
 
     def get_queryset(self, request):
         qs = super(OrderAdmin, self).get_queryset(request).order_by('order_status', '-checkout_date')

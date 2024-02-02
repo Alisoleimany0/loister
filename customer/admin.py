@@ -22,19 +22,20 @@ class CustomerProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ['wrapped_content', '__str__', 'product', 'toggle_is_approved']
+    list_display = ['content_text', '__str__', 'product', 'toggle_is_approved']
     readonly_fields = ['author', 'product']
 
     def toggle_is_approved(self, obj):
         return format_html(
             '<a class="button" href="{}">{}</a>',
             reverse('customer_review_approved', args=[obj.pk]),
-            'Disapprove' if obj.approved else 'Approve'
+            'رد کردن' if obj.approved else 'تایید'
         )
+    #
+    # def wrapped_content(self, obj):
+    #     return format_html(
+    #         f'<div style="width: 400px; word-wrap: break-word">{obj.content}</div>'
+    #     )
+    # wrapped_content.short_description = 'محتوا'   # Column header
 
-    def wrapped_content(self, obj):
-        return format_html(
-            f'<div style="width: 400px; word-wrap: break-word">{obj.content}</div>'
-        )
-
-    toggle_is_approved.short_description = 'Is Approved'
+    toggle_is_approved.short_description = 'تایید شده'

@@ -5,7 +5,7 @@ from django.db.models.signals import post_migrate
 class SiteConfigsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'site_configs'
-    verbose_name = '1. Site Configs'
+    verbose_name = '1. پیکربندی سایت'
 
     def ready(self):
         post_migrate.connect(create_required_objects, sender=self)
