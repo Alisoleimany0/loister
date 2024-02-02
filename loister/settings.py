@@ -13,8 +13,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 
-from django.conf import locale
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -34,6 +32,7 @@ ALLOWED_HOSTS = ['127.0.0.1',
 # Application definition
 
 INSTALLED_APPS = [
+    'simpleui',
     'django.contrib.admin',
     'django.contrib.humanize',
     'django.contrib.auth',
@@ -52,7 +51,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -116,7 +114,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'fa-IR'
+LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'fa-IR'
 
 TIME_ZONE = 'Asia/Tehran'
 
@@ -125,8 +124,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-LOCALE_PATHS = BASE_DIR / 'locale',
 
 USE_THOUSAND_SEPARATOR = True
 
@@ -153,7 +150,7 @@ HTML_MINIFY = True
 
 CKEDITOR_CONFIGS = {
     'default': {
-        'skin': 'moono',
+        # 'skin': 'moono',
         # 'skin': 'office2013',
         'toolbar_Basic': [
             ['Source', '-', 'Bold', 'Italic']
