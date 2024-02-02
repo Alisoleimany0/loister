@@ -25,7 +25,8 @@
                             </ul>
                             <div class="search-blog mt-5">
                                 <form class="global-form" action="{{ request.path }}">
-                                    <input type="text" name="search" value="{{ last_query.search }}" placeholder="جستجوی محصول..." class="m-0">
+                                    <input type="text" name="search" value="{{ last_query.search }}"
+                                           placeholder="جستجوی محصول..." class="m-0">
                                     {% for key, value in last_query.items %}
                                         {% if not key == "search" and not key == "ptype" %}
                                             <input type="hidden" name="{{ key }}" value="{{ value }}">
@@ -45,14 +46,17 @@
                         </span>
                             <form class="global-form" action="{{ request.path }}">
                                 {% for ptype in ptypes %}
+                                    <!--@formatter:off-->
                                     <input class="form-check-input" type="checkbox" name="ptype"
                                            value="{{ ptype.name }}"
                                            id="flexCheckDefault"
                                             {% for key, list in last_query.items %}
                                                 {% if ptype.name in list %}
-                                           checked
+                                                    checked
                                                 {% endif %}
                                             {% endfor %}>
+                                        <!--@formatter:off-->
+
                                     <label class="form-check-label" for="flexCheckDefault">
                                         {{ ptype.name }}
                                     </label>
@@ -85,28 +89,17 @@
                             <div class="col-12">
                                 <div class="pagination-box my-3">
                                     {% for i in products.paginator.page_range %}
+                                        <!--@formatter:off-->
+
                                         <{% if i == products.number %}span{% else %}a{% endif %}
                                                 {% if i == products.number %}
                                                     class="current"
                                                 {% else %}
-                                                    href="?page=
-
-
-
-
-
-
-
-
-
-
-
-
-                                                            {{ i }}{% if category %}&cat=
-                                {{ category.id }}{% endif %}{% if last_query %}&query={{ last_query }}{% endif %}"
+                                                    href="?page={{ i }}{% for key, value in last_query.items %}{% if not key == "page" and not key == "ptype" %}&{{ key }}={{ value }}{% elif key == "ptype" %}{% for val in value %}&{{ key }}={{ val }}{% endfor %}{% endif %}{% endfor %}"
                                                 {% endif %}>
-                                            {{ i }}
+                                        {{ i }}
                                         </{% if i == products.number %}span{% else %}a{% endif %}>
+                                        <!--@formatter:on-->
                                     {% endfor %}
                                 </div>
                             </div>

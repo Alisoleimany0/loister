@@ -345,6 +345,11 @@ def browse_view(request, ):
     if request.GET.get("search", None):
         products = products.filter(name__iregex=request.GET['search'])
         search = request.GET['search']
+    if request.GET.get("ptype", None):
+        regex = ""
+        for ptype in request.GET.getlist("ptype"):
+            regex += ptype + "|"
+        products = products.filter(type__name__iregex=regex[:-1])
     paginator = Paginator(products, 10)
     try:
         page_num = request.GET.get('page')
@@ -358,7 +363,6 @@ def browse_view(request, ):
 
     last_query = request.GET.dict()
     last_query['ptype'] = request.GET.getlist('ptype')
-
     context = {"categories": all_categories, 'products': products, 'category': category, 'search': search,
                'last_query': last_query, 'ptypes': ptypes}
 
