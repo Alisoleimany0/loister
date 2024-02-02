@@ -129,7 +129,7 @@ class Order(models.Model):
     invoice_date_time = jmodels.jDateTimeField(default=timezone.now, verbose_name="تاریخ و زمان صدور فاکتور")
     total_price = models.DecimalField(verbose_name="قیمت کل", max_digits=12, decimal_places=0)
     delivery_phone_number = models.CharField(verbose_name="شماره تلفن تحویل‌گیرنده", max_length=15)
-    district = models.CharField(verbose_name="منطقه", max_length=20)
+    district = models.CharField(verbose_name="استان", max_length=20)
     city = models.CharField(verbose_name="شهر", max_length=20)
     address_text = models.TextField(verbose_name="آدرس")
     postal_code = models.CharField(verbose_name="کد پستی", default=0, null=False, max_length=10)

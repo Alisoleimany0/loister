@@ -8,8 +8,8 @@
                     <div class="global-form bg-white my-5 p-5 rounded">
                         <h2>404</h2>
                         <p>متاسفانه محتوای مد نظر یافت نشد! می توانید جستجوی مجدد کنید</p>
-                        <form action="">
-                            <input type="text" placeholder="جستجو کنید...">
+                        <form action="{% url 'browse' %}">
+                            <input type="text" name="search" placeholder="جستجو کنید...">
                             <button><i class="bi bi-search"></i></button>
                         </form>
                     </div>
