@@ -72,7 +72,8 @@ class SiteInfo(models.Model):
 
 class ETrustSymbol(models.Model):
     name = models.CharField(max_length=50)
-    image = models.ImageField()
+    image = models.ImageField(null=True)
+    image_link = models.CharField(max_length=200, null=True)
     link = models.CharField(max_length=200)
 
     def __str__(self):

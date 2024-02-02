@@ -180,9 +180,11 @@
                         {% for symbol in symbols %}
                             <a class="logo-footer" referrerpolicy="origin" rel="nofollow" target="_blank"
                                href="{% if not 'https://' in symbol.link and not 'http://' in symbol.link %}https://{% endif %}{{ symbol.link }}">
-                                <img referrerpolicy="origin" width="78px" height="82px" src="{{ symbol.image.url }}"
+                                <!--@formatter:off-->
+                                <img referrerpolicy="origin" width="78px" height="82px" src="{% if symbol.image %}{{ symbol.image.url }}{% else %}{{ symbol.image_url }}{% endif %}"
                                      alt="{{ symbol.name }}"
                                      style="cursor:pointer">
+                                <!--@formatter:on-->
                             </a>
                         {% endfor %}
                     </ul>

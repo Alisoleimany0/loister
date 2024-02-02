@@ -127,9 +127,7 @@ class OrderAdmin(admin.ModelAdmin):
 
     def formatted_date(self, obj):
         return obj.checkout_date.strftime('%Y-%m-%d %H:%M')  # Format the date as you like
-    formatted_date.admin_order_field = 'checkout_date'  # Allows column order sorting
-    formatted_date.short_description = 'Formatted Date'   # Column header
-
+    formatted_date.short_description = 'تاریخ پرداخت'   # Column header
 
     def get_queryset(self, request):
         qs = super(OrderAdmin, self).get_queryset(request).order_by('order_status', '-checkout_date')

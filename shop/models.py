@@ -11,41 +11,43 @@ from customer.models import CustomerProfile
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=20)
+    name = models.CharField(verbose_name="نام", max_length=20)
 
     class Meta:
-        verbose_name_plural = "3. Category"
+        verbose_name_plural = "3. دسته بندی ها"
+        verbose_name = "دسته بندی"
 
     def __str__(self):
         return self.name
 
 
 class ProductType(models.Model):
-    name = models.CharField(max_length=20)
+    name = models.CharField(verbose_name="نام", max_length=20)
 
     class Meta:
-        verbose_name_plural = "4. Product Type"
+        verbose_name_plural = "4. نوع های محصول"
 
     def __str__(self):
         return self.name
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=40)
-    slug = models.SlugField(unique=True, allow_unicode=True, max_length=255)
-    type = models.ForeignKey(ProductType, blank=True, null=True, on_delete=models.SET_NULL)
-    display_description = models.CharField(max_length=500, default='', blank=True, null=True)
+    name = models.CharField(verbose_name="نام محصول", max_length=40)
+    slug = models.SlugField(verbose_name="slug", unique=True, allow_unicode=True, max_length=255)
+    type = models.ForeignKey(ProductType, blank=True, null=True, on_delete=models.SET_NULL, verbose_name="نوع")
+    display_description = models.CharField(verbose_name="توضیحات نمایشی", max_length=500, default='', blank=True, null=True)
     description = RichTextUploadingField(null=True, blank=True)
-    category = models.ManyToManyField(Category, blank=True)
-    release_date = models.DateField(default=timezone.now)
-    views = models.BigIntegerField(default=0)
-    star = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
-    price = models.DecimalField(default=0, decimal_places=0, max_digits=12)
-    is_on_sale = models.BooleanField(default=False)
-    sale_price = models.DecimalField(default=0, decimal_places=0, max_digits=12)
+    category = models.ManyToManyField(Category, blank=True, verbose_name="دسته‌بندی")
+    release_date = models.DateField(verbose_name="تاریخ انتشار", default=timezone.now)
+    views = models.BigIntegerField(verbose_name="تعداد بازدید", default=0)
+    star = models.IntegerField(verbose_name="امتیاز", default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
+    price = models.DecimalField(verbose_name="قیمت", default=0, decimal_places=0, max_digits=12)
+    is_on_sale = models.BooleanField(verbose_name="موجود در جشنواره", default=False)
+    sale_price = models.DecimalField(verbose_name="قیمت فروش", default=0, decimal_places=0, max_digits=12)
 
     class Meta:
-        verbose_name_plural = "1. Product"
+        verbose_name_plural = "1. محصول ها"
+        verbose_name = "محصول"
 
     @property
     def sell_price(self):
@@ -77,21 +79,15 @@ class Product(models.Model):
 
 
 class ProductDetail(models.Model):
-    product = models.ForeignKey(
-        Product,
-        on_delete=models.CASCADE
-    )
-    title = models.CharField(max_length=50)
-    details = models.CharField(max_length=200)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="محصول")
+    title = models.CharField(verbose_name="عنوان", max_length=50)
+    details = models.CharField(verbose_name="جزئیات", max_length=200)
 
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(
-        Product,
-        on_delete=models.CASCADE
-    )
-    image = models.ImageField(null=True, upload_to='upload/product/')
-    is_default = models.BooleanField(default=False)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="محصول")
+    image = models.ImageField(null=True, upload_to='upload/product/', verbose_name="تصویر")
+    is_default = models.BooleanField(default=False, verbose_name="تصویر پیش‌فرض")
 
     def save(self, *args, **kwargs):
         images = ProductImage.objects.filter(product=self.product)
@@ -101,10 +97,10 @@ class ProductImage(models.Model):
 
 
 class ProductOffers(models.Model):
-    products = models.ManyToManyField(Product, blank=True)
-    finish_time = models.DateTimeField(default=timezone.now)
-    title = models.CharField(max_length=100, null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
+    products = models.ManyToManyField(Product, blank=True, verbose_name="محصولات")
+    finish_time = models.DateTimeField(default=timezone.now, verbose_name="زمان پایان")
+    title = models.CharField(max_length=100, null=True, blank=True, verbose_name="عنوان")
+    description = models.TextField(null=True, blank=True, verbose_name="توضیحات")
 
     def save(self, *args, **kwargs):
         # make sure we're not updating
@@ -113,8 +109,8 @@ class ProductOffers(models.Model):
         return super(ProductOffers, self).save(*args, **kwargs)
 
     class Meta:
-        verbose_name = "Product Offers"
-        verbose_name_plural = "Product Offers"
+        verbose_name = "پیشنهاد"
+        verbose_name_plural = "پشنهاد ها"
 
     def __str__(self):
         return "Product Offers"
@@ -126,25 +122,23 @@ class Order(models.Model):
         ("1processing", "پرداخت شده"),
         ("3sent", "ارسال شده"),
     )
-    customer = models.ForeignKey(
-        CustomerProfile,
-        null=True,
-        on_delete=models.SET_NULL)
-    session = models.CharField(max_length=100, null=True)
-    checkout_date = jmodels.jDateTimeField(blank=True, default=timezone.now)
-    customer_full_name = models.CharField(max_length=50, null=True, blank=True)
-    invoice_date_time = jmodels.jDateTimeField(default=timezone.now)
-    total_price = models.IntegerField()
-    delivery_phone_number = models.IntegerField()
-    district = models.CharField(max_length=20)
-    city = models.CharField(max_length=20)
-    address_text = models.TextField()
-    postal_code = models.IntegerField(null=False, default=0)
-    additional_info = models.TextField(blank=True)
-    order_status = models.CharField(choices=ORDER_STATUS_CHOICES, max_length=20)
+    customer = models.ForeignKey(CustomerProfile, null=True, on_delete=models.SET_NULL, verbose_name="مشتری")
+    session = models.CharField(max_length=100, null=True, verbose_name="Session")
+    checkout_date = jmodels.jDateTimeField(blank=True, default=timezone.now, verbose_name="تاریخ پرداخت")
+    customer_full_name = models.CharField(max_length=50, null=True, blank=True, verbose_name="نام و نام خانوادگی")
+    invoice_date_time = jmodels.jDateTimeField(default=timezone.now, verbose_name="تاریخ و زمان صدور فاکتور")
+    total_price = models.DecimalField(verbose_name="قیمت کل", max_digits=12, decimal_places=0)
+    delivery_phone_number = models.CharField(verbose_name="شماره تلفن تحویل‌گیرنده", max_length=15)
+    district = models.CharField(verbose_name="منطقه", max_length=20)
+    city = models.CharField(verbose_name="شهر", max_length=20)
+    address_text = models.TextField(verbose_name="آدرس")
+    postal_code = models.CharField(verbose_name="کد پستی", default=0, null=False, max_length=10)
+    additional_info = models.TextField(verbose_name="اطلاعات تکمیلی", blank=True)
+    order_status = models.CharField(choices=ORDER_STATUS_CHOICES, max_length=20, verbose_name="وضعیت سفارش")
 
     class Meta:
-        verbose_name_plural = "2. Order"
+        verbose_name_plural = "2. سفارش ها"
+        verbose_name = "سفارش"
         ordering = ('-checkout_date',)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
@@ -155,19 +149,12 @@ class Order(models.Model):
 
 
 class BoughtProduct(models.Model):
-    order = models.ForeignKey(
-        Order,
-        on_delete=models.CASCADE
-    )
-    product = models.ForeignKey(
-        Product,
-        null=True,
-        on_delete=models.SET_NULL
-    )
-    name = models.CharField(max_length=50)
-    price = models.IntegerField()
-    total_price = models.IntegerField()
-    quantity = models.IntegerField()
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="سفارش")
+    product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL, verbose_name="محصول")
+    name = models.CharField(verbose_name="نام", max_length=50)
+    price = models.DecimalField(verbose_name="قیمت", max_digits=12, decimal_places=0)
+    total_price = models.DecimalField(verbose_name="قیمت کل", max_digits=12, decimal_places=0)
+    quantity = models.PositiveIntegerField(verbose_name="تعداد")
 
 
 def pre_product_image_save(sender, instance, **kwargs):
