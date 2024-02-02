@@ -175,7 +175,12 @@ def add_cart_view(request):
             cart_product = CartProductQuantity.objects.get_or_create(product=product, cart=cart.first())[0]
             cart_product.quantity += int(request.GET['quantity'])
             cart_product.save()
-            return redirect("product", product.slug)
+            return HttpResponse("""
+                               <script>
+                               sessionStorage.setItem('reload', 'true');
+                               history.back();
+                               </script>
+                               """)
     else:
         if not request.session.session_key:
             request.session.save()
@@ -185,8 +190,12 @@ def add_cart_view(request):
             cart_product = CartProductQuantity.objects.get_or_create(product=product, cart=anonymous_cart[0])[0]
             cart_product.quantity += int(request.GET['quantity'])
             cart_product.save()
-            return redirect("product", product.slug)
-
+            return HttpResponse("""
+                               <script>
+                               sessionStorage.setItem('reload', 'true');
+                               history.back();
+                               </script>
+                               """)
 
 @expire_session
 def remove_cart_item_view(request):

@@ -36,7 +36,7 @@ class Product(models.Model):
     slug = models.SlugField(verbose_name="slug", unique=True, allow_unicode=True, max_length=255)
     type = models.ForeignKey(ProductType, blank=True, null=True, on_delete=models.SET_NULL, verbose_name="نوع")
     display_description = models.CharField(verbose_name="توضیحات نمایشی", max_length=500, default='', blank=True, null=True)
-    description = RichTextUploadingField(null=True, blank=True)
+    description = RichTextUploadingField(null=True, blank=True, verbose_name='توضیحات')
     category = models.ManyToManyField(Category, blank=True, verbose_name="دسته‌بندی")
     release_date = models.DateField(verbose_name="تاریخ انتشار", default=timezone.now)
     views = models.BigIntegerField(verbose_name="تعداد بازدید", default=0)

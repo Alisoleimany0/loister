@@ -10,9 +10,11 @@
             <div class="page-title-box">
                 <div class="bread-crumb-box">
                     <ol>
-                        <li><a href="./index.html">خانه</a></li>
-                        <li><a href="#">خشکبار</a></li>
-                        <li><span>آجیل 500 گرمی</span></li>
+                        <li><a href="{% url 'home' %}">خانه</a></li>
+                        {% if product.category.first %}
+                            <li><a href="{% url 'browse' %}?cat={{ product.category.first.id }}">{{ product.category.first }}</a></li>
+                        {% endif %}
+                        <li><span>{{ product.name }}</span></li>
                     </ol>
                 </div>
             </div>

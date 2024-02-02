@@ -14,13 +14,10 @@
             <!-- Product details-->
             <figcaption class="position-absolute w-100 h-100 text-center">
                 <ul class="p-0">
-                    <li class="d-inline-block"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        title="مشاهده محصول">
-                        <a href="{% url 'product' product.slug %}"
+                    <li class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top" title="افزودن به سبد خرید">
+                        <a href="{% url 'add_cart' %}?quantity=1&id={{ product.id }}"
                            class="d-inline-block rounded">
-                            <i class="bi bi-eye"></i>
+                            <i class="bi bi-cart4">{{ number_in_cart }}</i>
                         </a>
                     </li>
                     {% with user|is_favourite:product as is_favourite %}
