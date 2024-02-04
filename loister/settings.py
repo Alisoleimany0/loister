@@ -32,7 +32,9 @@ ALLOWED_HOSTS = ['127.0.0.1',
 # Application definition
 
 INSTALLED_APPS = [
-    'simpleui',
+    # 'simpleui',
+    'admin_interface',
+    'colorfield',
     'django.contrib.admin',
     'django.contrib.humanize',
     'django.contrib.auth',
@@ -48,6 +50,7 @@ INSTALLED_APPS = [
     'shop.apps.ShopConfig',
     'customer.apps.CustomerConfig',
     'cart.apps.CartConfig',
+    'django_user_agents',
 ]
 
 MIDDLEWARE = [
@@ -58,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 ROOT_URLCONF = 'loister.urls'
@@ -112,8 +116,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-# LANGUAGE_CODE = 'fa-IR'
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fa-IR'
 
 TIME_ZONE = 'Asia/Tehran'
 

@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 
 from customer.models import Review, CustomerProfile
+from loister import utils
 
 
 def toggle_is_approved(request, pk):
@@ -24,9 +25,4 @@ def update_profile_view(request):
         request.user.set_password(request.POST['password'])
     request.user.save()
     customer.save()
-    return HttpResponse("""
-                       <script>
-                       sessionStorage.setItem('reload', 'true');
-                       history.back();
-                       </script>
-                       """)
+    return utils.get_back_reload_response(request)

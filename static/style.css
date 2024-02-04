@@ -9,9 +9,13 @@
 }
 
 body, html {
+    height: 100%;
     font-family: 'Mikhak', serif;
     background-color: #faf4f4;
     font-size: 13px;
+    display: flex;
+    flex-direction: column;
+
 }
 
 li {
@@ -27,6 +31,13 @@ img {
 }
 
 header {
+    position: fixed;
+    width: 100%;
+    z-index: 10;
+}
+
+.header-gap {
+    padding-bottom: 6em;
 }
 
 header .top-access a {
@@ -35,20 +46,10 @@ header .top-access a {
 }
 
 header .top-menu {
-    /*z-index: 10;*/
-    height: 57px;
-    position: relative;
-    /*backdrop-filter: blur(14px);*/
-    /*background-color: rgba(68, 68, 68, 0.4);*/
-    /*box-shadow: 0 3px 8px -4px #000000;*/
-    /*position: fixed;*/
-    width: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 99;
-    background: #B79891; /* fallback for old browsers */
-    background-image: linear-gradient(135deg, #f35959 10%, #ff4343 100%); /*transition: top 0.2s ease-in-out;*/
+    /* fallback for old browsers */
+    /*transition: top 0.2s ease-in-out;*/
+    background: #B79891 linear-gradient(135deg, #f35959 10%, #ff4343 100%);
+    z-index: 1;
 }
 
 header .main-menu ul {
@@ -141,6 +142,11 @@ header .slider-box, header .page-title-box {
     font-size: 16px;
     width: 80%;
     font-weight: bold;
+}
+
+.slider-box {
+    top: 10em;
+    /*margin: 20px;*/
 }
 
 header .slider-box::after {
@@ -306,7 +312,7 @@ footer {
     /*background-repeat: repeat;*/
     /*background-size: 290px auto;*/
     /*background-position: center center;*/
-    background-image: linear-gradient(135deg, #8aaede 10%, #2964b0 100%);
+    background: #B79891 linear-gradient(135deg, #f35959 10%, #ff4343 100%);
     color: #eee;
     font-size: 12px;
 }
@@ -335,7 +341,7 @@ footer::before {
     color: #ffffff;
     font-size: 16px;
     transform: rotate(45deg);
-    background-image: linear-gradient(135deg, #8aaede 10%, #2964b0 100%);
+    background: #B79891 linear-gradient(135deg, #f35959 10%, #ff4343 100%);
 }
 
 footer::after {
@@ -351,7 +357,7 @@ footer::after {
     color: #ffffff;
     font-size: 16px;
     transform: rotate(135deg);
-    background-color: rgba(138, 174, 222, 0.65);
+    background-color: rgba(246, 205, 222, 0.65);
     background-image: url("img/svg/arrow-down-left-square.svg");
     background-position: center center;
     background-repeat: no-repeat;
@@ -576,6 +582,10 @@ footer .social-ul li a {
 .product-content .tab-content .review-item-box img {
     height: 40px;
     object-fit: contain;
+}
+
+.search-bar {
+    display: flex;
 }
 
 .global-form input[type="text"],
@@ -852,4 +862,12 @@ footer .social-ul li a {
     padding: 50px;
     text-align: center;
     color: #fff;
+}
+
+#alert-toast {
+    font-size: 1.1em;
+    position: fixed;
+    top: 5px;
+    right: 10px;
+    z-index: 1000; /* Adjust the z-index as needed to make sure it appears on top of other elements */
 }

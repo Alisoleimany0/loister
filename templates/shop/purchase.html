@@ -26,27 +26,11 @@
                                             <img src="{{ item.product.default_image.image.url }}"
                                                  alt="{{ item.product.name }}">
                                         </td>
-                                        <td>{{ item.quantity|intcomma }}</td>
-                                        <td>{{ item.total_price|intcomma }} تومان</td>
+                                        <td>{{ item.quantity|intcomma:False }}</td>
+                                        <td>{{ item.total_price|intcomma:False }} تومان</td>
                                     </tr>
                                 {% endfor %}
                             </table>
-                        </div>
-                        <div class="purchase-note bg-light p-3 rounded mt-3">
-                            <span class="d-block pb-3 mb-3 border-bottom">قوانین</span>
-                            <p>
-                                لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان
-                                گرافیک
-                                است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط
-                                فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد.
-                            </p>
-                            <div class="form-check my-3">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked"
-                                       checked>
-                                <label class="form-check-label" for="flexCheckChecked">
-                                    پذیرش قوانین سایت
-                                </label>
-                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -169,22 +153,47 @@
                             </div>
                         </div>
                         <h5 class="m-3 p-2 border-bottom heading">تغییر آدرس</h5>
-                        <form class="global-form" action="{% url 'payment_redirect' %}" method="post">
+                        <form class="global-form" action="{% url 'payment_redirect' %}" method="post"
+                              style="display: flex; flex-direction: row; flex-wrap: wrap">
                             {% csrf_token %}
                             <input type="text" name="full_name" placeholder="نام و نام خانوادگی را وارد کنید"
-                                   value="{% if user.is_authenticated %}{{ customer.full_name }}{% endif %}">
+                                   value="{% if user.is_authenticated %}{{ customer.full_name }}{% endif %}"
+                                   style="width: max-content; margin: auto">
                             <input type="text" name="state" id="final_state"
-                                   placeholder="استان را وارد کنید">
-                            <input type="text" name="city" id="final_city" placeholder="شهر را وارد کنید">
+                                   placeholder="استان را وارد کنید" style="width: max-content; margin: auto">
+                            <input type="text" name="city" id="final_city" placeholder="شهر را وارد کنید"
+                                   style="width: max-content; margin: auto">
                             <input type="text" name="address" id="final_address" placeholder="آدرس دقیق را وارد کنید">
                             <input type="text" name="postal_code" id="final_postal_code"
                                    placeholder="کد پستی را وارد کنید">
                             <input type="text" name="mobile" id="final_mobile" placeholder="شماره موبایل را وارد کنید">
                             <textarea type="text" name="additional_info" placeholder="توضیحات اضافی"></textarea>
-                            <button id="submit_button" class="bg-danger">{{ sub_total|intcomma }} تومان - پرداخت
+                            <div class="purchase-note bg-light p-3 rounded mt-3" style="width: 100%;">
+                                <label class="form-check-label" for="flexCheckChecked">
+                                    <input id="rulesCheckBox" class="form-check-input" type="checkbox">
+                                </label>
+                                پذیرش <a href="{% url 'rules' %}" target="_blank">قوانین</a> سایت
+                            </div>
+                            <button disabled="disabled" id="submit_button"
+                                    class="btn btn-dark">{{ sub_total|intcomma:False }} تومان - پرداخت
                                 انلاین
                             </button>
                         </form>
+                        <script>
+                            document.getElementById('rulesCheckBox').addEventListener('change', function () {
+                                if (this.checked) {
+                                    let submitButton = document.getElementById('submit_button');
+                                    submitButton.removeAttribute('disabled');
+                                    submitButton.classList.remove('btn-dark');
+                                    submitButton.classList.add('bg-danger');
+                                } else {
+                                    let submitButton = document.getElementById('submit_button');
+                                    submitButton.disabled = true;
+                                    submitButton.classList.add('btn-dark');
+                                    submitButton.classList.remove('bg-danger');
+                                }
+                            })
+                        </script>
                     </div>
                 </div>
             </div>

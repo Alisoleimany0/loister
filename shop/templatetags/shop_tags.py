@@ -1,6 +1,6 @@
 from django import template
 
-from cart.models import CartProductQuantity
+from cart.models import CartProductQuantity, Cart
 from customer.models import CustomerProfile, Review
 from shop.models import Product
 register = template.Library()
@@ -25,11 +25,6 @@ def review_reply_widget(parent: Review, product: Product):
 def product_card_widget(product: Product, user, request, *args):
     context = {'product': product, 'user': user, 'request': request}
     try:
-        cpq = CartProductQuantity.objects.filter(cart__customer__user=request.user, product=product).first()
-        if cpq:
-            context['number_in_cart'] = cpq.quantity
-        else:
-            context['number_in_cart'] = 0
         if args[0]:
             context['remove_div'] = args[0]
     except IndexError:

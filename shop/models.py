@@ -44,6 +44,7 @@ class Product(models.Model):
     price = models.DecimalField(verbose_name="قیمت", default=0, decimal_places=0, max_digits=12)
     is_on_sale = models.BooleanField(verbose_name="موجود در جشنواره", default=False)
     sale_price = models.DecimalField(verbose_name="قیمت فروش", default=0, decimal_places=0, max_digits=12)
+    max_in_cart = models.IntegerField(verbose_name="حداکثر تعداد در سبد خرید", default=1)
 
     class Meta:
         verbose_name_plural = "1. محصول ها"
@@ -139,7 +140,6 @@ class Order(models.Model):
     class Meta:
         verbose_name_plural = "2. سفارش ها"
         verbose_name = "سفارش"
-        ordering = ('-checkout_date',)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super().save(force_insert, force_update, using, update_fields)

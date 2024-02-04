@@ -1,25 +1,23 @@
 # -*- coding: utf-8 -*-
-import sys
+from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError, SuspiciousOperation, ObjectDoesNotExist
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, Http404
-from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
+from django.shortcuts import render, redirect
 from django.utils import timezone
-from site_configs.models import SocialLink, ContactUs, SiteInfo
 from django.utils.datastructures import MultiValueDictKeyError
-from django.views.decorators.http import require_http_methods
 
-from customer.models import CustomerProfile, CustomerAddress, Review
-from site_configs.models import HomepageCover
-from .forms import SignupForm
-from .models import Category, Product, ProductImage, ProductOffers, ProductDetail, Order, BoughtProduct, ProductType
 from cart.models import Cart, CartProductQuantity
+from customer.models import CustomerProfile, CustomerAddress, Review
+from loister import utils
+from site_configs.models import HomepageCover
+from .models import Category, Product, ProductImage, ProductOffers, ProductDetail, Order, BoughtProduct, ProductType
 
 
 def expire_session(func):
@@ -87,12 +85,13 @@ def product_single(request, slug):
         context['in_cart'] = number_in_cart
     except ObjectDoesNotExist:
         pass
-
+    related_products = Product.objects.filter(category__in=product.category.all()).distinct()
     context['product'] = product
     context['product_images'] = images
     context['category'] = category
     context['product_properties'] = properties
     context['user'] = request.user
+    context['related_products'] = related_products
     return render(request, "shop/product_single.html", context)
 
 
@@ -112,20 +111,17 @@ def logout_user(request):
 def signup_user(request):
     if request.POST:
         if not User.objects.filter(username=request.POST['username']).exists():
+            if not request.POST['username'].isalnum():
+                return utils.get_toast_response(request, "نام کاربری فقط میتواند ترکیبی از اعداد و حروف انگلیسی باشد", "danger")
+            validate_password(request.POST['password'])
             user = User.objects.create_user(username=request.POST['username'], password=request.POST['password'])
             user.first_name = "کاربر"
             user.save()
             CustomerProfile.objects.create(user=user)
             login(request, user)
-            return HttpResponse("""
-                               <script>
-                               sessionStorage.setItem('reload', 'true');
-                               history.back();
-                               </script>
-                               """)
+            return utils.get_back_reload_response(request)
 
-        return HttpResponse("<script>history.back();</script>")
-    # TODO fix
+        return utils.get_toast_response(request, "این نام کاربری در سیستم وجود دارد. نام کاربری دیگری انتخاب کنید", "danger")
     raise Http404
 
 
@@ -151,11 +147,13 @@ def cart_view(request):
     else:
         if not request.session.session_key:
             request.session.save()
-        if Cart.objects.filter(session=request.session.session_key, customer=None):
-            cart = Cart.objects.get(session=request.session.session_key, customer=None)
-        else:
-            cart = Cart.objects.create(session=request.session.session_key)
-        items = CartProductQuantity.objects.filter(cart=cart)
+        # if Cart.objects.filter(session=request.session.session_key, customer=None):
+        #     anonymous_cart = Cart.objects.get(session=request.session.session_key, customer=None)
+        # else:
+        #     anonymous_cart = Cart.objects.create(session=request.session.session_key)
+        anonymous_cart = Cart.objects.get_or_create(session=request.session.session_key, customer=None)[0]
+
+        items = CartProductQuantity.objects.filter(cart=anonymous_cart)
         sub_total = 0
         for item in items:
             sub_total += item.total_price
@@ -170,17 +168,14 @@ def add_cart_view(request):
             product = get_object_or_404(Product, id=request.GET['id'])
             cart = Cart.objects.filter(customer__user=request.user)
             if not cart:
-                raise SuspiciousOperation()
+                return utils.get_toast_response(request, "خطای ناشناخته", "danger")
 
             cart_product = CartProductQuantity.objects.get_or_create(product=product, cart=cart.first())[0]
             cart_product.quantity += int(request.GET['quantity'])
+            if cart_product.quantity > cart_product.product.max_in_cart:
+                return utils.get_toast_response(request, f"سقف سبد خرید این محصول {cart_product.product.max_in_cart} عدد است", "warning")
             cart_product.save()
-            return HttpResponse("""
-                               <script>
-                               sessionStorage.setItem('reload', 'true');
-                               history.back();
-                               </script>
-                               """)
+            return utils.get_back_reload_response(request)
     else:
         if not request.session.session_key:
             request.session.save()
@@ -189,13 +184,11 @@ def add_cart_view(request):
             anonymous_cart = Cart.objects.get_or_create(session=request.session.session_key, customer=None)
             cart_product = CartProductQuantity.objects.get_or_create(product=product, cart=anonymous_cart[0])[0]
             cart_product.quantity += int(request.GET['quantity'])
+            if cart_product.quantity > cart_product.product.max_in_cart:
+                return utils.get_toast_response(request, f"سقف سبد خرید این محصول {cart_product.product.max_in_cart} عدد است", "warning")
             cart_product.save()
-            return HttpResponse("""
-                               <script>
-                               sessionStorage.setItem('reload', 'true');
-                               history.back();
-                               </script>
-                               """)
+            return utils.get_back_reload_response(request)
+
 
 @expire_session
 def remove_cart_item_view(request):
@@ -281,7 +274,7 @@ def payment_confirmation_view(request):
         else:
             CartProductQuantity.objects.filter(cart__session=request.session.session_key, cart__customer=None).delete()
 
-        return redirect("home")
+        return render(request, "payment_result.html")
 
 
 @expire_session
@@ -302,12 +295,7 @@ def add_address_view(request):
                                        city=request.POST.get("city"),
                                        address=request.POST.get("address"),
                                        postal_code=request.POST.get("postal_code"))
-        return HttpResponse("""
-                           <script>
-                           sessionStorage.setItem('reload', 'true');
-                           history.back();
-                           </script>
-                           """)
+        return utils.get_back_reload_response(request)
     return Http404
 
 
@@ -315,12 +303,7 @@ def add_address_view(request):
 def remove_address_view(request, pk):
     if request.user.is_authenticated:
         get_object_or_404(CustomerAddress, id=pk).delete()
-        return HttpResponse("""
-                            <script>
-                            sessionStorage.setItem('reload', 'true');
-                            history.back();
-                            </script>
-                            """)
+        return utils.get_back_reload_response(request)
     return redirect("logup")
 
 
@@ -336,7 +319,7 @@ def profile_info_view(request):
 @expire_session
 def profile_purchase_history(request):
     if request.user.is_authenticated:
-        orders = Order.objects.filter(customer__user=request.user)
+        orders = Order.objects.filter(customer__user=request.user).order_by('-checkout_date')
         context = {'orders': orders}
         return render(request, 'user_profile/purchase-history.html', context)
     return redirect("logup")
@@ -411,15 +394,25 @@ def logup_view(request):
 @expire_session
 def new_review(request, slug):
     if request.POST and request.user.is_authenticated:
-        try:
-            Review.objects.create(product=get_object_or_404(Product, slug=slug),
-                                  author=get_object_or_404(CustomerProfile, user=request.user),
-                                  parent_id=request.POST.get("parent", None), rating=request.POST.get("rating", None),
-                                  content=request.POST.get('content', None))
-            return redirect('product', slug)
-        except MultiValueDictKeyError:
-            pass
-    raise SuspiciousOperation()
+        if request.POST.get("rate", None) or request.POST.get("content", None):
+            if Review.objects.filter(review__author__user=request.user,
+                                     submit_time__lte=timezone.now() - timedelta(hours=1)):
+                return utils.get_toast_response(request, "شما به تازگی نظر ثبت کرده اید", "warning")
+            print(timezone.now())
+            print(timezone.now() - timedelta(hours=1))
+            try:
+                Review.objects.create(product=get_object_or_404(Product, slug=slug),
+                                      author=get_object_or_404(CustomerProfile, user=request.user),
+                                      parent_id=request.POST.get("parent", None),
+                                      rating=request.POST.get("rating", None),
+                                      content=request.POST.get('content', None))
+                return redirect('product', slug)
+            except MultiValueDictKeyError:
+                pass
+        else:
+            return utils.get_toast_response(request, "حداقل یکی از فیلد های امتیاز یا نظر باید پر شود", "danger")
+
+    return utils.get_toast_response(request, "برای نظر دادن وارد حساب کاربری شوید", "warning")
 
 
 @expire_session
@@ -435,12 +428,8 @@ def toggle_wishlist(request, is_favourite, pk):
     # url_with_fragment = f'{url}#product{pk}'
     # # Redirect to the URL with the fragment
     # return redirect(url_with_fragment)
-    return HttpResponse("""
-                        <script>
-                        sessionStorage.setItem('reload', 'true');
-                        history.back();
-                        </script>
-                        """)
+        return utils.get_back_reload_response(request)
+    return utils.get_toast_response(request, "برای اضافه کردن به علاقه مندی وارد شوید", 'danger')
 
 
 def order_set_complete_view(request, pk):
@@ -449,3 +438,7 @@ def order_set_complete_view(request, pk):
     order.save()
     # return redirect(reverse('admin:shop_order_changelist'))
     return HttpResponse("<script>history.back();</script>")
+
+
+def order_details_view(request):
+    return HttpResponse("none")

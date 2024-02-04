@@ -2,11 +2,10 @@ from django import forms
 from django.contrib import admin
 from django.contrib.admin.widgets import AdminFileWidget
 from django.db import models
-from django.db.models import F, QuerySet
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.html import conditional_escape, format_html
 from django.utils.safestring import mark_safe
+from django_jalali.admin.filters import JDateFieldListFilter
 
 from .models import ProductDetail, Product, Category, Order, ProductImage, \
     ProductOffers, ProductType
@@ -89,6 +88,7 @@ class ProductAdminForm(forms.ModelForm):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'type']
     prepopulated_fields = {'slug': ('name',), }
+    filter_horizontal = ['category']
     inlines = ProductDetailInline, ProductImageInline
     form = ProductAdminForm
 
@@ -113,13 +113,16 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'customer_full_name', 'delivery_phone_number', 'formatted_date', 'total_price',
                     'set_to_complete']
     search_fields = ['customer_full_name', 'id', 'checkout_date']
-    list_filter = ['checkout_date']
+
+    list_filter = (
+        ('checkout_date', JDateFieldListFilter),
+    )
     readonly_fields = ['customer', 'session']
 
     def set_to_complete(self, obj):
         if obj.order_status == Order.ORDER_STATUS_CHOICES[1][0]:
             return format_html('<a class="button" href="{}">{}</a>', reverse('order_set_complete', args=[obj.pk]),
-                               'تکمیل سفارش')
+                               'تکمیل')
         elif obj.order_status == Order.ORDER_STATUS_CHOICES[0][0]:
             return "در انتظار پرداخت"
         else:
@@ -127,7 +130,7 @@ class OrderAdmin(admin.ModelAdmin):
     set_to_complete.short_description = 'وضعیت سفارش'
 
     def formatted_date(self, obj):
-        return obj.checkout_date.strftime('%Y-%m-%d %H:%M')  # Format the date as you like
+        return obj.checkout_date.strftime('%H:%M %Y-%m-%d')  # Format the date as you like
 
     formatted_date.short_description = 'تاریخ پرداخت'  # Column header
 

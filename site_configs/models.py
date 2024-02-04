@@ -2,6 +2,10 @@ from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
+from django_jalali.db import models as jmodels
+
+from loister import utils
 
 
 class ContactUs(models.Model):
@@ -27,13 +31,15 @@ class UserContactMessage(models.Model):
     name = models.CharField(verbose_name='نام', max_length=50)
     email = models.EmailField(verbose_name='ایمیل')
     message = models.TextField(verbose_name='پیام')
+    time = jmodels.jDateTimeField(default=timezone.now)
 
     class Meta:
+        ordering = 'time',
         verbose_name = 'پیام کاربر'
-        verbose_name_plural = '6. پیام های کاربران'
+        verbose_name_plural = '7. پیام های کاربران'
 
     def __str__(self):
-        return self.message
+        return utils.truncate_text(self.message, 50)
 
 
 class AboutUs(models.Model):
@@ -62,6 +68,7 @@ class SocialLink(models.Model):
 
 class SiteInfo(models.Model):
     logo_image = models.ImageField(verbose_name='تصویر لوگو', upload_to='logo/', blank=True, null=True)
+    show_name_next_to_logo = models.BooleanField(verbose_name='نمایش نام سایت در کنار لوگو', default=True)
     site_name = models.CharField(verbose_name='اسم سایت', max_length=50, null=True)
     introduction_text = RichTextField(verbose_name='متن معرفی', max_length=600, blank=True, null=True)
 

@@ -19,7 +19,7 @@
                             <td>{{ order.get_order_status_display }}</td>
                             <td>{{ order.checkout_date|date:'H:i ,Y-m-d' }}</td>
 {#                            <td>{{ order.checkout_date }}</td>#}
-                            <td>{{ order.total_price|intcomma }}</td>
+                            <td>{{ order.total_price|intcomma:False }}</td>
                             <td><a href="#" id="delete-cart-item" class="text-danger"><i class="bi bi-eye"></i></a></td>
                         </tr>
                     {% endfor %}

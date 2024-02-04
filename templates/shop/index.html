@@ -4,54 +4,92 @@
 {% load mathfilters %}
 {% load shop_tags %}
 {% block content %}
-    <section class="index-services mb-3">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
-                    <div class="item text-center">
-                        <span class="d-block w-100">
-                            <i class="bi bi-chat-left-text"></i>
-                            <span class="title d-block w-100 py-2 mb-3">پشتیبانی 24 ساعته</span>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aliquid at deserunt dolorum ducimus error</p>
-                        </span>
-                    </div>
+
+    <div class="container-fluid px-0" style="margin-bottom: 20px;">
+        <div class="slider-box">
+            <div id="carouselExampleCaptions" class="carousel slide">
+                <div class="carousel-indicators">
+                    {% for cover in covers %}
+                        <button type="button" data-bs-target="#carouselExampleCaptions"
+                                data-bs-slide-to="{{ forloop.counter|add:"-1" }}"
+                                {% if forloop.counter == 1 %}class="active" aria-current="true" {% endif %}
+                                aria-label="Slide {{ forloop.counter }}"></button>
+                    {% endfor %}
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
-                    <div class="item text-center">
-                        <span class="d-block w-100">
-                            <i class="bi bi-shield-check"></i>
-                            <span class="title d-block w-100 py-2 mb-3">ضمانت بارگشت وجه</span>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aliquid at deserunt dolorum ducimus error</p>
-                        </span>
+                <div class="carousel-inner">
+                    {% for cover in covers %}
+                        {% if forloop.counter == 1 %}
+                            <div class="carousel-item active position-relative">
+                        {% else %}
+                            <div class="carousel-item position-relative">
+                        {% endif %}
+                    <img src="{{ cover.image.url }}" class="d-block w-100" alt="...">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>{{ cover.title }}</h5>
+                        <p>{{ cover.description }}</p>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
-                    <div class="item text-center">
-                    <span class="d-block w-100">
-                    <i class="bi bi-geo-alt"></i>
-                    <span class="title d-block w-100 py-2 mb-3">تحویل فوری</span>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aliquid at deserunt dolorum ducimus error</p>
-                </span>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
-                    <div class="item text-center">
-                    <span class="d-block w-100">
-                    <i class="bi bi-patch-check"></i>
-                    <span class="title d-block w-100 py-2 mb-3">گارانتی محصول</span>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aliquid at deserunt dolorum ducimus error</p>
-                </span>
+                    {% endfor %}
                     </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+                            data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+                            data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-
-
+    {#    <section class="index-services mb-3">#}
+    {#        <div class="container-fluid">#}
+    {#            <div class="row">#}
+    {#                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">#}
+    {#                    <div class="item text-center">#}
+    {#                        <span class="d-block w-100">#}
+    {#                            <i class="bi bi-chat-left-text"></i>#}
+    {#                            <span class="title d-block w-100 py-2 mb-3">پشتیبانی 24 ساعته</span>#}
+    {#                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aliquid at deserunt dolorum ducimus error</p>#}
+    {#                        </span>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">#}
+    {#                    <div class="item text-center">#}
+    {#                        <span class="d-block w-100">#}
+    {#                            <i class="bi bi-shield-check"></i>#}
+    {#                            <span class="title d-block w-100 py-2 mb-3">ضمانت بارگشت وجه</span>#}
+    {#                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aliquid at deserunt dolorum ducimus error</p>#}
+    {#                        </span>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">#}
+    {#                    <div class="item text-center">#}
+    {#                    <span class="d-block w-100">#}
+    {#                    <i class="bi bi-geo-alt"></i>#}
+    {#                    <span class="title d-block w-100 py-2 mb-3">تحویل فوری</span>#}
+    {#                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aliquid at deserunt dolorum ducimus error</p>#}
+    {#                </span>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">#}
+    {#                    <div class="item text-center">#}
+    {#                    <span class="d-block w-100">#}
+    {#                    <i class="bi bi-patch-check"></i>#}
+    {#                    <span class="title d-block w-100 py-2 mb-3">گارانتی محصول</span>#}
+    {#                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aliquid at deserunt dolorum ducimus error</p>#}
+    {#                </span>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </section>#}
     <section class="index-products mb-5">
         <div class="container-fluid">
-
             <ul class="nav nav-pills mb-2 justify-content-center" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill"

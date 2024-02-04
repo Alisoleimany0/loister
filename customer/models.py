@@ -24,7 +24,9 @@ class CustomerProfile(models.Model):
 
     @property
     def full_name(self):
-        return f"{self.user.first_name} {self.user.last_name}"
+        if self.user.first_name:
+            return f"{self.user.first_name} {self.user.last_name}"
+        return self.user.username
 
     def __str__(self):
         return f'{self.user.username}'
@@ -54,7 +56,7 @@ class Review(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, verbose_name='والد')
     content = models.TextField(null=True, blank=True, verbose_name='محتوا')
     rating = models.IntegerField(default=0, null=True, blank=True, verbose_name='امتیاز')
-    date_time_field = models.DateTimeField(default=timezone.now, verbose_name='زمان و تاریخ')
+    submit_time = models.DateTimeField(default=timezone.now, verbose_name='زمان و تاریخ')
     approved = models.BooleanField(default=False, verbose_name='تایید شده')
 
     class Meta:

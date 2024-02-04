@@ -37,7 +37,12 @@ class RulesAdmin(admin.ModelAdmin):
 
 @admin.register(UserContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['__str__', 'name', 'formatted_date']
+
+    def formatted_date(self, obj):
+        return obj.time.strftime('%H:%M %Y-%m-%d')  # Format the date as you like
+
+    formatted_date.short_description = 'تاریخ ارسال'  # Column header
 
 
 @admin.register(AboutUs)

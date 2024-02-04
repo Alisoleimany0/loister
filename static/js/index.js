@@ -3,10 +3,36 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
 });
 
-if (sessionStorage.getItem('reload') === 'true') {
-    sessionStorage.removeItem('reload');
-    location.reload();
+function showToast(message, type) {
+    const toast = new bootstrap.Toast(document.getElementById('alert-toast'));
+    document.getElementById("alert_header").classList.add("bg-" + type);
+    document.getElementById("alert_header").classList.add("text-light");
+
+    document.querySelector('.toast-body').textContent = message;
+    toast.show();
+    setTimeout(() => {
+        toast.hide();
+    }, 5000);
 }
+
+window.addEventListener("pageshow", function (event) {
+    if (localStorage.getItem('reload') === 'true') {
+        localStorage.removeItem('reload');
+        console.log("aghaaaa");
+        setTimeout(() => {
+            {
+                location.reload();
+            }
+        }, 500);
+        location.reload();
+    }
+    if (localStorage.getItem('message') === 'true') {
+        showToast(localStorage.getItem('message_text'), localStorage.getItem('message_type'));
+        localStorage.removeItem('message');
+        localStorage.removeItem('message_text');
+        localStorage.removeItem('message_type');
+    }
+});
 
 function changeIcon() {
     // یافتن عنصر آیکون با کلاس addToWish
@@ -91,7 +117,8 @@ function topFunction() {
 }
 
 jQuery('.cat-slider-item').owlCarousel({
-    loop: true,
+    loop: false,
+    rewind: true,
     margin: 10,
     rtl: true,
     nav: false,
@@ -112,7 +139,7 @@ jQuery('.cat-slider-item').owlCarousel({
 
 jQuery('.product-gallery').owlCarousel({
     loop: true,
-    margin: 10,
+    margin: 50,
     rtl: true,
     nav: false,
     dots: true,
@@ -134,12 +161,12 @@ jQuery('.timer').startTimer();
 
 // $("#appzoon").elevateZoom();
 
-jQuery("#appzoon").elevateZoom({
-    zoomType: "inner",
-    cursor: "crossshair"
-});
+// jQuery("#appzoon").elevateZoom({
+//     zoomType: "inner",
+//     cursor: "crossshair"
+// });
 
-jQuery('[data-fancybox="gallery"]').fancybox({})
+// jQuery('[data-fancybox="gallery"]').fancybox({})
 
 function iranwebsv(state) {
     with (document.getElementById('city')) {
