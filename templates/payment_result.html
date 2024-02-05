@@ -3,16 +3,21 @@
     <div class="vh-100 d-flex justify-content-center align-items-center">
         <div class="card col-md-4 bg-white shadow-md p-5">
             <div class="mb-4 text-center">
+{#                successful #}
                 <svg xmlns="http://www.w3.org/2000/svg" class="text-success" width="75" height="75"
                      fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
                     <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"></path>
                 </svg>
+{#                unsuccessful #}
+                <svg width="100px" height="100px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 8L8 16M8.00001 8L16 16M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                          stroke="red" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
             </div>
             <div class="text-center">
-                <h1>Thank You !</h1>
-                <p>We've send the link to your inbox. Lorem ipsum dolor sit,lorem lorem </p>
-                <button class="btn btn-outline-success">Back Home</button>
+                <h1>پرداخت موفق</h1>
+                <a href="{% url 'home' %}" class="btn btn-outline-success">بازگشت به خانه</a>
             </div>
         </div>
     </div>

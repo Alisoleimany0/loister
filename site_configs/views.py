@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
+from loister import utils
 from site_configs.models import ContactUs, SocialLink, UserContactMessage, AboutUs, Rules
 
 
@@ -23,10 +24,9 @@ def contact_message_view(request):
             UserContactMessage.objects.create(name=request.POST['name'], email=request.POST['email'],
                                               message=request.POST['message'])
         else:
-            return HttpResponse("<script>history.back();</script>")
+            return utils.get_toast_response(request, "پیام شما ثبت نشد!", "warning")
 
-    # TODO: success
-    return redirect("contact")
+    return utils.get_toast_response(request, "پیام شما ثبت شد", "success")
 
 
 def rules_view(request):

@@ -14,7 +14,8 @@
             <!-- Product details-->
             <figcaption class="position-absolute w-100 h-100 text-center">
                 <ul class="p-0">
-                    <li class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top" title="افزودن به سبد خرید">
+                    <li class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top"
+                        title="افزودن به سبد خرید">
                         <a href="{% url 'add_cart' %}?quantity=1&id={{ product.id }}"
                            class="d-inline-block rounded">
                             <i class="bi bi-cart4">{{ number_in_cart }}</i>
@@ -54,18 +55,20 @@
         {% endwith %}
     </div>
     <!-- Product price-->
-    {% if product.is_on_sale %}
-        <div class="product-price flex-column-reverse">
-            <span class="d-inline-block w-100 text-start">{{ product.sale_price | intcomma }} تومان</span>
-            <del class="d-inline-block w-100 text-end">
-                <strike>{{ product.price | intcomma }}
-                    تومان </strike> <br></del>
-        </div>
-    {% else %}
-        <div class="product-price d-flex">
-            <span class="d-inline-block w-100 text-start">{{ product.price | intcomma }} تومان</span>
-        </div>
-    {% endif %}
+{#    <div style="display: flex; justify-content: space-between;">#}
+        {% if product.is_on_sale %}
+            <div class="product-price" style="display: flex;">
+                <span class="w-100 text-start">{{ product.sale_price | intcomma }} تومان</span>
+                <del class="w-100 text-end">
+                    <strike>{{ product.price | intcomma }}
+                        تومان </strike> <br></del>
+            </div>
+        {% else %}
+            <div class="product-price d-flex">
+                <span class="w-100 text-start">{{ product.price | intcomma }} تومان</span>
+            </div>
+        {% endif %}
+{#    </div>#}
 </div>
 {% if not remove_div %}
     </div>

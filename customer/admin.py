@@ -22,7 +22,7 @@ class CustomerProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ['content_text', '__str__', 'product', 'toggle_is_approved']
+    list_display = ['content_text', '__str__', 'product', 'submit_time', 'toggle_is_approved']
     readonly_fields = ['author', 'product']
 
     def toggle_is_approved(self, obj):

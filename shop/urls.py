@@ -25,5 +25,6 @@ urlpatterns = [
     path('browse/', views.browse_view, name="browse"),
     path('order/<int:pk>/set_complete/', views.order_set_complete_view, name="order_set_complete"),
     path('wishlist/', views.wishlist_view, name="wishlist"),
-    path('wishlist/<str:is_favourite>/<int:pk>/', views.toggle_wishlist, name="toggle_wishlist")
+    path('wishlist/<str:is_favourite>/<int:pk>/', views.toggle_wishlist, name="toggle_wishlist"),
+    # path('test/', views.test_view, name="test"),
 ]

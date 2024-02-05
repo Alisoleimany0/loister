@@ -56,7 +56,7 @@ class Review(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, verbose_name='والد')
     content = models.TextField(null=True, blank=True, verbose_name='محتوا')
     rating = models.IntegerField(default=0, null=True, blank=True, verbose_name='امتیاز')
-    submit_time = models.DateTimeField(default=timezone.now, verbose_name='زمان و تاریخ')
+    submit_time = models.DateTimeField(auto_now_add=True, verbose_name='زمان و تاریخ')
     approved = models.BooleanField(default=False, verbose_name='تایید شده')
 
     class Meta:

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 from datetime import timedelta
 
 from django.contrib import messages
@@ -15,11 +16,14 @@ from django.utils.datastructures import MultiValueDictKeyError
 from hitcount.utils import get_hitcount_model
 from hitcount.views import HitCountMixin
 
+import loister.settings
 from cart.models import Cart, CartProductQuantity
 from customer.models import CustomerProfile, CustomerAddress, Review
 from loister import utils
 from site_configs.models import HomepageCover
 from .models import Category, Product, ProductImage, ProductOffers, ProductDetail, Order, BoughtProduct, ProductType
+
+import requests
 
 
 def expire_session(func):
@@ -84,8 +88,6 @@ def product_single(request, slug):
     hits = hit_count.hits
     hitcontext = context['hitcount'] = {'pk': hit_count.pk}
     hit_count_response = HitCountMixin.hit_count(request, hit_count)
-    print(hit_count_response.hit_message)
-    print(hit_count_response.hit_counted)
     if hit_count_response.hit_counted:
         hits = hits + 1
         product.views = hits
@@ -93,6 +95,9 @@ def product_single(request, slug):
         hitcontext['hit_counted'] = hit_count_response.hit_counted
         hitcontext['hit_message'] = hit_count_response.hit_message
         hitcontext['total_hits'] = hits
+
+    for review in Review.objects.filter(review__author__user=request.user).order_by("-submit_time"):
+        print(review.submit_time)
 
     # ##
     if request.user.is_authenticated:
@@ -186,9 +191,10 @@ def cart_view(request):
 
 @expire_session
 def add_cart_view(request):
-    if request.user.is_authenticated:
-        if request.GET.get("id", None) and request.GET.get("quantity", None):
-            product = get_object_or_404(Product, id=request.GET['id'])
+    if request.GET.get("id", None) and request.GET.get("quantity", None):
+
+        product = get_object_or_404(Product, id=request.GET['id'])
+        if request.user.is_authenticated:
             cart = Cart.objects.filter(customer__user=request.user)
             if not cart:
                 return utils.get_toast_response(request, "خطای ناشناخته", "danger")
@@ -200,12 +206,9 @@ def add_cart_view(request):
                                                 f"سقف سبد خرید این محصول {cart_product.product.max_in_cart} عدد است",
                                                 "warning")
             cart_product.save()
-            return utils.get_back_reload_response(request)
-    else:
-        if not request.session.session_key:
-            request.session.save()
-        if request.GET.get("id", None) and request.GET.get("quantity", None):
-            product = get_object_or_404(Product, id=request.GET['id'])
+        else:
+            if not request.session.session_key:
+                request.session.save()
             anonymous_cart = Cart.objects.get_or_create(session=request.session.session_key, customer=None)
             cart_product = CartProductQuantity.objects.get_or_create(product=product, cart=anonymous_cart[0])[0]
             cart_product.quantity += int(request.GET['quantity'])
@@ -214,8 +217,9 @@ def add_cart_view(request):
                                                 f"سقف سبد خرید این محصول {cart_product.product.max_in_cart} عدد است",
                                                 "warning")
             cart_product.save()
-            return utils.get_back_reload_response(request)
 
+        return utils.get_toast_response(request, f"{product.name} به سبد خرید اضافه شد", "success")
+    return utils.get_toast_response(request, "درخواست نامتعارف!", "danger")
 
 @expire_session
 def remove_cart_item_view(request):
@@ -422,22 +426,44 @@ def logup_view(request):
 def new_review(request, slug):
     if request.POST and request.user.is_authenticated:
         if request.POST.get("rate", None) or request.POST.get("content", None):
-            if Review.objects.filter(review__author__user=request.user,
-                                     submit_time__lte=timezone.now() - timedelta(hours=1)):
+            if Review.objects.filter(author__user=request.user,
+                                     submit_time__gte=timezone.now() - timedelta(seconds=30)).exists():
                 return utils.get_toast_response(request, "شما به تازگی نظر ثبت کرده اید", "warning")
-            print(timezone.now())
-            print(timezone.now() - timedelta(hours=1))
             try:
-                Review.objects.create(product=get_object_or_404(Product, slug=slug),
-                                      author=get_object_or_404(CustomerProfile, user=request.user),
-                                      parent_id=request.POST.get("parent", None),
-                                      rating=request.POST.get("rating", None),
-                                      content=request.POST.get('content', None))
-                return redirect('product', slug)
+                review = Review.objects.create(product=get_object_or_404(Product, slug=slug),
+                                               author=get_object_or_404(CustomerProfile, user=request.user),
+                                               parent_id=request.POST.get("parent", None),
+                                               rating=request.POST.get("rating", None),
+                                               content=request.POST.get('content', None))
+                # # Get the current time and the time one minute ago
+                # now = timezone.now()
+                # one_minute_ago = now - timedelta(seconds=3)
+                #
+                # print("Current time:", now)
+                # print("One minute ago:", one_minute_ago)
+                # print("current comment time", review.submit_time)
+                #
+                # # Check if the user has commented in the last minute
+                # recent_comments = Review.objects.filter(
+                #     author__user=request.user,
+                #     submit_time__gte=one_minute_ago
+                # )
+                # for comment in recent_comments:
+                #     print(comment.submit_time)
+                # print("Number of recent comments:", recent_comments.count())
+                #
+                # if recent_comments.exists():
+                #     print("User has commented in the last minute")
+                #     # User has commented in the last minute, prevent another comment
+                #     return utils.get_toast_response(request, "fuuuuuck", "danger")
+                # else:
+                #     print("User has not commented in the last minute")
+                #     # Allow the user to comment
+                return utils.get_toast_response(request, "نظر شما ثبت شد", "success")
             except MultiValueDictKeyError:
                 pass
         else:
-            return utils.get_toast_response(request, "حداقل یکی از فیلد های امتیاز یا نظر باید پر شود", "danger")
+            return utils.get_toast_response(request, "حداقل یکی از فیلد های امتیاز یا نظر باید پر شود", "warning")
 
     return utils.get_toast_response(request, "برای نظر دادن وارد حساب کاربری شوید", "warning")
 
@@ -469,3 +495,69 @@ def order_set_complete_view(request, pk):
 
 def order_details_view(request):
     return HttpResponse("none")
+
+
+# ? sandbox merchant
+if True:
+    sandbox = 'sandbox'
+else:
+    sandbox = 'www'
+
+ZP_API_REQUEST = f"https://{sandbox}.zarinpal.com/pg/v1/payment/request.json"
+ZP_API_VERIFY = f"https://{sandbox}.zarinpal.com/pg/v1/payment/verify.json"
+ZP_API_STARTPAY = f"https://{sandbox}.zarinpal.com/pg/StartPay/"
+
+amount = 100000  # Rial / Required
+description = "توضیحات مربوط به تراکنش را در این قسمت وارد کنید"  # Required
+phone = '09915392053'  # Optional
+# Important: need to edit for real server.
+CallbackURL = 'https://www.google.com/'
+
+# TODO zarinpal sandbox api is broken implement after
+# def send_request(request):
+#     data = {
+#         "merchant_id": loister.settings.MERCHANT,
+#         "amount": amount,
+#         "description": description,
+#         "callback_url": CallbackURL,
+#         "metadata": {'mobile': phone, 'email': 'fuckyou@gmail.com'},
+#     }
+#     data = json.dumps(data)
+#     # set content length by data
+#     headers = {'content-type': 'application/json', 'accept': 'application/json'}
+#     try:
+#         response = requests.post(ZP_API_REQUEST, data=data, headers=headers, timeout=10)
+#         print(response.headers)
+#         if response.status_code == 200:
+#             response = response.json()
+#             if response['Status'] == 100:
+#                 return {'status': True, 'url': ZP_API_STARTPAY + str(response['Authority']),
+#                         'authority': response['Authority']}
+#             else:
+#                 return {'status': False, 'code': str(response['Status'])}
+#         return HttpResponse(response)
+#
+#     except requests.exceptions.Timeout:
+#         return {'status': False, 'code': 'timeout'}
+#     except requests.exceptions.ConnectionError:
+#         return {'status': False, 'code': 'connection error'}
+#
+#
+# def test_view(authority):
+#     data = {
+#         "MerchantID": loister.settings.MERCHANT,
+#         "Amount": amount,
+#         "Authority": authority,
+#     }
+#     data = json.dumps(data)
+#     # set content length by data
+#     headers = {'content-type': 'application/json', 'content-length': str(len(data))}
+#     response = requests.post(ZP_API_VERIFY, data=data, headers=headers)
+#
+#     if response.status_code == 200:
+#         response = response.json()
+#         if response['Status'] == 100:
+#             return {'status': True, 'RefID': response['RefID']}
+#         else:
+#             return {'status': False, 'code': str(response['Status'])}
+#     return response

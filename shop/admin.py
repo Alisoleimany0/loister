@@ -130,7 +130,7 @@ class OrderAdmin(admin.ModelAdmin):
     set_to_complete.short_description = 'وضعیت سفارش'
 
     def formatted_date(self, obj):
-        return obj.checkout_date.strftime('%H:%M %Y-%m-%d')  # Format the date as you like
+        return obj.checkout_date.strftime('%Y-%m-%d, ساعت %H:%M')  # Format the date as you like
 
     formatted_date.short_description = 'تاریخ پرداخت'  # Column header
 
