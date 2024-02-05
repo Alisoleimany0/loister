@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
-import json
 from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError, SuspiciousOperation, ObjectDoesNotExist
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
@@ -16,14 +14,11 @@ from django.utils.datastructures import MultiValueDictKeyError
 from hitcount.utils import get_hitcount_model
 from hitcount.views import HitCountMixin
 
-import loister.settings
 from cart.models import Cart, CartProductQuantity
 from customer.models import CustomerProfile, CustomerAddress, Review
 from loister import utils
 from site_configs.models import HomepageCover
 from .models import Category, Product, ProductImage, ProductOffers, ProductDetail, Order, BoughtProduct, ProductType
-
-import requests
 
 
 def expire_session(func):
@@ -122,11 +117,6 @@ def product_single(request, slug):
 
 
 @expire_session
-def about(request):
-    return render(request, 'shop/about.html')
-
-
-@expire_session
 def logout_user(request):
     logout(request)
     messages.success(request, "با موفقیت خارج شدید!")
@@ -220,6 +210,7 @@ def add_cart_view(request):
 
         return utils.get_toast_response(request, f"{product.name} به سبد خرید اضافه شد", "success")
     return utils.get_toast_response(request, "درخواست نامتعارف!", "danger")
+
 
 @expire_session
 def remove_cart_item_view(request):
