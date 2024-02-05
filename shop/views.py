@@ -12,6 +12,8 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
+from hitcount.utils import get_hitcount_model
+from hitcount.views import HitCountMixin
 
 from cart.models import Cart, CartProductQuantity
 from customer.models import CustomerProfile, CustomerAddress, Review
@@ -34,7 +36,10 @@ def index_view(request):
     all_products = Product.objects.all()
     order_by_date = all_products.order_by("release_date")[0:8]
     order_by_units_sold = all_products.order_by("units_sold")[0:8]
-    order_by_views = all_products.order_by("views")[0:8]
+    order_by_views = all_products.order_by("-views")[0:8]
+    for product in order_by_views:
+        print(product.id, end=' ')
+        print(product.views)
     all_categories = Category.objects.all()
     covers = HomepageCover.objects.all()
     product_offers = ProductOffers.objects.first()
@@ -74,6 +79,22 @@ def product_single(request, slug):
 
     context = {'in_cart': 0, 'reviews': reviews}
 
+    # hitcount logic
+    hit_count = get_hitcount_model().objects.get_for_object(product)
+    hits = hit_count.hits
+    hitcontext = context['hitcount'] = {'pk': hit_count.pk}
+    hit_count_response = HitCountMixin.hit_count(request, hit_count)
+    print(hit_count_response.hit_message)
+    print(hit_count_response.hit_counted)
+    if hit_count_response.hit_counted:
+        hits = hits + 1
+        product.views = hits
+        product.save()
+        hitcontext['hit_counted'] = hit_count_response.hit_counted
+        hitcontext['hit_message'] = hit_count_response.hit_message
+        hitcontext['total_hits'] = hits
+
+    # ##
     if request.user.is_authenticated:
         cart = Cart.objects.filter(customer__user=request.user)
     else:
@@ -112,7 +133,8 @@ def signup_user(request):
     if request.POST:
         if not User.objects.filter(username=request.POST['username']).exists():
             if not request.POST['username'].isalnum():
-                return utils.get_toast_response(request, "نام کاربری فقط میتواند ترکیبی از اعداد و حروف انگلیسی باشد", "danger")
+                return utils.get_toast_response(request, "نام کاربری فقط میتواند ترکیبی از اعداد و حروف انگلیسی باشد",
+                                                "danger")
             validate_password(request.POST['password'])
             user = User.objects.create_user(username=request.POST['username'], password=request.POST['password'])
             user.first_name = "کاربر"
@@ -121,7 +143,8 @@ def signup_user(request):
             login(request, user)
             return utils.get_back_reload_response(request)
 
-        return utils.get_toast_response(request, "این نام کاربری در سیستم وجود دارد. نام کاربری دیگری انتخاب کنید", "danger")
+        return utils.get_toast_response(request, "این نام کاربری در سیستم وجود دارد. نام کاربری دیگری انتخاب کنید",
+                                        "danger")
     raise Http404
 
 
@@ -173,7 +196,9 @@ def add_cart_view(request):
             cart_product = CartProductQuantity.objects.get_or_create(product=product, cart=cart.first())[0]
             cart_product.quantity += int(request.GET['quantity'])
             if cart_product.quantity > cart_product.product.max_in_cart:
-                return utils.get_toast_response(request, f"سقف سبد خرید این محصول {cart_product.product.max_in_cart} عدد است", "warning")
+                return utils.get_toast_response(request,
+                                                f"سقف سبد خرید این محصول {cart_product.product.max_in_cart} عدد است",
+                                                "warning")
             cart_product.save()
             return utils.get_back_reload_response(request)
     else:
@@ -185,7 +210,9 @@ def add_cart_view(request):
             cart_product = CartProductQuantity.objects.get_or_create(product=product, cart=anonymous_cart[0])[0]
             cart_product.quantity += int(request.GET['quantity'])
             if cart_product.quantity > cart_product.product.max_in_cart:
-                return utils.get_toast_response(request, f"سقف سبد خرید این محصول {cart_product.product.max_in_cart} عدد است", "warning")
+                return utils.get_toast_response(request,
+                                                f"سقف سبد خرید این محصول {cart_product.product.max_in_cart} عدد است",
+                                                "warning")
             cart_product.save()
             return utils.get_back_reload_response(request)
 
@@ -423,11 +450,11 @@ def toggle_wishlist(request, is_favourite, pk):
         else:
             CustomerProfile.objects.get(user=request.user).favourites.add(Product.objects.get(id=pk))
 
-    # url = reverse(next)
-    # # Append the fragment
-    # url_with_fragment = f'{url}#product{pk}'
-    # # Redirect to the URL with the fragment
-    # return redirect(url_with_fragment)
+        # url = reverse(next)
+        # # Append the fragment
+        # url_with_fragment = f'{url}#product{pk}'
+        # # Redirect to the URL with the fragment
+        # return redirect(url_with_fragment)
         return utils.get_back_reload_response(request)
     return utils.get_toast_response(request, "برای اضافه کردن به علاقه مندی وارد شوید", 'danger')
 

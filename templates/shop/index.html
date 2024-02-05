@@ -130,6 +130,7 @@
                     <div class="row">
                         {% for product in products_by_views %}
                             {% product_card_widget product user request %}
+                            {{ product.views }}
                         {% endfor %}
                     </div>
                 </div>

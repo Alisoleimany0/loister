@@ -18,7 +18,6 @@ function showToast(message, type) {
 window.addEventListener("pageshow", function (event) {
     if (localStorage.getItem('reload') === 'true') {
         localStorage.removeItem('reload');
-        console.log("aghaaaa");
         setTimeout(() => {
             {
                 location.reload();
@@ -78,7 +77,8 @@ function changeIcon() {
 
 
 jQuery('.slider-item').owlCarousel({
-    loop: true,
+    loop: false,
+    rewind: true,
     margin: 10,
     rtl: true,
     nav: false,
@@ -138,7 +138,8 @@ jQuery('.cat-slider-item').owlCarousel({
 });
 
 jQuery('.product-gallery').owlCarousel({
-    loop: true,
+    loop: false,
+    rewind: true,
     margin: 50,
     rtl: true,
     nav: false,
@@ -1303,7 +1304,6 @@ function showAddress() {
 function replyComment(parentId, url, csrfToken) {
     let commentElementId = "comment-" + parentId;
     let replyButtonId = "reply-btn-" + parentId;
-    console.log(commentElementId)
     let commentElement = document.getElementById(commentElementId);
     let replyForm = document.createElement("form");
     let csrfTokenInput = document.createElement("input")
@@ -1317,7 +1317,6 @@ function replyComment(parentId, url, csrfToken) {
 
     csrfTokenInput.name = "csrfmiddlewaretoken";
     csrfTokenInput.type = "hidden";
-    console.log(csrfToken);
     csrfTokenInput.value = csrfToken;
 
     replyParentInput.value = parentId;

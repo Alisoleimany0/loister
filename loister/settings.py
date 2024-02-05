@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'customer.apps.CustomerConfig',
     'cart.apps.CartConfig',
     'django_user_agents',
+    'hitcount',
 ]
 
 MIDDLEWARE = [
