@@ -35,6 +35,10 @@ class ProductWeight(models.Model):
     weight = models.DecimalField(default=0, decimal_places=2, max_digits=10, verbose_name='وزن')
     unit = models.CharField(max_length=50, verbose_name='واحد')
 
+    class Meta:
+        verbose_name = 'وزن محصول'
+        verbose_name_plural = '5. وزن های محصول'
+
     def __str__(self):
         return f"{self.weight} {self.unit}"
 

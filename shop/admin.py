@@ -56,7 +56,8 @@ class ProductAdminForm(forms.ModelForm):
     default_image_choice = CustomChoiceField(
         queryset=ProductImage.objects.none(),
         widget=forms.RadioSelect,
-        required=False
+        required=False,
+        label='تصویر اصلی'
     )
 
     class Meta:
@@ -64,9 +65,9 @@ class ProductAdminForm(forms.ModelForm):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
+        # self.fields[default_image_choice]
         super(ProductAdminForm, self).__init__(*args, **kwargs)
         if self.instance:
-            self.base_fields['weights'].widget.can_add_related = True
             images = ProductImage.objects.filter(product=self.instance)
             if images:
                 self.fields['default_image_choice'].queryset = images
