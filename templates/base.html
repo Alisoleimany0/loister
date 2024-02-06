@@ -20,9 +20,10 @@
 <header class="{% if not index and not login_page %}mb-5{% else %}mb-4{% endif %}">
     <nav class="navbar navbar-expand-lg p-3 top-menu">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}"><img src="{{ site_info.logo_image.url }}"
-                                                                 alt="{{ site_info.site_name }}"
-                                                                 style="max-height: 50px; max-width: 60px"/>
+            <a class="navbar-brand" href="{% url 'home' %}"><img
+                    src="{% if site_info.logo_image %}{{ site_info.logo_image.url }}{% endif %}"
+                    alt="{{ site_info.site_name }}"
+                    style="max-height: 50px; max-width: 60px"/>
                 {% if site_info.show_name_next_to_logo %}
                     <strong style="color: white;">
                         {{ site_info.site_name }}
