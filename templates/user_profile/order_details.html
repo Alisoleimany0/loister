@@ -19,7 +19,9 @@
                                 {% for item in items %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{ item.product.name }}</td>
+                                        <!--@formatter:off-->
+                                        <td>{{ item.product.name }}{% if item.weight %} {{ item.weight|intcomma:False }}{% endif %}</td>
+                                        <!--@formatter:on-->
                                         <td>
                                             <img src="{{ item.product.default_image.image.url }}"
                                                  alt="{{ item.product.name }}">
@@ -35,7 +37,7 @@
                         <span class="d-block my-3">اطلاعات تحویل مرسوله</span>
                         <div class="purchase-address-profile-content p-3 mt-3 border rounded">
                             <div id="address_display">
-                                <h5 class="m-3 p-2 border-bottom">آدرس های من</h5>
+                                <h5 class="m-3 p-2 border-bottom">آدرس</h5>
                                 <div class="purchase-history-profile-content p-3 mt-3 border rounded">
                                     <table class="table text-center">
                                         <tr>

@@ -18,7 +18,8 @@ from cart.models import Cart, CartProductQuantity
 from customer.models import CustomerProfile, CustomerAddress, Review
 from loister import utils
 from site_configs.models import HomepageCover
-from .models import Category, Product, ProductImage, ProductOffers, ProductDetail, Order, BoughtProduct, ProductType
+from .models import Category, Product, ProductImage, ProductOffers, ProductDetail, Order, BoughtProduct, ProductType, \
+    ProductWeight
 
 
 @utils.expire_session
@@ -59,12 +60,13 @@ def index_view(request):
 @utils.expire_session
 def product_single(request, slug):
     product = get_object_or_404(Product, slug=slug)
+    weights = product.weights.all()
     images = ProductImage.objects.filter(product=product)
     category = Product.category
     properties = ProductDetail.objects.filter(product=product)
     reviews = Review.objects.filter(product=product, approved=True, parent=None, content__iregex="^(?!\s*$).+")
 
-    context = {'in_cart': 0, 'reviews': reviews}
+    context = {'in_cart': 0, 'reviews': reviews, 'weights': weights}
 
     # hitcount logic
     hit_count = get_hitcount_model().objects.get_for_object(product)
@@ -97,6 +99,7 @@ def product_single(request, slug):
     context['product_properties'] = properties
     context['user'] = request.user
     context['related_products'] = related_products
+
     return render(request, "shop/product_single.html", context)
 
 
@@ -164,14 +167,15 @@ def cart_view(request):
 @utils.expire_session
 def add_cart_view(request):
     if request.GET.get("id", None) and request.GET.get("quantity", None):
-
         product = get_object_or_404(Product, id=request.GET['id'])
         if request.user.is_authenticated:
             cart = Cart.objects.filter(customer__user=request.user)
             if not cart:
                 return utils.get_toast_response(request, "خطای ناشناخته", "danger")
 
-            cart_product = CartProductQuantity.objects.get_or_create(product=product, cart=cart.first())[0]
+            cart_product = \
+                CartProductQuantity.objects.get_or_create(product=product, cart=cart.first(),
+                                                          weight=request.GET['weight'])[0]
             cart_product.quantity += int(request.GET['quantity'])
             if cart_product.quantity > cart_product.product.max_in_cart:
                 return utils.get_toast_response(request,
@@ -182,7 +186,8 @@ def add_cart_view(request):
             if not request.session.session_key:
                 request.session.save()
             anonymous_cart = Cart.objects.get_or_create(session=request.session.session_key, customer=None)
-            cart_product = CartProductQuantity.objects.get_or_create(product=product, cart=anonymous_cart[0])[0]
+            cart_product = CartProductQuantity.objects.get_or_create(product=product, cart=anonymous_cart[0],
+                                                                     weight=request.GET['weight'])[0]
             cart_product.quantity += int(request.GET['quantity'])
             if cart_product.quantity > cart_product.product.max_in_cart:
                 return utils.get_toast_response(request,
@@ -253,7 +258,7 @@ def payment_redirect_view(request):
 
             for item in items:
                 BoughtProduct.objects.create(order=order, product=item.product, quantity=item.quantity,
-                                             name=item.product.name, price=item.sell_price,
+                                             name=item.product.name, price=item.sell_price, weight=item.weight,
                                              total_price=item.total_price)
             post_copy = request.POST.copy()
             post_copy["order_id"] = order.id

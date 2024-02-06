@@ -21,11 +21,11 @@ def truncate_text(text, max_length):
 def get_toast_response(request, message, message_type):
     if request.user_agent.is_mobile or request.user_agent.is_tablet:
         return HttpResponse(
-            f"<script>localStorage.setItem('message', 'true'); localStorage.setItem('message_text', '{message}'); localStorage.setItem('message_type', '{message_type}'); setTimeout(() => {{history.back();}}, 500);</script>"
+            f"<script>localStorage.setItem('reload', 'true');localStorage.setItem('message', 'true'); localStorage.setItem('message_text', '{message}'); localStorage.setItem('message_type', '{message_type}'); setTimeout(() => {{history.back();}}, 700);</script>"
         )
     else:
         return HttpResponse(
-            f"<script>localStorage.setItem('message', 'true'); localStorage.setItem('message_text', '{message}'); localStorage.setItem('message_type', '{message_type}'); history.back();</script>"
+            f"<script>localStorage.setItem('reload', 'true');localStorage.setItem('message', 'true'); localStorage.setItem('message_text', '{message}'); localStorage.setItem('message_type', '{message_type}'); history.back();</script>"
         )
 
 

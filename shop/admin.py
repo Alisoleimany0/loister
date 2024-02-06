@@ -8,7 +8,7 @@ from django.utils.safestring import mark_safe
 from django_jalali.admin.filters import JDateFieldListFilter
 
 from .models import ProductDetail, Product, Category, Order, ProductImage, \
-    ProductOffers, ProductType
+    ProductOffers, ProductType, ProductWeight
 
 admin.site.register(Category)
 
@@ -66,6 +66,7 @@ class ProductAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProductAdminForm, self).__init__(*args, **kwargs)
         if self.instance:
+            self.base_fields['weights'].widget.can_add_related = True
             images = ProductImage.objects.filter(product=self.instance)
             if images:
                 self.fields['default_image_choice'].queryset = images
@@ -127,6 +128,7 @@ class OrderAdmin(admin.ModelAdmin):
             return "در انتظار پرداخت"
         else:
             return "تکمیل شده"
+
     set_to_complete.short_description = 'وضعیت سفارش'
 
     def formatted_date(self, obj):
@@ -141,4 +143,9 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(ProductType)
 class ProductTypeAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(ProductWeight)
+class ProductWeightAdmin(admin.ModelAdmin):
     pass

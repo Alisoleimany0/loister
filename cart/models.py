@@ -14,7 +14,7 @@ class Cart(models.Model):
 class CartProductQuantity(models.Model):
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['product', 'cart'], name='product_cart_constraint')
+            models.UniqueConstraint(fields=['product', 'cart', 'weight'], name='product_cart_constraint')
         ]
 
     product = models.ForeignKey(
@@ -26,6 +26,7 @@ class CartProductQuantity(models.Model):
         on_delete=models.CASCADE
     )
     quantity = models.IntegerField(default=0)
+    weight = models.CharField(max_length=20, null=True)
 
     @property
     def total_price(self):

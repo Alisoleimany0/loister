@@ -31,12 +31,21 @@ class ProductType(models.Model):
         return self.name
 
 
+class ProductWeight(models.Model):
+    weight = models.DecimalField(default=0, decimal_places=2, max_digits=10, verbose_name='وزن')
+    unit = models.CharField(max_length=50, verbose_name='واحد')
+
+    def __str__(self):
+        return f"{self.weight} {self.unit}"
+
+
 class Product(models.Model):
     name = models.CharField(verbose_name="نام محصول", max_length=40)
     slug = models.SlugField(verbose_name="slug", unique=True, allow_unicode=True, max_length=255)
     type = models.ForeignKey(ProductType, blank=True, null=True, on_delete=models.SET_NULL, verbose_name="نوع")
     display_description = models.CharField(verbose_name="توضیحات نمایشی", max_length=500, default='', blank=True,
                                            null=True)
+    weights = models.ManyToManyField(ProductWeight, blank=True, verbose_name='وزن های موجود')
     description = RichTextUploadingField(null=True, blank=True, verbose_name='توضیحات')
     category = models.ManyToManyField(Category, blank=True, verbose_name="دسته‌بندی")
     release_date = models.DateField(verbose_name="تاریخ انتشار", default=timezone.now)
@@ -55,8 +64,6 @@ class Product(models.Model):
     @property
     def rating(self):
         reviews = Review.objects.filter(product=self, rating__isnull=False).aggregate(Avg('rating'))
-        print("hello?")
-        print(type(reviews))
         if reviews['rating__avg']:
             return reviews['rating__avg']
         else:
@@ -167,6 +174,7 @@ class BoughtProduct(models.Model):
     price = models.DecimalField(verbose_name="قیمت", max_digits=12, decimal_places=0)
     total_price = models.DecimalField(verbose_name="قیمت کل", max_digits=12, decimal_places=0)
     quantity = models.PositiveIntegerField(verbose_name="تعداد")
+    weight = models.CharField(max_length=20, null=True)
 
 
 def pre_product_image_save(sender, instance, **kwargs):
