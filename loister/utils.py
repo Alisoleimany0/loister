@@ -21,34 +21,27 @@ def truncate_text(text, max_length):
 def get_toast_response(request, message, message_type):
     if request.user_agent.is_mobile or request.user_agent.is_tablet:
         return HttpResponse(
-            f"""<script>
-        localStorage.setItem('message', 'true');
-        localStorage.setItem('message_text', '{message}');
-        localStorage.setItem('message_type', '{message_type}');
-        setTimeout(() => {{history.back();}}, 500);
-        </script>""")
+            f"<script>localStorage.setItem('message', 'true'); localStorage.setItem('message_text', '{message}'); localStorage.setItem('message_type', '{message_type}'); setTimeout(() => {{history.back();}}, 500);</script>"
+        )
     else:
         return HttpResponse(
-            f"""<script>
-    localStorage.setItem('message', 'true');
-    localStorage.setItem('message_text', '{message}');
-    localStorage.setItem('message_type', '{message_type}');
-    history.back();
-    </script>""")
+            f"<script>localStorage.setItem('message', 'true'); localStorage.setItem('message_text', '{message}'); localStorage.setItem('message_type', '{message_type}'); history.back();</script>"
+        )
 
 
 def get_back_reload_response(request):
     if request.user_agent.is_mobile or request.user_agent.is_tablet:
-        return HttpResponse("""
-                           <script>
-                           localStorage.setItem('reload', 'true');
-                           setTimeout(() => {{history.back();}}, 500);
-                           </script>
-                           """)
+        return HttpResponse(
+            "<script>localStorage.setItem('reload', 'true'); setTimeout(() => {{history.back();}}, 500); </script>"
+        )
     else:
-        return HttpResponse("""
-                           <script>
-                           localStorage.setItem('reload', 'true');
-                           history.back();
-                           </script>
-                           """)
+        return HttpResponse("<script>localStorage.setItem('reload', 'true');history.back();</script>")
+
+
+def expire_session(func):
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            request.session.set_expiry(86400)
+        return func(request, *args, **kwargs)
+
+    return wrapper

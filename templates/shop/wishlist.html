@@ -28,7 +28,7 @@
                                                 <img src="{{ product.default_image.image.url }}"
                                                      alt="{{ product.name }}">
                                             </td>
-                                            <td>{{ product.sell_price|intcomma:False:False }} تومان</td>
+                                            <td>{{ product.sell_price|intcomma:False }} تومان</td>
                                             <td>
                                                 <a href="{% url 'product' product.slug %}" class="btn btn-outline-info">
                                                     مشاهده

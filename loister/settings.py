@@ -151,6 +151,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CKEDITOR_UPLOAD_PATH = MEDIA_ROOT
 
+X_FRAME_OPTIONS = "SAMEORIGIN"
+
+SILENCED_SYSTEM_CHECKS = ["security.W019"]
+
 CKEDITOR_CONFIGS = {
     'default': {
         # 'skin': 'moono',

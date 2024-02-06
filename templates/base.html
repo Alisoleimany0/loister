@@ -15,13 +15,20 @@
     {% else %}
         <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
     {% endif %}
-    <title>{{ site_info.site_name }}</title>
+    <title>{% block title %}{% endblock %}</title>
 </head>
 <header class="{% if not index and not login_page %}mb-5{% else %}mb-4{% endif %}">
     <nav class="navbar navbar-expand-lg p-3 top-menu">
         <div class="container">
-            <a class="navbar-brand" href="#"><img src="{{ site_info.logo_image.url }}" alt="{{ site_info.site_name }}"
-                                                  style="height: 50px; max-width: 60px"/></a>
+            <a class="navbar-brand" href="{% url 'home' %}"><img src="{{ site_info.logo_image.url }}"
+                                                                 alt="{{ site_info.site_name }}"
+                                                                 style="max-height: 50px; max-width: 60px"/>
+                {% if site_info.show_name_next_to_logo %}
+                    <strong style="color: white;">
+                        {{ site_info.site_name }}
+                    </strong>
+                {% endif %}
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
                     aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

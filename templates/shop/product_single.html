@@ -52,7 +52,7 @@
                         <div class="product-detail p-3">
                             <h1 class="pb-4 pt-3 m-0">{{ product.name }}</h1>
                             <div class="product-rating mb-3">
-                                {% with product.star as stars %}
+                                {% with product.rating as stars %}
                                     {% with remaining=5|sub:stars %}
                                         {% for _ in ''|center:remaining %}
                                             <i class="bi bi-star text-dark"></i>
@@ -109,15 +109,15 @@
                                 <div class="set-rate d-flex rounded">
                                     <span class="d-inline-block pe-3">امتیاز شما</span>
                                     <div class="box-rate w-100 text-end">
-                                        <input type="radio" id="5" value="5" name="rate">
+                                        <input type="radio" id="5" value="5" name="rating">
                                         <label for="5"></label>
-                                        <input type="radio" id="4" value="4" name="rate">
+                                        <input type="radio" id="4" value="4" name="rating">
                                         <label for="4"></label>
-                                        <input type="radio" id="3" value="3" name="rate">
+                                        <input type="radio" id="3" value="3" name="rating">
                                         <label for="3"></label>
-                                        <input type="radio" id="2" value="2" name="rate">
+                                        <input type="radio" id="2" value="2" name="rating">
                                         <label for="2"></label>
-                                        <input type="radio" id="1" value="1" name="rate">
+                                        <input type="radio" id="1" value="1" name="rating">
                                         <label for="1"></label>
                                     </div>
                                 </div>

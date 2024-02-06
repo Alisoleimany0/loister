@@ -72,7 +72,11 @@ class Review(models.Model):
 
     @property
     def content_text(self):
-        return loister.utils.truncate_text(self.content, 50)
+        if self.content:
+            return loister.utils.truncate_text(self.content, 50)
+        else:
+            return '-'
+
     content_text.fget.short_description = 'محتوا'
 
     def approve(self):
@@ -89,10 +93,16 @@ class Review(models.Model):
 def customer_post_save(instance: CustomerProfile, *args, **kwargs):
     from cart.models import Cart
     try:
-        cart = instance.cart
+        instance.cart
     except Cart.DoesNotExist as e:
         cart = Cart.objects.create(customer=instance)
         cart.save()
 
 
+def user_post_save(instance: User, *args, **kwargs):
+    if not CustomerProfile.objects.filter(user=instance).exists():
+        CustomerProfile.objects.create(user=instance)
+
+
 signals.post_save.connect(customer_post_save, sender=CustomerProfile)
+signals.post_save.connect(user_post_save, sender=User)

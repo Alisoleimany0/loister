@@ -11,16 +11,15 @@
                         <td>وضعیت</td>
                         <td>تاریخ</td>
                         <td>مبلغ به تومان</td>
-                        <td>مشاهده جزئیات</td>
+                        <td>مشاهده جزئیات یا ادامه پرداخت</td>
                     </tr>
                     {% for order in orders %}
                         <tr>
                             <td>{{ order.id }}</td>
                             <td>{{ order.get_order_status_display }}</td>
-                            <td>{{ order.checkout_date|date:'H:i ,Y-m-d' }}</td>
-{#                            <td>{{ order.checkout_date }}</td>#}
+                            <td>{{ order.checkout_date|date:'Y/m/dساعت H:i' }}</td>
                             <td>{{ order.total_price|intcomma:False }}</td>
-                            <td><a href="{% url 'order_details' %}" id="delete-cart-item" class="text-danger"><i class="bi bi-eye"></i></a></td>
+                            <td><a href="{% url 'order_details' order.id %}" id="delete-cart-item" class="text-danger"><i class="bi bi-arrow-bar-left" style="font-size: 1.2em"></i></a></td>
                         </tr>
                     {% endfor %}
                 </table>

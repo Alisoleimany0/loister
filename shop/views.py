@@ -1,10 +1,10 @@
+import re
 from datetime import timedelta
 
-from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ValidationError, ObjectDoesNotExist, SuspiciousOperation
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
@@ -21,24 +21,12 @@ from site_configs.models import HomepageCover
 from .models import Category, Product, ProductImage, ProductOffers, ProductDetail, Order, BoughtProduct, ProductType
 
 
-def expire_session(func):
-    def wrapper(request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            request.session.set_expiry(86400)
-        return func(request, *args, **kwargs)
-
-    return wrapper
-
-
-@expire_session
+@utils.expire_session
 def index_view(request):
     all_products = Product.objects.all()
     order_by_date = all_products.order_by("release_date")[0:8]
     order_by_units_sold = all_products.order_by("units_sold")[0:8]
     order_by_views = all_products.order_by("-views")[0:8]
-    for product in order_by_views:
-        print(product.id, end=' ')
-        print(product.views)
     all_categories = Category.objects.all()
     covers = HomepageCover.objects.all()
     product_offers = ProductOffers.objects.first()
@@ -68,13 +56,13 @@ def index_view(request):
     return render(request, "shop/index.html", context)
 
 
-@expire_session
+@utils.expire_session
 def product_single(request, slug):
     product = get_object_or_404(Product, slug=slug)
     images = ProductImage.objects.filter(product=product)
     category = Product.category
     properties = ProductDetail.objects.filter(product=product)
-    reviews = Review.objects.filter(product=product, approved=True, parent=None)
+    reviews = Review.objects.filter(product=product, approved=True, parent=None, content__iregex="^(?!\s*$).+")
 
     context = {'in_cart': 0, 'reviews': reviews}
 
@@ -90,10 +78,6 @@ def product_single(request, slug):
         hitcontext['hit_counted'] = hit_count_response.hit_counted
         hitcontext['hit_message'] = hit_count_response.hit_message
         hitcontext['total_hits'] = hits
-
-    for review in Review.objects.filter(review__author__user=request.user).order_by("-submit_time"):
-        print(review.submit_time)
-
     # ##
     if request.user.is_authenticated:
         cart = Cart.objects.filter(customer__user=request.user)
@@ -116,44 +100,42 @@ def product_single(request, slug):
     return render(request, "shop/product_single.html", context)
 
 
-@expire_session
+@utils.expire_session
 def logout_user(request):
     logout(request)
-    messages.success(request, "با موفقیت خارج شدید!")
-    return redirect("home")
+    return utils.get_toast_response(request, "با موفقیت خارج شدید", "success")
 
 
-@expire_session
+@utils.expire_session
 def signup_user(request):
     if request.POST:
         if not User.objects.filter(username=request.POST['username']).exists():
-            if not request.POST['username'].isalnum():
-                return utils.get_toast_response(request, "نام کاربری فقط میتواند ترکیبی از اعداد و حروف انگلیسی باشد",
+            if not re.match(r"^[a-zA-z\d@_\-.]+$", request.POST['username']) or \
+                    (request.POST['username']).__contains__("\\"):
+                return utils.get_toast_response(request,
+                                                "نام کاربری فقط میتواند ترکیبی از اعداد و حروف انگلیسی و _ @ . باشد",
                                                 "danger")
-            validate_password(request.POST['password'])
+            try:
+                validate_password(request.POST['password'])
+            except ValidationError as error:
+                import sys
+                error_str = ""
+                for err in error.error_list:
+                    error_str += err.message % err.params
+                return utils.get_toast_response(request, error_str, "danger")
             user = User.objects.create_user(username=request.POST['username'], password=request.POST['password'])
             user.first_name = "کاربر"
             user.save()
-            CustomerProfile.objects.create(user=user)
+            # note: CustomerProfile object will be created by django signal inside shop.models
             login(request, user)
-            return utils.get_back_reload_response(request)
+            return utils.get_toast_response(request, "ثبت نام شما با موفقیت انجام شد", "success")
 
         return utils.get_toast_response(request, "این نام کاربری در سیستم وجود دارد. نام کاربری دیگری انتخاب کنید",
                                         "danger")
     raise Http404
 
 
-@expire_session
-def category_view(request, cat):
-    cat = cat.replace("-", " ")
-    category = get_object_or_404(Category, name=cat)
-    products = Product.objects.filter(category=category)
-    all_categories = Category.objects.all()
-    return render(request, "shop/category.html",
-                  {'products': products, "category": category, "all_categories": all_categories})
-
-
-@expire_session
+@utils.expire_session
 def cart_view(request):
     if request.user.is_authenticated:
         items = CartProductQuantity.objects.filter(cart__customer__user=request.user)
@@ -179,7 +161,7 @@ def cart_view(request):
         return render(request, "shop/cart.html", context)
 
 
-@expire_session
+@utils.expire_session
 def add_cart_view(request):
     if request.GET.get("id", None) and request.GET.get("quantity", None):
 
@@ -212,7 +194,7 @@ def add_cart_view(request):
     return utils.get_toast_response(request, "درخواست نامتعارف!", "danger")
 
 
-@expire_session
+@utils.expire_session
 def remove_cart_item_view(request):
     if request.POST.get("item_id", None):
         get_object_or_404(CartProductQuantity, id=request.POST.get("item_id")).delete()
@@ -220,7 +202,7 @@ def remove_cart_item_view(request):
     return redirect("cart")
 
 
-@expire_session
+@utils.expire_session
 def new_order_view(request):
     addresses = None
     customer = None
@@ -237,12 +219,12 @@ def new_order_view(request):
     return render(request, 'shop/purchase.html', context)
 
 
-@expire_session
+@utils.expire_session
 def coming_soon_view(request):
     return render(request, 'under_development.html')
 
 
-@expire_session
+@utils.expire_session
 def payment_redirect_view(request):
     if request.method == 'POST':
         if request.POST.get("state", None):
@@ -282,7 +264,7 @@ def payment_redirect_view(request):
             return redirect("payment_confirmation")
 
 
-@expire_session
+@utils.expire_session
 def payment_confirmation_view(request):
     """method that handle bank's API callback"""
     # TODO properly handle api callback
@@ -299,7 +281,7 @@ def payment_confirmation_view(request):
         return render(request, "payment_result.html")
 
 
-@expire_session
+@utils.expire_session
 def profile_addresses_view(request):
     if request.user.is_authenticated:
         addresses = CustomerAddress.objects.filter(customer__user=request.user)
@@ -308,7 +290,7 @@ def profile_addresses_view(request):
     return redirect("logup")
 
 
-@expire_session
+@utils.expire_session
 def add_address_view(request):
     if request.POST:
         CustomerAddress.objects.create(customer=CustomerProfile.objects.get(user=request.user),
@@ -321,7 +303,7 @@ def add_address_view(request):
     return Http404
 
 
-@expire_session
+@utils.expire_session
 def remove_address_view(request, pk):
     if request.user.is_authenticated:
         get_object_or_404(CustomerAddress, id=pk).delete()
@@ -329,7 +311,7 @@ def remove_address_view(request, pk):
     return redirect("logup")
 
 
-@expire_session
+@utils.expire_session
 def profile_info_view(request):
     if request.user.is_authenticated:
         customer = CustomerProfile.objects.get(user=request.user)
@@ -338,7 +320,7 @@ def profile_info_view(request):
     return redirect("logup")
 
 
-@expire_session
+@utils.expire_session
 def profile_purchase_history(request):
     if request.user.is_authenticated:
         orders = Order.objects.filter(customer__user=request.user).order_by('-checkout_date')
@@ -347,7 +329,7 @@ def profile_purchase_history(request):
     return redirect("logup")
 
 
-@expire_session
+@utils.expire_session
 def browse_view(request, ):
     products = Product.objects.all().order_by("release_date")
     all_categories = Category.objects.all()
@@ -383,7 +365,7 @@ def browse_view(request, ):
     return render(request, "shop/browse.html", context)
 
 
-@expire_session
+@utils.expire_session
 def wishlist_view(request):
     if request.user.is_authenticated:
         favourites = CustomerProfile.objects.get(user=request.user).favourites
@@ -395,7 +377,7 @@ def wishlist_view(request):
     return HttpResponse("<script>history.back();</script>")
 
 
-@expire_session
+@utils.expire_session
 def logup_view(request):
     if request.user.is_authenticated:
         return redirect("profile_info")
@@ -404,7 +386,7 @@ def logup_view(request):
             user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
             if user:
                 login(request, user)
-                return redirect("profile_info")
+                return utils.get_toast_response(request, "با موفقیت وارد شدید", "success")
             else:
                 raise ValidationError("wrong credentials")
         else:
@@ -413,44 +395,27 @@ def logup_view(request):
     return render(request, 'login.html', context)
 
 
-@expire_session
+@utils.expire_session
 def new_review(request, slug):
     if request.POST and request.user.is_authenticated:
-        if request.POST.get("rate", None) or request.POST.get("content", None):
-            if Review.objects.filter(author__user=request.user,
+        if request.POST.get("rating", None) or request.POST.get("content", None):
+            product = get_object_or_404(Product, slug=slug)
+            if Review.objects.filter(parent__isnull=False, author__user=request.user,
                                      submit_time__gte=timezone.now() - timedelta(seconds=30)).exists():
-                return utils.get_toast_response(request, "شما به تازگی نظر ثبت کرده اید", "warning")
+                return utils.get_toast_response(request, "شما به تازگی نظر ثبت کرده اید لطفا چند ثانیه صبر کنید",
+                                                "warning")
+            elif Review.objects.filter(parent__isnull=True, author__user=request.user,
+                                       product=product).exists() and not request.POST.get("parent", None):
+                return utils.get_toast_response(request, "شما قبلا نظر ثبت کرده اید",
+                                                "danger")
             try:
-                review = Review.objects.create(product=get_object_or_404(Product, slug=slug),
-                                               author=get_object_or_404(CustomerProfile, user=request.user),
-                                               parent_id=request.POST.get("parent", None),
-                                               rating=request.POST.get("rating", None),
-                                               content=request.POST.get('content', None))
-                # # Get the current time and the time one minute ago
-                # now = timezone.now()
-                # one_minute_ago = now - timedelta(seconds=3)
-                #
-                # print("Current time:", now)
-                # print("One minute ago:", one_minute_ago)
-                # print("current comment time", review.submit_time)
-                #
-                # # Check if the user has commented in the last minute
-                # recent_comments = Review.objects.filter(
-                #     author__user=request.user,
-                #     submit_time__gte=one_minute_ago
-                # )
-                # for comment in recent_comments:
-                #     print(comment.submit_time)
-                # print("Number of recent comments:", recent_comments.count())
-                #
-                # if recent_comments.exists():
-                #     print("User has commented in the last minute")
-                #     # User has commented in the last minute, prevent another comment
-                #     return utils.get_toast_response(request, "fuuuuuck", "danger")
-                # else:
-                #     print("User has not commented in the last minute")
-                #     # Allow the user to comment
-                return utils.get_toast_response(request, "نظر شما ثبت شد", "success")
+                Review.objects.create(product=product,
+                                      author=get_object_or_404(CustomerProfile, user=request.user),
+                                      parent_id=request.POST.get("parent", None),
+                                      rating=request.POST.get("rating", None),
+                                      content=request.POST.get('content', None))
+
+                return utils.get_toast_response(request, "نظر شما ثبت شد و پس از تایید نمایش داده خواهد شد", "success")
             except MultiValueDictKeyError:
                 pass
         else:
@@ -459,7 +424,7 @@ def new_review(request, slug):
     return utils.get_toast_response(request, "برای نظر دادن وارد حساب کاربری شوید", "warning")
 
 
-@expire_session
+@utils.expire_session
 def toggle_wishlist(request, is_favourite, pk):
     if request.user.is_authenticated:
         if eval(is_favourite):
@@ -467,11 +432,6 @@ def toggle_wishlist(request, is_favourite, pk):
         else:
             CustomerProfile.objects.get(user=request.user).favourites.add(Product.objects.get(id=pk))
 
-        # url = reverse(next)
-        # # Append the fragment
-        # url_with_fragment = f'{url}#product{pk}'
-        # # Redirect to the URL with the fragment
-        # return redirect(url_with_fragment)
         return utils.get_back_reload_response(request)
     return utils.get_toast_response(request, "برای اضافه کردن به علاقه مندی وارد شوید", 'danger')
 
@@ -484,8 +444,25 @@ def order_set_complete_view(request, pk):
     return HttpResponse("<script>history.back();</script>")
 
 
-def order_details_view(request):
-    return HttpResponse("none")
+def order_details_view(request, pk):
+    if request.user.is_authenticated:
+        order: Order = get_object_or_404(Order, pk=pk)
+        if order.customer.user == request.user:
+            print(order.order_status)
+            if order.order_status == Order.ORDER_STATUS_CHOICES[0][0]:
+                items = BoughtProduct.objects.filter(order=order)
+                addresses = CustomerAddress.objects.filter(customer__user=request.user)
+                customer = CustomerProfile.objects.filter(user=request.user).first()
+                sub_total = 0
+                for item in items:
+                    sub_total += item.total_price
+                context = {'addresses': addresses, 'items': items, 'sub_total': sub_total, 'customer': customer}
+                return render(request, "shop/purchase.html", context=context)
+            else:
+                items = BoughtProduct.objects.filter(order=order)
+                context = {'order': order, 'items': items}
+                return render(request, "user_profile/order_details.html", context=context)
+    raise SuspiciousOperation()
 
 
 # ? sandbox merchant

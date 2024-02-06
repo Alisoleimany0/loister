@@ -43,7 +43,7 @@
     </a>
     <p class="text-center overflow-hidden mt-2">{{ product.display_description }}</p>
     <div class="product-rate text-center mb-2">
-        {% with product.star as stars %}
+        {% with product.rating as stars %}
             {% with remaining=5|sub:stars %}
                 {% for _ in ''|center:remaining %}
                     <i class="bi bi-star text-dark"></i>
@@ -55,20 +55,18 @@
         {% endwith %}
     </div>
     <!-- Product price-->
-{#    <div style="display: flex; justify-content: space-between;">#}
-        {% if product.is_on_sale %}
-            <div class="product-price" style="display: flex;">
-                <span class="w-100 text-start">{{ product.sale_price | intcomma }} تومان</span>
-                <del class="w-100 text-end">
-                    <strike>{{ product.price | intcomma }}
-                        تومان </strike> <br></del>
-            </div>
-        {% else %}
-            <div class="product-price d-flex">
-                <span class="w-100 text-start">{{ product.price | intcomma }} تومان</span>
-            </div>
-        {% endif %}
-{#    </div>#}
+    {% if product.is_on_sale %}
+        <div class="product-price" style="display: flex;">
+            <span class="w-100 text-start">{{ product.sale_price | intcomma }} تومان</span>
+            <del class="w-100 text-end">
+                    <span style="text-decoration: line-through;">{{ product.price|intcomma:False }}
+                        تومان </span> <br></del>
+        </div>
+    {% else %}
+        <div class="product-price d-flex">
+            <span class="w-100 text-start">{{ product.price|intcomma:False }} تومان</span>
+        </div>
+    {% endif %}
 </div>
 {% if not remove_div %}
     </div>

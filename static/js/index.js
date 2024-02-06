@@ -24,8 +24,7 @@ window.addEventListener("pageshow", function (event) {
             }
         }, 500);
         location.reload();
-    }
-    if (localStorage.getItem('message') === 'true') {
+    } else if (localStorage.getItem('message') === 'true') {
         showToast(localStorage.getItem('message_text'), localStorage.getItem('message_type'));
         localStorage.removeItem('message');
         localStorage.removeItem('message_text');

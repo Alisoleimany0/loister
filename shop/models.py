@@ -3,11 +3,11 @@ from denorm import denormalized
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.db.models import signals
+from django.db.models import signals, Avg
 from django.utils import timezone
 from django_jalali.db import models as jmodels
 
-from customer.models import CustomerProfile
+from customer.models import CustomerProfile, Review
 
 
 class Category(models.Model):
@@ -35,20 +35,32 @@ class Product(models.Model):
     name = models.CharField(verbose_name="نام محصول", max_length=40)
     slug = models.SlugField(verbose_name="slug", unique=True, allow_unicode=True, max_length=255)
     type = models.ForeignKey(ProductType, blank=True, null=True, on_delete=models.SET_NULL, verbose_name="نوع")
-    display_description = models.CharField(verbose_name="توضیحات نمایشی", max_length=500, default='', blank=True, null=True)
+    display_description = models.CharField(verbose_name="توضیحات نمایشی", max_length=500, default='', blank=True,
+                                           null=True)
     description = RichTextUploadingField(null=True, blank=True, verbose_name='توضیحات')
     category = models.ManyToManyField(Category, blank=True, verbose_name="دسته‌بندی")
     release_date = models.DateField(verbose_name="تاریخ انتشار", default=timezone.now)
     views = models.BigIntegerField(verbose_name="تعداد بازدید", default=0)
-    star = models.IntegerField(verbose_name="امتیاز", default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
     price = models.DecimalField(verbose_name="قیمت", default=0, decimal_places=0, max_digits=12)
-    is_on_sale = models.BooleanField(verbose_name="موجود در جشنواره", default=False)
-    sale_price = models.DecimalField(verbose_name="قیمت فروش", default=0, decimal_places=0, max_digits=12)
+    is_on_sale = models.BooleanField(verbose_name="در حراج است", default=False)
+    sale_price = models.DecimalField(verbose_name="قیمت حراج", default=0, decimal_places=0, max_digits=12)
     max_in_cart = models.IntegerField(verbose_name="حداکثر تعداد در سبد خرید", default=1)
 
     class Meta:
         verbose_name_plural = "1. محصول ها"
         verbose_name = "محصول"
+
+    # @denormalized(models.IntegerField, default=0, validators=[MinValueValidator(0), MaxValueValidator(5)],
+    #               verbose_name='امتیاز')
+    @property
+    def rating(self):
+        reviews = Review.objects.filter(product=self, rating__isnull=False).aggregate(Avg('rating'))
+        print("hello?")
+        print(type(reviews))
+        if reviews['rating__avg']:
+            return reviews['rating__avg']
+        else:
+            return 0
 
     @property
     def sell_price(self):
