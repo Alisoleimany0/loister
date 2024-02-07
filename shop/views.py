@@ -175,7 +175,7 @@ def add_cart_view(request):
 
             cart_product = \
                 CartProductQuantity.objects.get_or_create(product=product, cart=cart.first(),
-                                                          weight=request.GET['weight'])[0]
+                                                          weight=request.GET.get('weight', None))[0]
             cart_product.quantity += int(request.GET['quantity'])
             if cart_product.quantity > cart_product.product.max_in_cart:
                 return utils.get_toast_response(request,
@@ -187,7 +187,7 @@ def add_cart_view(request):
                 request.session.save()
             anonymous_cart = Cart.objects.get_or_create(session=request.session.session_key, customer=None)
             cart_product = CartProductQuantity.objects.get_or_create(product=product, cart=anonymous_cart[0],
-                                                                     weight=request.GET['weight'])[0]
+                                                                     weight=request.GET.get('weight', None))[0]
             cart_product.quantity += int(request.GET['quantity'])
             if cart_product.quantity > cart_product.product.max_in_cart:
                 return utils.get_toast_response(request,

@@ -39,52 +39,60 @@
                         <span class="d-block my-3">اطلاعات تحویل مرسوله</span>
                         <div class="purchase-address-profile-content p-3 mt-3 border rounded">
                             <div id="address_display">
-                                <h5 class="m-3 p-2 border-bottom">آدرس های من</h5>
-                                {% if addresses %}
-                                    <div class="purchase-history-profile-content p-3 mt-3 border rounded">
-                                        <table class="table text-center">
-                                            <tr>
-                                                <td>استان</td>
-                                                <td>شهر</td>
-                                                <td>کد پستی</td>
-                                                <td>شماره تلفن</td>
-                                                <td>آدرس</td>
-                                            </tr>
-                                            {% for address in addresses %}
+                                {% if request.user.is_authenticated %}
+                                    <h5 class="m-3 p-2 border-bottom">انتخاب آدرس ذخیره شده</h5>
+                                    {% if addresses %}
+                                        <div class="purchase-history-profile-content p-3 mt-3 border rounded">
+                                            <table class="table text-center">
                                                 <tr>
-                                                    <td id="{{ forloop.counter }}">{{ address.district }}</td>
-                                                    <td>{{ address.city }}</td>
-                                                    <td>{{ address.postal_code }}</td>
-                                                    <td>{{ address.delivery_phone_number }}</td>
-                                                    <td>{{ address.address }}</td>
-                                                    <td>
-                                                        <input type="radio" id="address{{ address.id }}" name="address">
-                                                        <script>
-                                                            document.getElementById('address{{ address.id }}').addEventListener('change', function () {
-                                                                document.getElementById('final_state').value = "{{ address.district }}"
-                                                                document.getElementById('final_city').value = "{{ address.city }}"
-                                                                document.getElementById('final_address').value = "{{ address.address }}"
-                                                                document.getElementById('final_postal_code').value = "{{ address.postal_code }}"
-                                                                document.getElementById('final_mobile').value = "{{ address.delivery_phone_number }}"
-                                                            });
-                                                        </script>
-                                                    </td>
+                                                    <td>استان</td>
+                                                    <td>شهر</td>
+                                                    <td>کد پستی</td>
+                                                    <td>شماره تلفن</td>
+                                                    <td>آدرس</td>
                                                 </tr>
-                                            {% endfor %}
-                                        </table>
-                                    </div>
+                                                {% for address in addresses %}
+                                                    <tr>
+                                                        <td id="{{ forloop.counter }}">{{ address.district }}</td>
+                                                        <td>{{ address.city }}</td>
+                                                        <td>{{ address.postal_code }}</td>
+                                                        <td>{{ address.delivery_phone_number }}</td>
+                                                        <td>{{ address.address }}</td>
+                                                        <td>
+                                                            <input type="radio" id="address{{ address.id }}"
+                                                                   name="address">
+                                                            <script>
+                                                                document.getElementById('address{{ address.id }}').addEventListener('change', function () {
+                                                                    document.getElementById('final_state').value = "{{ address.district }}"
+                                                                    document.getElementById('final_city').value = "{{ address.city }}"
+                                                                    document.getElementById('final_address').value = "{{ address.address }}"
+                                                                    document.getElementById('final_postal_code').value = "{{ address.postal_code }}"
+                                                                    document.getElementById('final_mobile').value = "{{ address.delivery_phone_number }}"
+                                                                });
+                                                            </script>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </table>
+                                        </div>
 
+                                    {% else %}
+                                        <div class="alert alert-danger">
+                                            شما آدرسی ثبت نکرده اید
+                                        </div>
+                                    {% endif %}
                                 {% else %}
-                                    <div class="alert alert-danger">
-                                        شما آدرسی ثبت نکرده اید
-                                    </div>
+
                                 {% endif %}
                             </div>
-                            <a class="btn btn-outline-dark" data-bs-toggle="collapse" style="margin-inline-start: 40%;"
-                               href="#collapseExample"
-                               role="button" aria-expanded="false" aria-controls="collapseExample">
-                                اضافه کردن آدرس
-                            </a>
+                            {% if request.user.is_authenticated %}
+                                <a class="btn btn-outline-dark" data-bs-toggle="collapse"
+                                   style="margin-inline-start: 40%;"
+                                   href="#collapseExample"
+                                   role="button" aria-expanded="false" aria-controls="collapseExample">
+                                    اضافه کردن آدرس
+                                </a>
+                            {% endif %}
                             <div class="collapse" id="collapseExample">
                                 <h5 class="m-3 p-2 border-bottom heading">
                                     <form class="global-form" action="{% url 'add_address' %}" method="post">
@@ -134,7 +142,7 @@
                                                placeholder="آدرس دقیق را وارد کنید" required>
                                         <input type="number" name="postal_code" id="postal_code"
                                                placeholder="کد پستی را وارد کنید" required>
-                                        <input type="number" name="mobile" id="mobile"
+                                        <input type="tel" name="mobile" id="mobile"
                                                placeholder="شماره موبایل را وارد کنید" required>
                                         <input class="rounded" type="submit" value="افزودن" onClick="showAddress()">
                                     </form>
@@ -153,21 +161,21 @@
                                 </h5>
                             </div>
                         </div>
-                        <h5 class="m-3 p-2 border-bottom heading">تغییر آدرس</h5>
+                        <h5 class="m-3 p-2 border-bottom heading">آدرس دستی</h5>
                         <form class="global-form" action="{% url 'payment_redirect' %}" method="post"
                               style="display: flex; flex-direction: row; flex-wrap: wrap">
                             {% csrf_token %}
                             <input type="text" name="full_name" placeholder="نام و نام خانوادگی را وارد کنید"
                                    value="{% if user.is_authenticated %}{{ customer.full_name }}{% endif %}"
                                    style="width: max-content; margin: auto">
-                            <input type="text" name="state" id="final_state"
+                            <input type="text" required name="state" id="final_state"
                                    placeholder="استان را وارد کنید" style="width: max-content; margin: auto">
-                            <input type="text" name="city" id="final_city" placeholder="شهر را وارد کنید"
+                            <input type="text" required name="city" id="final_city" placeholder="شهر را وارد کنید"
                                    style="width: max-content; margin: auto">
-                            <input type="text" name="address" id="final_address" placeholder="آدرس دقیق را وارد کنید">
-                            <input type="text" name="postal_code" id="final_postal_code"
+                            <input type="text" required name="address" id="final_address" placeholder="آدرس دقیق را وارد کنید">
+                            <input type="text" required name="postal_code" id="final_postal_code"
                                    placeholder="کد پستی را وارد کنید">
-                            <input type="text" name="mobile" id="final_mobile" placeholder="شماره موبایل را وارد کنید">
+                            <input type="text" required name="mobile" id="final_mobile" placeholder="شماره موبایل را وارد کنید">
                             <textarea type="text" name="additional_info" placeholder="توضیحات اضافی"></textarea>
                             <div class="purchase-note bg-light p-3 rounded mt-3" style="width: 100%;">
                                 <label class="form-check-label" for="flexCheckChecked">
