@@ -125,6 +125,7 @@ class ProductOffers(models.Model):
     finish_time = models.DateTimeField(default=timezone.now, verbose_name="زمان پایان")
     title = models.CharField(max_length=100, null=True, blank=True, verbose_name="عنوان")
     description = models.TextField(null=True, blank=True, verbose_name="توضیحات")
+    active = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         # make sure we're not updating

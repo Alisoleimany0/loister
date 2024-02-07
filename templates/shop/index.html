@@ -138,34 +138,36 @@
     </section>
     {#                                                                                    Product Offer               #}
     {% if product_offers %}
-        <section class="product-view">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-7">
-                        <div class="offer-box bg-white p-5">
-                            <div class="timer-box timer d-flex justify-content-center"
-                                 data-seconds-left="{{ offer_seconds_remaining }}">
-                                <div class="d-flex justify-content-center" style="margin-inline-start: 20px;">
-                                    {{ offer_days_remaining }} روز
+        {% if product_offers.active %}
+            <section class="product-view">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="offer-box bg-white p-5">
+                                <div class="timer-box timer d-flex justify-content-center"
+                                     data-seconds-left="{{ offer_seconds_remaining }}">
+                                    <div class="d-flex justify-content-center" style="margin-inline-start: 20px;">
+                                        {{ offer_days_remaining }} روز
+                                    </div>
+                                </div>
+
+                                <div class="slider-item owl-carousel owl-theme">
+                                    {% for product in offered_products %}
+                                        {% product_card_widget product user request 'remove_div' %}
+                                    {% endfor %}
                                 </div>
                             </div>
-
-                            <div class="slider-item owl-carousel owl-theme">
-                                {% for product in offered_products %}
-                                    {% product_card_widget product user request 'remove_div' %}
-                                {% endfor %}
-                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="text-item bg-white rounded p-5">
-                            <h3 class="p-0 my-3">پشنهاد ویژه</h3>
-                            <h5 class="p-0 pb-3 my-2 position-relative">{{ product_offers.title }}</h5>
-                            <p class="my-3">{{ product_offers.description }}</p>
+                        <div class="col-md-4">
+                            <div class="text-item bg-white rounded p-5">
+                                <h3 class="p-0 my-3">پشنهاد ویژه</h3>
+                                <h5 class="p-0 pb-3 my-2 position-relative">{{ product_offers.title }}</h5>
+                                <p class="my-3">{{ product_offers.description }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        {% endif %}
     {% endif %}
 {% endblock content %}
