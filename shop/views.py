@@ -4,8 +4,10 @@ from datetime import timedelta
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError, ObjectDoesNotExist, SuspiciousOperation
+from django.core.exceptions import ValidationError, ObjectDoesNotExist, SuspiciousOperation, MultipleObjectsReturned, \
+    PermissionDenied
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Sum
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
@@ -92,6 +94,8 @@ def product_single(request, slug):
         context['in_cart'] = number_in_cart
     except ObjectDoesNotExist:
         pass
+    except MultipleObjectsReturned:
+        raise ValidationError("Error occurred contact server admin")
     related_products = Product.objects.filter(category__in=product.category.all()).distinct()
     context['product'] = product
     context['product_images'] = images
@@ -438,7 +442,7 @@ def toggle_wishlist(request, is_favourite, pk):
             CustomerProfile.objects.get(user=request.user).favourites.add(Product.objects.get(id=pk))
 
         return utils.get_back_reload_response(request)
-    return utils.get_toast_response(request, "برای اضافه کردن به علاقه مندی وارد شوید", 'danger')
+    return utils.get_toast_response(request, "برای اضافه کردن به علاقه مندی وارد سایت شوید", 'danger')
 
 
 def order_set_complete_view(request, pk):

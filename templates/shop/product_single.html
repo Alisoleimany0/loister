@@ -76,7 +76,9 @@
                                 <form action="{% url 'add_cart' %}" method="get">
                                     <input type="number" name="quantity" min="1" value="1" class="rounded">
                                     <input type="hidden" name="id" value="{{ product.id }}">
-                                    <input type="hidden" id="weight" name="weight">
+                                    {% if weights %}
+                                        <input type="hidden" id="weight" name="weight" value="">
+                                    {% endif %}
                                     <input type="submit" class="rounded" value="افزودن به سبد خرید">
                                     {% if weights %}
                                         <select id="weightChoice" class="d-block" required
