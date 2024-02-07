@@ -23,9 +23,9 @@
             <a class="navbar-brand" href="{% url 'home' %}"><img
                     src="{% if site_info.logo_image %}{{ site_info.logo_image.url }}{% endif %}"
                     alt="{{ site_info.site_name }}"
-                    style="max-height: 50px; max-width: 60px"/>
+                    style="max-height: {{ site_info.logo_height }}px; max-width: {{ site_info.logo_width }}px"/>
                 {% if site_info.show_name_next_to_logo %}
-                    <strong style="color: white;">
+                    <strong style="color: white; margin-right: 15px">
                         {{ site_info.site_name }}
                     </strong>
                 {% endif %}
