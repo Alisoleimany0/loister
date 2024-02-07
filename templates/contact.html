@@ -10,18 +10,21 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <span class="title d-block my-5">تلفن ها</span>
-                                    <span class="d-block my-3"><i
-                                            class="bi bi-telephone">&nbsp;{{ info.phone_number_field }}</i></span>
+                                    <p class="d-block my-3"><i
+                                            class="bi bi-telephone">&nbsp;</i>{{ info.phone_number_field|safe }}</p>
+
                                 </div>
                                 <div class="col-md-6">
                                     <span class="title d-block my-5">ایمیل</span>
-                                    <span class="d-block my-3"><i
-                                            class="bi bi-envelope">&nbsp;{{ info.contact_email }}</i></span>
+                                    <p class="d-block my-3"><i
+                                            class="bi bi-envelope">&nbsp;</i></p>
+                                    {{ info.contact_email }}
                                 </div>
                                 <div class="col-md-6">
                                     <span class="title d-block my-5">آدرس ها</span>
                                     <span class="d-block my-3"><i
-                                            class="bi bi-geo-alt">&nbsp;{{ info.addresses_field }}</i></span>
+                                            class="bi bi-geo-alt">&nbsp;</i></span>
+                                    {{ info.addresses_field }}
                                 </div>
                                 <div class="col-md-6">
                                     <span class="title d-block my-5">شبکه های اجتماعی ما</span>
@@ -45,6 +48,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="product-review-form bg-white rounded p-3 mt-3">
+                            <h5 class="border-bottom">ارسال پیام</h5>
                             <form class="global-form" action="{% url 'contact_message' %}" method="post">
                                 {% csrf_token %}
                                 <input class="rounded" type="text" required="true" name="name"

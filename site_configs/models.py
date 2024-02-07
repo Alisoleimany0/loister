@@ -9,7 +9,7 @@ from loister import utils
 
 
 class ContactUs(models.Model):
-    phone_number_field = models.CharField(verbose_name='شماره های تلفن', max_length=50, blank=True, null=True)
+    phone_number_field = RichTextField(verbose_name='شماره های تلفن', blank=True, null=True)
     addresses_field = models.TextField(verbose_name='آدرس ها', blank=True, null=True)
     contact_email = models.CharField(verbose_name='ایمیل', max_length=100, blank=True, null=True)
     extra_info = models.TextField(verbose_name='توضیحات اضافه', null=True, blank=True)
