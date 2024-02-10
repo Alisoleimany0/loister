@@ -71,11 +71,9 @@
 
                                         <td class="row justify-content-end"> خالی کردن سبد خرید</td>
                                         <td>
-                                            <form  action="{% url 'remove_cart_item' %}" method="post">
+                                            <form  action="{% url 'delete_all_cart' %}" method="post">
                                                     {% csrf_token %}
-                                                    <input type="hidden" name="item_id" value="{{ item.id }}">
                                                     <button class="btn btn-outline-danger bi-trash"></button>
-
                                             </form>
                                         </td>
                                     </tr>

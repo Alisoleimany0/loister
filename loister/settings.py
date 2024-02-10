@@ -27,7 +27,7 @@ MERCHANT = "65c24296c5d2cb001a11a3bd"
 # MERCHANT = "zibal"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 SITE_ADDRESS = '127.0.0.1'
 

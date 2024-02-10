@@ -188,12 +188,10 @@ def add_cart_view(request):
         if not product.is_available:
             return utils.get_toast_response(request, "این کالا ناموجود است", "danger")
         if request.user.is_authenticated:
-            cart = Cart.objects.filter(customer__user=request.user)
-            if not cart:
-                return utils.get_toast_response(request, "خطای ناشناخته", "danger")
-
+            cart = Cart.objects.get_or_create(customer=get_object_or_404(CustomerProfile, user=request.user))
+            cart = cart[0]
             cart_product = \
-                CartProductQuantity.objects.get_or_create(product=product, cart=cart.first(),
+                CartProductQuantity.objects.get_or_create(product=product, cart=cart,
                                                           weight=request.GET.get('weight', None))[0]
             cart_product.quantity += int(request.GET['quantity'])
             if cart_product.quantity > cart_product.product.max_in_cart:
@@ -224,9 +222,11 @@ def remove_cart_item_view(request):
         get_object_or_404(CartProductQuantity, id=request.POST.get("item_id")).delete()
 
     return redirect("cart")
-# def delete_all_cart(request, slug):
-#     Cart.objects.filter(user=request.user, products__slug=products).delete()
-#     return redirect('cart')
+
+
+def delete_all_cart(request):
+    CartProductQuantity.objects.filter(cart__customer__user=request.user).delete()
+    return redirect('cart')
 
 
 @utils.expire_session
