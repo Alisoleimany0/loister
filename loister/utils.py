@@ -30,6 +30,9 @@ def get_toast_response(request, message, message_type):
 
 
 def get_back_reload_response(request):
+    """
+    This is a test documentation
+    """
     if request.user_agent.is_mobile or request.user_agent.is_tablet:
         return HttpResponse(
             "<script>localStorage.setItem('reload', 'true'); setTimeout(() => {{history.back();}}, 500); </script>"

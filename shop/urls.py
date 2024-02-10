@@ -21,6 +21,7 @@ urlpatterns = [
     path('soon/', views.coming_soon_view, name="coming_soon"),
     path('payment_redirect/', views.payment_redirect_view, name="payment_redirect"),
     path('payment_confirmation/', views.payment_confirmation_view, name="payment_confirmation"),
+    path('testpay/', views.test_view),
     path('browse/', views.browse_view, name="browse"),
     path('order/<int:pk>/set_complete/', views.order_set_complete_view, name="order_set_complete"),
     path('wishlist/', views.wishlist_view, name="wishlist"),

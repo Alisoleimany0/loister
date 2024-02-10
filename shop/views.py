@@ -1,3 +1,5 @@
+import requests
+import json
 import re
 from datetime import timedelta
 
@@ -5,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, SuspiciousOperation, MultipleObjectsReturned, \
-    PermissionDenied
+        PermissionDenied
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Sum
 from django.http import HttpResponse, Http404
@@ -21,7 +23,7 @@ from customer.models import CustomerProfile, CustomerAddress, Review
 from loister import utils
 from site_configs.models import HomepageCover
 from .models import Category, Product, ProductImage, ProductOffers, ProductDetail, Order, BoughtProduct, ProductType, \
-    ProductWeight
+        ProductWeight
 
 
 @utils.expire_session
@@ -119,9 +121,9 @@ def signup_user(request):
         if not User.objects.filter(username=request.POST['username']).exists():
             if not re.match(r"^[a-zA-z\d@_\-.]+$", request.POST['username']) or \
                     (request.POST['username']).__contains__("\\"):
-                return utils.get_toast_response(request,
-                                                "نام کاربری فقط میتواند ترکیبی از اعداد و حروف انگلیسی و _ @ . باشد",
-                                                "danger")
+                        return utils.get_toast_response(request,
+                                                        "نام کاربری فقط میتواند ترکیبی از اعداد و حروف انگلیسی و _ @ . باشد",
+                                                        "danger")
             try:
                 validate_password(request.POST['password'])
             except ValidationError as error:
@@ -178,8 +180,8 @@ def add_cart_view(request):
                 return utils.get_toast_response(request, "خطای ناشناخته", "danger")
 
             cart_product = \
-                CartProductQuantity.objects.get_or_create(product=product, cart=cart.first(),
-                                                          weight=request.GET.get('weight', None))[0]
+                    CartProductQuantity.objects.get_or_create(product=product, cart=cart.first(),
+                                                              weight=request.GET.get('weight', None))[0]
             cart_product.quantity += int(request.GET['quantity'])
             if cart_product.quantity > cart_product.product.max_in_cart:
                 return utils.get_toast_response(request,
@@ -474,17 +476,7 @@ def order_details_view(request, pk):
     raise SuspiciousOperation()
 
 
-# ? sandbox merchant
-if True:
-    sandbox = 'sandbox'
-else:
-    sandbox = 'www'
-
-ZP_API_REQUEST = f"https://{sandbox}.zarinpal.com/pg/v1/payment/request.json"
-ZP_API_VERIFY = f"https://{sandbox}.zarinpal.com/pg/v1/payment/verify.json"
-ZP_API_STARTPAY = f"https://{sandbox}.zarinpal.com/pg/StartPay/"
-
-amount = 100000  # Rial / Required
+amount = 1000000  # Rial / Required
 description = "توضیحات مربوط به تراکنش را در این قسمت وارد کنید"  # Required
 phone = '09915392053'  # Optional
 # Important: need to edit for real server.
@@ -493,12 +485,11 @@ CallbackURL = 'https://www.google.com/'
 # TODO zarinpal sandbox api is broken implement after
 # def send_request(request):
 #     data = {
-#         "merchant_id": loister.settings.MERCHANT,
-#         "amount": amount,
-#         "description": description,
-#         "callback_url": CallbackURL,
-#         "metadata": {'mobile': phone, 'email': 'fuckyou@gmail.com'},
-#     }
+#             "merchant": loister.settings.MERCHANT,
+#             "amount": amount,
+#             # "description": description,
+#             "callback_url": CallbackURL,
+#             }
 #     data = json.dumps(data)
 #     # set content length by data
 #     headers = {'content-type': 'application/json', 'accept': 'application/json'}
@@ -513,28 +504,27 @@ CallbackURL = 'https://www.google.com/'
 #             else:
 #                 return {'status': False, 'code': str(response['Status'])}
 #         return HttpResponse(response)
-#
+
 #     except requests.exceptions.Timeout:
 #         return {'status': False, 'code': 'timeout'}
 #     except requests.exceptions.ConnectionError:
-#         return {'status': False, 'code': 'connection error'}
-#
-#
-# def test_view(authority):
-#     data = {
-#         "MerchantID": loister.settings.MERCHANT,
-#         "Amount": amount,
-#         "Authority": authority,
-#     }
-#     data = json.dumps(data)
-#     # set content length by data
-#     headers = {'content-type': 'application/json', 'content-length': str(len(data))}
-#     response = requests.post(ZP_API_VERIFY, data=data, headers=headers)
-#
-#     if response.status_code == 200:
-#         response = response.json()
-#         if response['Status'] == 100:
-#             return {'status': True, 'RefID': response['RefID']}
-#         else:
-#             return {'status': False, 'code': str(response['Status'])}
-#     return response
+#          return {'status': False, 'code': 'connection error'}
+
+
+def test_view(authority):
+    data = {
+        "merchant": "zibal",
+        "amount": "100000",
+        "callbackUrl": CallbackURL,
+    }
+    data = json.dumps(data)
+    # set content length by data
+    # headers = {'content-type': 'application/json', 'content-length': str(len(data))}
+    headers = {'content-type': 'application/json'}
+    response: HttpResponse = requests.post('https://gateway.zibal.ir/v1/request', data=data, headers=headers)
+    if response.status_code == 200:
+        if response.json()['result'] == 100:
+            trackId = response.json()['trackId']
+            print(type(requests.get(f'https://gateway.zibal.ir/start/{trackId}', data=data)))
+    return HttpResponse()
+    # return response
