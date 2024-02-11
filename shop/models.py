@@ -162,7 +162,7 @@ class Order(models.Model):
     postal_code = models.CharField(verbose_name="کد پستی", default=0, null=False, max_length=10)
     additional_info = models.TextField(verbose_name="اطلاعات تکمیلی", blank=True)
     order_status = models.CharField(choices=ORDER_STATUS_CHOICES, max_length=20, verbose_name="وضعیت سفارش")
-    payment_track_id = models.CharField(max_length=100, verbose_name='شماره پیگیری زیبال')
+    payment_track_id = models.CharField(null=True, blank=True, max_length=100, verbose_name='شماره پیگیری زیبال')
 
     class Meta:
         verbose_name_plural = "2. سفارش ها"

@@ -286,7 +286,7 @@ def payment_redirect_view(request):
                     return HttpResponse(
                         f"""<h1 dir="rtl">درخواست شما با خطا مواجه شد<h1>""" +
                         f"""<h1 dir="rtl">{zb.request_result(response_dict['result'])}<h1>""" +
-                        f"""<h1 dir="rtl">لطفا برای حل مشکل با پشتیبانی تماس بگیرید</h1>"""
+                        f"""<h1 dir="rtl">در صورت داشتن حساب کاربری میتوانید خرید همین سفارش از صفحه کاربری خود ادامه دهید</h1>"""
                     )
             except:
                 raise SuspiciousOperation(response_dict['result'])
