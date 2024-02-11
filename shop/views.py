@@ -24,7 +24,7 @@ import loister.settings
 from cart.models import Cart, CartProductQuantity
 from customer.models import CustomerProfile, CustomerAddress, Review
 from loister import utils
-from site_configs.models import HomepageCover, SiteInfo
+from site_configs.models import HomepageCover, SiteInfo, HomepageVideo, HomepageCoverGroup
 from .models import Category, Product, ProductImage, ProductOffers, ProductDetail, Order, BoughtProduct, ProductType, \
     ProductWeight
 
@@ -36,7 +36,13 @@ def index_view(request):
     order_by_units_sold = all_products.order_by("units_sold")[0:8]
     order_by_views = all_products.order_by("-views")[0:8]
     all_categories = Category.objects.all()
-    covers = HomepageCover.objects.all()
+    videos = None
+    covers = None
+    if HomepageCoverGroup.objects.first().show_video:
+        videos = HomepageVideo.objects.all()
+    else:
+        covers = HomepageCover.objects.all()
+
     product_offers = ProductOffers.objects.first()
     description = Product.objects.all()
     offer_seconds_remaining = offer_days_remaining = None
@@ -52,6 +58,7 @@ def index_view(request):
                'products_by_sold': order_by_units_sold,
                'products_by_views': order_by_views,
                'covers': covers,
+               'videos': videos,
                "all_categories": all_categories,
                'product_offers': product_offers,
                'offered_products': product_offers.products.all() if product_offers else (),

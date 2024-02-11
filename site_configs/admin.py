@@ -3,12 +3,16 @@ from django.db import models
 
 from shop.admin import ImageWidget
 from site_configs.models import ContactUs, SocialLink, SiteInfo, HomepageCoverGroup, HomepageCover, Rules, \
-    UserContactMessage, AboutUs, ETrustSymbol
+    UserContactMessage, AboutUs, ETrustSymbol, HomepageVideo
 
 
 class HomepageCoverInline(admin.TabularInline):
     model = HomepageCover
     formfield_overrides = {models.ImageField: {'widget': ImageWidget}}
+
+
+class HomepageVideoInline(admin.TabularInline):
+    model = HomepageVideo
 
 
 class SocialLinkInline(admin.TabularInline):
@@ -17,7 +21,7 @@ class SocialLinkInline(admin.TabularInline):
 
 @admin.register(HomepageCoverGroup)
 class HomepageCoverGroupAdmin(admin.ModelAdmin):
-    inlines = HomepageCoverInline,
+    inlines = HomepageCoverInline, HomepageVideoInline
 
 
 @admin.register(ContactUs)

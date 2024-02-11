@@ -3,6 +3,7 @@ from django import template
 from cart.models import CartProductQuantity, Cart
 from customer.models import CustomerProfile, Review
 from shop.models import Product
+
 register = template.Library()
 
 
@@ -30,3 +31,9 @@ def product_card_widget(product: Product, user, request, *args):
     except IndexError:
         pass
     return context
+
+
+@register.filter()
+def increment(var):
+    var += 1
+    return var

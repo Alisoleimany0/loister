@@ -15,6 +15,13 @@
                                 {% if forloop.counter == 1 %}class="active" aria-current="true" {% endif %}
                                 aria-label="Slide {{ forloop.counter }}"></button>
                     {% endfor %}
+                    {% for video in videos %}
+                        <button type="button" data-bs-target="#carouselExampleCaptions"
+                                data-bs-slide-to="{{ forloop.counter|add:"-1" }}"
+                                {% if forloop.counter == 1 %}class="active" aria-current="true" {% endif %}
+                                aria-label="Slide {{ forloop.counter }}"></button>
+
+                    {% endfor %}
                 </div>
                 <div class="carousel-inner" style="max-height: 50vh">
                     {% for cover in covers %}
@@ -30,6 +37,23 @@
                     </div>
                     </div>
                     {% endfor %}
+
+                    {% for video in videos %}
+                        {% if forloop.counter == 1 %}
+                            <div class="carousel-item active position-relative">
+                        {% else %}
+                            <div class="carousel-item position-relative">
+                        {% endif %}
+                    <video class="d-block mx-auto" style="max-height: 50vh"
+                           alt="..." controls loop autoplay preload="auto">
+                        <source src="{{ video.video.url }}">
+                    </video>
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>{{ video.title }}</h5>
+                        <p>{{ video.description }}</p>
+                    </div>
+                    </div>
+                    {% endfor %}
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
                             data-bs-slide="prev">
@@ -41,90 +65,91 @@
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Next</span>
                     </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <section class="index-products mb-5">
-        <div class="container-fluid">
-            <ul class="nav nav-pills mb-2 justify-content-center" id="pills-tab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill"
-                            data-bs-target="#pills-home"
-                            type="button" role="tab" aria-controls="pills-home" aria-selected="true">جدیدترین ها
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill"
-                            data-bs-target="#pills-profile"
-                            type="button" role="tab" aria-controls="pills-profile" aria-selected="false">پرفروش ها
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill"
-                            data-bs-target="#pills-contact"
-                            type="button" role="tab" aria-controls="pills-contact" aria-selected="false">پربازدید ها
-                    </button>
-                </li>
-            </ul>
-
-            <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                    <div class="row">
-                        {% for product in products_by_date %}
-                            {% product_card_widget product user request %}
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                    <div class="row">
-                        {% for product in products_by_sold %}
-                            {% product_card_widget product user request %}
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-                    <div class="row">
-                        {% for product in products_by_views %}
-                            {% product_card_widget product user request %}
-                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    {% if product_offers %}
-        {% if product_offers.active %}
-            <section class="product-view">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-7">
-                            <div class="offer-box bg-white p-5">
-                                <div class="timer-box timer d-flex justify-content-center"
-                                     data-seconds-left="{{ offer_seconds_remaining }}">
-                                    <div class="d-flex justify-content-center" style="margin-inline-start: 20px;">
-                                        {{ offer_days_remaining }} روز
+
+        <section class="index-products mb-5">
+            <div class="container-fluid">
+                <ul class="nav nav-pills mb-2 justify-content-center" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-home"
+                                type="button" role="tab" aria-controls="pills-home" aria-selected="true">جدیدترین ها
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-profile"
+                                type="button" role="tab" aria-controls="pills-profile" aria-selected="false">پرفروش ها
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-contact"
+                                type="button" role="tab" aria-controls="pills-contact" aria-selected="false">پربازدید ها
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
+                         aria-labelledby="pills-home-tab">
+                        <div class="row">
+                            {% for product in products_by_date %}
+                                {% product_card_widget product user request %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                        <div class="row">
+                            {% for product in products_by_sold %}
+                                {% product_card_widget product user request %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+                        <div class="row">
+                            {% for product in products_by_views %}
+                                {% product_card_widget product user request %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% if product_offers %}
+            {% if product_offers.active %}
+                <section class="product-view">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="offer-box bg-white p-5">
+                                    <div class="timer-box timer d-flex justify-content-center"
+                                         data-seconds-left="{{ offer_seconds_remaining }}">
+                                        <div class="d-flex justify-content-center" style="margin-inline-start: 20px;">
+                                            {{ offer_days_remaining }} روز
+                                        </div>
+                                    </div>
+
+                                    <div class="slider-item owl-carousel owl-theme">
+                                        {% for product in offered_products %}
+                                            {% product_card_widget product user request 'remove_div' %}
+                                        {% endfor %}
                                     </div>
                                 </div>
-
-                                <div class="slider-item owl-carousel owl-theme">
-                                    {% for product in offered_products %}
-                                        {% product_card_widget product user request 'remove_div' %}
-                                    {% endfor %}
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-item bg-white rounded p-5">
+                                    <h3 class="p-0 my-3">پشنهاد ویژه</h3>
+                                    <h5 class="p-0 pb-3 my-2 position-relative">{{ product_offers.title }}</h5>
+                                    <p class="my-3">{{ product_offers.description }}</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="text-item bg-white rounded p-5">
-                                <h3 class="p-0 my-3">پشنهاد ویژه</h3>
-                                <h5 class="p-0 pb-3 my-2 position-relative">{{ product_offers.title }}</h5>
-                                <p class="my-3">{{ product_offers.description }}</p>
-                            </div>
-                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            {% endif %}
         {% endif %}
-    {% endif %}
 {% endblock content %}
