@@ -226,6 +226,8 @@ def new_order_view(request):
         customer = CustomerProfile.objects.filter(user=request.user).first()
     else:
         items = CartProductQuantity.objects.filter(cart__session=request.session.session_key)
+    if not items:
+        return redirect("home")
     sub_total = 0
     for item in items:
         sub_total += item.total_price
@@ -253,22 +255,24 @@ def payment_redirect_view(request):
             sub_total = 0
             for item in items:
                 sub_total += item.total_price
-            order = Order.objects.create(customer=customer,
-                                         session=session,
-                                         total_price=sub_total,
-                                         order_status=Order.ORDER_STATUS_CHOICES[0][0],
-                                         customer_full_name=request.POST['full_name'],
-                                         delivery_phone_number=request.POST['mobile'],
-                                         district=request.POST['state'],
-                                         city=request.POST['city'],
-                                         postal_code=request.POST['postal_code'],
-                                         address_text=request.POST['address'],
-                                         additional_info=request.POST.get("additional_info"))
-
-            for item in items:
-                BoughtProduct.objects.create(order=order, product=item.product, quantity=item.quantity,
-                                             name=item.product.name, price=item.sell_price, weight=item.weight,
-                                             total_price=item.total_price)
+            if request.POST.get("order_id", None):
+                order = get_object_or_404(Order, id=request.POST['order_id'])
+            else:
+                order = Order.objects.create(customer=customer,
+                                             session=session,
+                                             total_price=sub_total,
+                                             order_status=Order.ORDER_STATUS_CHOICES[0][0],
+                                             customer_full_name=request.POST['full_name'],
+                                             delivery_phone_number=request.POST['mobile'],
+                                             district=request.POST['state'],
+                                             city=request.POST['city'],
+                                             postal_code=request.POST['postal_code'],
+                                             address_text=request.POST['address'],
+                                             additional_info=request.POST.get("additional_info"))
+                for item in items:
+                    BoughtProduct.objects.create(order=order, product=item.product, quantity=item.quantity,
+                                                 name=item.product.name, price=item.sell_price, weight=item.weight,
+                                                 total_price=item.total_price)
             callback_url = \
                 ('http://' if loister.settings.DEBUG else 'https://') + SiteInfo.objects.first().site_domain + reverse(
                     'payment_confirmation')
@@ -290,6 +294,7 @@ def payment_redirect_view(request):
                     )
             except:
                 raise SuspiciousOperation(response_dict['result'])
+    raise Http404
 
 
 @utils.expire_session
@@ -497,7 +502,6 @@ def order_details_view(request, pk):
     if request.user.is_authenticated:
         order: Order = get_object_or_404(Order, pk=pk)
         if order.customer.user == request.user:
-            print(order.order_status)
             if order.order_status == Order.ORDER_STATUS_CHOICES[0][0]:
                 items = BoughtProduct.objects.filter(order=order)
                 addresses = CustomerAddress.objects.filter(customer__user=request.user)
@@ -505,7 +509,8 @@ def order_details_view(request, pk):
                 sub_total = 0
                 for item in items:
                     sub_total += item.total_price
-                context = {'addresses': addresses, 'items': items, 'sub_total': sub_total, 'customer': customer}
+                context = {'order': order, 'addresses': addresses, 'items': items, 'sub_total': sub_total,
+                           'customer': customer}
                 return render(request, "shop/purchase.html", context=context)
             else:
                 items = BoughtProduct.objects.filter(order=order)

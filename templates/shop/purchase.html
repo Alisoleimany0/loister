@@ -161,22 +161,26 @@
                                 </h5>
                             </div>
                         </div>
-                        <h5 class="m-3 p-2 border-bottom heading">آدرس دستی</h5>
+                        <h5 class="m-3 p-2 border-bottom heading">آدرس</h5>
                         <form class="global-form" action="{% url 'payment_redirect' %}" method="post"
                               style="display: flex; flex-direction: row; flex-wrap: wrap">
                             {% csrf_token %}
+                        <input type="hidden" name="order_id" value="{{ order.id }}">
                             <input type="text" name="full_name" placeholder="نام و نام خانوادگی را وارد کنید"
                                    value="{% if user.is_authenticated %}{{ customer.full_name }}{% endif %}"
                                    style="width: max-content; margin: auto">
-                            <input type="text" required name="state" id="final_state"
+                            <input type="text" required name="state" id="final_state" value="{{ order.district }}"
                                    placeholder="استان را وارد کنید" style="width: max-content; margin: auto">
-                            <input type="text" required name="city" id="final_city" placeholder="شهر را وارد کنید"
-                                   style="width: max-content; margin: auto">
-                            <input type="text" required name="address" id="final_address" placeholder="آدرس دقیق را وارد کنید">
+                            <input type="text" required name="city" id="final_city" value="{{ order.city }}"
+                                   placeholder="شهر را وارد کنید" style="width: max-content; margin: auto">
+                            <input type="text" required name="address" id="final_address"
+                                   value="{{ order.address_text }}" placeholder="آدرس دقیق را وارد کنید">
                             <input type="text" required name="postal_code" id="final_postal_code"
-                                   placeholder="کد پستی را وارد کنید">
-                            <input type="text" required name="mobile" id="final_mobile" placeholder="شماره موبایل را وارد کنید">
-                            <textarea type="text" name="additional_info" placeholder="توضیحات اضافی"></textarea>
+                                   value="{{ order.postal_code }}" placeholder="کد پستی را وارد کنید">
+                            <input type="text" required name="mobile" id="final_mobile"
+                                   value="{{ order.delivery_phone_number }}" placeholder="شماره موبایل را وارد کنید">
+                            <textarea type="text" name="additional_info" value="{{ order.additional_info }}"
+                                      placeholder="توضیحات اضافی"></textarea>
                             <div class="purchase-note bg-light p-3 rounded mt-3" style="width: 100%;">
                                 <label class="form-check-label" for="flexCheckChecked">
                                     <input id="rulesCheckBox" class="form-check-input" type="checkbox">
