@@ -31,7 +31,7 @@ class UserContactMessage(models.Model):
     name = models.CharField(verbose_name='نام', max_length=50)
     email = models.EmailField(verbose_name='ایمیل')
     message = models.TextField(verbose_name='پیام')
-    time = jmodels.jDateTimeField(default=timezone.now)
+    time = jmodels.jDateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = 'time',

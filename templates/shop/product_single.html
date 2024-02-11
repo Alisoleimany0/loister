@@ -34,7 +34,7 @@
                             <div class="product-gallery owl-carousel owl-theme pt-3">
                                 {% for product_image in product_images %}
                                     <div class="item">
-                                        <a href="#" data-fancybox="gallery">
+                                        <a href="{{ product_image.image.url }}" data-fancybox="gallery">
                                             <figure class="position-relative p-1">
                                                 <img src="{{ product_image.image.url }}" alt="image"
                                                      class="d-table mx-auto">
@@ -64,42 +64,49 @@
                                 {% endwith %}
                                 <span>{{ reviews.count }} دیدگاه ثبت شده</span>
                             </div>
-                            <div class="product-price mb-3">
-                                {% if product.is_on_sale %}
-                                    <span>{{ product.sale_price|intcomma:False }} تومان</span>
-                                    <del>{{ product.price|intcomma:False }} تومان</del>
-                                {% else %}
-                                    <p>{{ product.price|intcomma:False }} تومان</p>
-                                {% endif %}
-                            </div>
-                            <div id="addToCartForm" class="add-to-cart d-inline-block bg-white mb-3 p-4">
-                                <form action="{% url 'add_cart' %}" method="get">
-                                    <input type="number" name="quantity" min="1" value="1" class="rounded">
-                                    <input type="hidden" name="id" value="{{ product.id }}">
-                                    {% if weights %}
-                                        <input type="hidden" id="weight" name="weight" value="">
+                            {% if product.is_available %}
+                                <div class="product-price mb-3">
+                                    {% if product.is_on_sale %}
+                                        <span>{{ product.sale_price|intcomma:False }} تومان</span>
+                                        <del>{{ product.price|intcomma:False }} تومان</del>
+                                    {% else %}
+                                        <p>{{ product.price|intcomma:False }} تومان</p>
                                     {% endif %}
-                                    <input type="submit" class="rounded" value="افزودن به سبد خرید">
-                                    {% if weights %}
-                                        <select id="weightChoice" class="d-block" required
-                                                style="width: 100%;background-color: #f8f8f8;border: 1px solid #efefef; border-radius: 4px;padding: 0 8px;margin: 5px 0;outline: 0;">
-                                            <option value="" disabled selected hidden>لطفا وزن را انتخاب کنید
-                                            </option>
-                                            {% for weight in weights %}
-                                                <option value="{{ forloop.counter }}">{{ weight }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    {% endif %}
-                                </form>
-                                <script>
-                                    document.getElementById('weightChoice').addEventListener('change', function () {
-                                        // Option 1: Set the text as the value of a hidden input
-                                        document.getElementById('weight').value =
-                                            this.options[this.selectedIndex].text;
-                                    });
-                                </script>
-                            </div>
-                            <span>تعداد در سبد: {{ in_cart }} از {{ product.max_in_cart }}</span>
+                                </div>
+                                <div id="addToCartForm" class="add-to-cart d-inline-block bg-white mb-3 p-4">
+                                    <form action="{% url 'add_cart' %}" method="get">
+                                        <input type="number" name="quantity" min="1" value="1" class="rounded">
+                                        <input type="hidden" name="id" value="{{ product.id }}">
+                                        {% if weights %}
+                                            <input type="hidden" id="weight" name="weight" value="">
+                                        {% endif %}
+                                        <input type="submit" class="rounded" value="افزودن به سبد خرید">
+                                        {% if weights %}
+                                            <select id="weightChoice" class="d-block" required
+                                                    style="width: 100%;background-color: #f8f8f8;border: 1px solid #efefef; border-radius: 4px;padding: 0 8px;margin: 5px 0;outline: 0;">
+                                                <option value="" disabled selected hidden>لطفا وزن را انتخاب کنید
+                                                </option>
+                                                {% for weight in weights %}
+                                                    <option value="{{ forloop.counter }}">{{ weight }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        {% endif %}
+                                    </form>
+                                    <script>
+                                        document.getElementById('weightChoice').addEventListener('change', function () {
+                                            // Option 1: Set the text as the value of a hidden input
+                                            document.getElementById('weight').value =
+                                                this.options[this.selectedIndex].text;
+                                        });
+                                    </script>
+                                </div>
+                                <span>تعداد در سبد: {{ in_cart }} از {{ product.max_in_cart }}</span>
+
+                            {% else %}
+                                <h5 class="alert alert-danger">
+                                    ناموجود
+                                </h5>
+                            {% endif %}
                             <div class="add-to-wish mb-3">
                                 {% with user|is_favourite:product as is_favourite %}
                                     <a href="{% url 'toggle_wishlist' is_favourite product.id %}"

@@ -876,3 +876,14 @@ footer .social-ul li a {
     right: 10px;
     z-index: 1000; /* Adjust the z-index as needed to make sure it appears on top of other elements */
 }
+
+#purchase-tr {
+    background: red !important;
+    height: 100px !important;
+}
+
+.purchase-tr a {
+   display: block;
+   border: 1px solid black;
+   padding: 16px;
+}

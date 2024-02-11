@@ -50,10 +50,10 @@ class Product(models.Model):
     is_available = models.BooleanField(default=True, verbose_name="موجود است")
     display_description = models.CharField(verbose_name="توضیحات نمایشی", max_length=500, default='', blank=True,
                                            null=True)
-    weights = models.ManyToManyField(ProductWeight, blank=True, verbose_name='وزن های موجود')
+    # weights = models.ManyToManyField(ProductWeight, blank=True, verbose_name='وزن های موجود')
     description = RichTextUploadingField(null=True, blank=True, verbose_name='توضیحات')
     category = models.ManyToManyField(Category, blank=True, verbose_name="دسته‌بندی")
-    release_date = models.DateField(verbose_name="تاریخ انتشار", default=timezone.now)
+    release_date = models.DateField(verbose_name="تاریخ انتشار", auto_now_add=True)
     views = models.BigIntegerField(verbose_name="تعداد بازدید", default=0)
     price = models.DecimalField(verbose_name="قیمت", default=0, decimal_places=0, max_digits=12)
     is_on_sale = models.BooleanField(verbose_name="در حراج است", default=False)
@@ -148,12 +148,13 @@ class Order(models.Model):
         ("2payment", "در انتظار پرداخت"),
         ("1processing", "پرداخت شده"),
         ("3sent", "ارسال شده"),
+        ("4sent", "لغو شده"),
     )
     customer = models.ForeignKey(CustomerProfile, null=True, on_delete=models.SET_NULL, verbose_name="مشتری")
     session = models.CharField(max_length=100, null=True, verbose_name="Session")
-    checkout_date = jmodels.jDateTimeField(null=True, blank=True, default=timezone.now, verbose_name="تاریخ پرداخت")
+    checkout_date = jmodels.jDateTimeField(null=True, blank=True, verbose_name="تاریخ پرداخت")
     customer_full_name = models.CharField(max_length=50, null=True, blank=True, verbose_name="نام و نام خانوادگی")
-    invoice_date_time = jmodels.jDateTimeField(default=timezone.now, verbose_name="تاریخ و زمان صدور فاکتور")
+    invoice_date_time = jmodels.jDateTimeField(auto_now_add=True, verbose_name="تاریخ و زمان صدور فاکتور")
     total_price = models.DecimalField(verbose_name="قیمت کل", max_digits=12, decimal_places=0)
     delivery_phone_number = models.CharField(verbose_name="شماره تلفن تحویل‌گیرنده", max_length=15)
     district = models.CharField(verbose_name="استان", max_length=20)
@@ -167,6 +168,34 @@ class Order(models.Model):
     class Meta:
         verbose_name_plural = "2. سفارش ها"
         verbose_name = "سفارش"
+
+    @property
+    def is_payment_pending(self):
+        return self.order_status == Order.ORDER_STATUS_CHOICES[0][0]
+
+    @property
+    def is_payment_successful(self):
+        return self.order_status == Order.ORDER_STATUS_CHOICES[1][0]
+
+    @property
+    def is_completed(self):
+        return self.order_status == Order.ORDER_STATUS_CHOICES[2][0]
+
+    @property
+    def is_canceled(self):
+        return self.order_status == Order.ORDER_STATUS_CHOICES[3][0]
+
+    def set_payment_pending(self):
+        self.order_status = Order.ORDER_STATUS_CHOICES[0][0]
+
+    def set_payment_successful(self):
+        self.order_status = Order.ORDER_STATUS_CHOICES[1][0]
+
+    def set_completed(self):
+        self.order_status = Order.ORDER_STATUS_CHOICES[2][0]
+
+    def set_canceled(self):
+        self.order_status = Order.ORDER_STATUS_CHOICES[3][0]
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super().save(force_insert, force_update, using, update_fields)

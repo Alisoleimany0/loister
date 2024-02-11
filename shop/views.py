@@ -67,13 +67,14 @@ def index_view(request):
 @utils.expire_session
 def product_single(request, slug):
     product = get_object_or_404(Product, slug=slug)
-    weights = product.weights.all()
+    # weights = product.weights.all()
     images = ProductImage.objects.filter(product=product)
     category = Product.category
     properties = ProductDetail.objects.filter(product=product)
     reviews = Review.objects.filter(product=product, approved=True, parent=None, content__iregex="^(?!\s*$).+")
 
-    context = {'in_cart': 0, 'reviews': reviews, 'weights': weights}
+    # context = {'in_cart': 0, 'reviews': reviews, 'weights': weights}
+    context = {'in_cart': 0, 'reviews': reviews}
 
     # hitcount logic
     hit_count = get_hitcount_model().objects.get_for_object(product)
@@ -177,6 +178,8 @@ def cart_view(request):
 def add_cart_view(request):
     if request.GET.get("id", None) and request.GET.get("quantity", None):
         product = get_object_or_404(Product, id=request.GET['id'])
+        if not product.is_available:
+            return utils.get_toast_response(request, "این کالا ناموجود است", "danger")
         if request.user.is_authenticated:
             cart = Cart.objects.filter(customer__user=request.user)
             if not cart:
@@ -224,7 +227,16 @@ def new_order_view(request):
         items = CartProductQuantity.objects.filter(cart__customer__user=request.user)
         addresses = CustomerAddress.objects.filter(customer__user=request.user)
         customer = CustomerProfile.objects.filter(user=request.user).first()
+        if Order.objects.filter(order_status=Order.ORDER_STATUS_CHOICES[0][0], customer=customer).exists():
+            return utils.get_toast_response(request,
+                                            "شما سفارش پرداخت نشده دارید. لطفا ابتدا از طریق پنل کاربری سفارش خود را پرداخت یا لغو کنید.",
+                                            "warning")
     else:
+        if Order.objects.filter(order_status=Order.ORDER_STATUS_CHOICES[0][0],
+                                session=request.session.session_key).exists():
+            return utils.get_toast_response(request,
+                                            "شما سفارش پرداخت نشده دارید. لطفا ابتدا از طریق پنل کاربری سفارش خود را پرداخت یا لغو کنید.",
+                                            "warning")
         items = CartProductQuantity.objects.filter(cart__session=request.session.session_key)
     if not items:
         return redirect("home")
@@ -233,6 +245,16 @@ def new_order_view(request):
         sub_total += item.total_price
     context = {'addresses': addresses, 'items': items, 'sub_total': sub_total, 'customer': customer}
     return render(request, 'shop/purchase.html', context)
+
+
+@utils.expire_session
+def cancel_order_view(request, pk):
+    order = get_object_or_404(Order, id=pk)
+    if not order.is_payment_pending:
+        return utils.get_toast_response(request, "شما نمیتوانید این سفارش را لغو کنید", "danger")
+    order.set_canceled()
+    order.save()
+    return utils.get_toast_response(request, "سفارش لغو شد", "success")
 
 
 @utils.expire_session
@@ -313,7 +335,7 @@ def payment_confirmation_view(request):
                 if order.total_price * 10 != response['amount']:
                     raise ValidationError("payment amount is invalid")
 
-                order.order_status = Order.ORDER_STATUS_CHOICES[1][0]
+                order.set_payment_successful()
                 order.checkout_date = datetime.fromisoformat(response['paidAt'])
                 order.save()
                 context['successful'] = True
@@ -377,7 +399,7 @@ def profile_info_view(request):
 @utils.expire_session
 def profile_purchase_history(request):
     if request.user.is_authenticated:
-        orders = Order.objects.filter(customer__user=request.user).order_by('-checkout_date')
+        orders = Order.objects.filter(customer__user=request.user).order_by('-invoice_date_time')
         context = {'orders': orders}
         return render(request, 'user_profile/purchase-history.html', context)
     return redirect("logup")
@@ -492,7 +514,7 @@ def toggle_wishlist(request, is_favourite, pk):
 
 def order_set_complete_view(request, pk):
     order = Order.objects.get(pk=pk)
-    order.order_status = Order.ORDER_STATUS_CHOICES[2][0]
+    order.set_completed()
     order.save()
     # return redirect(reverse('admin:shop_order_changelist'))
     return HttpResponse("<script>history.back();</script>")
@@ -502,7 +524,7 @@ def order_details_view(request, pk):
     if request.user.is_authenticated:
         order: Order = get_object_or_404(Order, pk=pk)
         if order.customer.user == request.user:
-            if order.order_status == Order.ORDER_STATUS_CHOICES[0][0]:
+            if order.is_payment_pending:
                 items = BoughtProduct.objects.filter(order=order)
                 addresses = CustomerAddress.objects.filter(customer__user=request.user)
                 customer = CustomerProfile.objects.filter(user=request.user).first()

@@ -91,6 +91,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'type', 'is_available']
     prepopulated_fields = {'slug': ('name',), }
     filter_horizontal = ['category']
+    readonly_fields = ['release_date']
     inlines = ProductDetailInline, ProductImageInline
     form = ProductAdminForm
 
@@ -119,21 +120,26 @@ class OrderAdmin(admin.ModelAdmin):
     list_filter = (
         ('checkout_date', JDateFieldListFilter),
     )
-    readonly_fields = ['customer', 'session']
+    readonly_fields = ['customer', 'session', 'invoice_date_time']
 
     def set_to_complete(self, obj):
-        if obj.order_status == Order.ORDER_STATUS_CHOICES[1][0]:
+        if obj.is_payment_successful:
             return format_html('<a class="button" href="{}">{}</a>', reverse('order_set_complete', args=[obj.pk]),
                                'نهایی کردن')
-        elif obj.order_status == Order.ORDER_STATUS_CHOICES[0][0]:
+        elif obj.is_payment_pending:
             return "در انتظار پرداخت"
+        elif obj.is_canceled:
+            return "لغو شده"
         else:
             return "تکمیل شده"
 
     set_to_complete.short_description = 'وضعیت سفارش'
 
     def formatted_date(self, obj):
-        return obj.checkout_date.strftime('%Y-%m-%d, ساعت %H:%M')  # Format the date as you like
+        if obj.checkout_date:
+            return obj.checkout_date.strftime('%Y-%m-%d, ساعت %H:%M')  # Format the date as you like
+        else:
+            return "-"
 
     formatted_date.short_description = 'تاریخ پرداخت'  # Column header
 

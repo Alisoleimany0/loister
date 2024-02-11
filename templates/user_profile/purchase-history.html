@@ -4,7 +4,7 @@
 {% block profile_content %}
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="purchase-history-profile-content p-3 mt-3 border rounded">
+            <div class="p-3 mt-3 border rounded table-responsive">
                 <table class="table text-center">
                     <tr>
                         <td>کد سفارش</td>
@@ -12,14 +12,23 @@
                         <td>تاریخ</td>
                         <td>مبلغ به تومان</td>
                         <td>مشاهده جزئیات یا ادامه پرداخت</td>
+                        <td></td>
                     </tr>
                     {% for order in orders %}
                         <tr>
                             <td>{{ order.id }}</td>
                             <td>{{ order.get_order_status_display }}</td>
-                            <td>{{ order.checkout_date|date:'Y/m/dساعت H:i' }}</td>
+                            {% if order.checkout_date %}
+                                <td>{{ order.checkout_date|date:'Y/m/dساعت H:i' }}</td>
+                            {% else %}
+                                <td>{{ order.invoice_date_time|date:'Y/m/dساعت H:i' }}</td>
+                            {% endif %}
                             <td>{{ order.total_price|intcomma:False }}</td>
-                            <td><a href="{% url 'order_details' order.id %}" id="delete-cart-item" class="text-danger"><i class="bi bi-arrow-bar-left" style="font-size: 1.2em"></i></a></td>
+                            <td><a href="{% url 'order_details' order.id %}" class="text-danger"><i
+                                    class="bi bi-arrow-bar-left" style="font-size: 1.2em"></i></a></td>
+                            {% if order.is_payment_pending %}
+                                <td><a href="{% url 'cancel_order' order.id %}" class="text-danger">لغو سفارش</a></td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                 </table>

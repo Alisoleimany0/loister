@@ -14,13 +14,15 @@
             <!-- Product details-->
             <figcaption class="position-absolute w-100 h-100 text-center">
                 <ul class="p-0">
-                    <li class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top"
-                        title="افزودن به سبد خرید">
-                        <a href="{% url 'add_cart' %}?quantity=1&id={{ product.id }}"
-                           class="d-inline-block rounded">
-                            <i class="bi bi-cart4">{{ number_in_cart }}</i>
-                        </a>
-                    </li>
+                    {% if product.is_available %}
+                        <li class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top"
+                            title="افزودن به سبد خرید">
+                            <a href="{% url 'add_cart' %}?quantity=1&id={{ product.id }}"
+                               class="d-inline-block rounded">
+                                <i class="bi bi-cart4">{{ number_in_cart }}</i>
+                            </a>
+                        </li>
+                    {% endif %}
                     {% with user|is_favourite:product as is_favourite %}
                         <li class="d-inline-block"
                             data-bs-toggle="tooltip"
@@ -55,17 +57,21 @@
         {% endwith %}
     </div>
     <!-- Product price-->
-    {% if product.is_on_sale %}
-        <div class="product-price" style="display: flex;">
-            <span class="w-100 text-start">{{ product.sale_price | intcomma }} تومان</span>
-            <del class="w-100 text-end">
+    {% if product.is_available %}
+        {% if product.is_on_sale %}
+            <div class="product-price" style="display: flex;">
+                <span class="w-100 text-start">{{ product.sale_price | intcomma }} تومان</span>
+                <del class="w-100 text-end">
                     <span style="text-decoration: line-through;">{{ product.price|intcomma:False }}
                         تومان </span> <br></del>
-        </div>
+            </div>
+        {% else %}
+            <div class="product-price d-flex">
+                <span class="w-100 text-start">{{ product.price|intcomma:False }} تومان</span>
+            </div>
+        {% endif %}
     {% else %}
-        <div class="product-price d-flex">
-            <span class="w-100 text-start">{{ product.price|intcomma:False }} تومان</span>
-        </div>
+        <span class="text-danger h5">ناموجود</span>
     {% endif %}
 </div>
 {% if not remove_div %}

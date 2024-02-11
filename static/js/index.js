@@ -12,7 +12,7 @@ function showToast(message, type) {
     toast.show();
     setTimeout(() => {
         toast.hide();
-    }, 5000);
+    }, 7000);
 }
 
 window.addEventListener("pageshow", function (event) {

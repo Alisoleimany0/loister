@@ -38,6 +38,7 @@ class RulesAdmin(admin.ModelAdmin):
 @admin.register(UserContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
     list_display = ['__str__', 'name', 'formatted_date']
+    readonly_fields = ['time']
 
     def formatted_date(self, obj):
         return obj.time.strftime('%H:%M %Y-%m-%d')  # Format the date as you like
