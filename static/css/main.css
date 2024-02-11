@@ -898,14 +898,6 @@ h2.title:before {
     overflow: hidden;
 }
 
-#new-item-carousel .carousel-inner .item {
-    padding-left: 0;
-}
-
-#major-item-carousel .carousel-inner .item {
-    padding-left: 0;
-}
-
 h2.title {
     color: #FE980F;
     font-family: 'BYekan', sans-serif;

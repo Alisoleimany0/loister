@@ -47,6 +47,7 @@ class Product(models.Model):
     name = models.CharField(verbose_name="نام محصول", max_length=40)
     slug = models.SlugField(verbose_name="slug", unique=True, allow_unicode=True, max_length=255)
     type = models.ForeignKey(ProductType, blank=True, null=True, on_delete=models.SET_NULL, verbose_name="نوع")
+    is_available = models.BooleanField(default=True, verbose_name="موجود است")
     display_description = models.CharField(verbose_name="توضیحات نمایشی", max_length=500, default='', blank=True,
                                            null=True)
     weights = models.ManyToManyField(ProductWeight, blank=True, verbose_name='وزن های موجود')
@@ -58,6 +59,7 @@ class Product(models.Model):
     is_on_sale = models.BooleanField(verbose_name="در حراج است", default=False)
     sale_price = models.DecimalField(verbose_name="قیمت حراج", default=0, decimal_places=0, max_digits=12)
     max_in_cart = models.IntegerField(verbose_name="حداکثر تعداد در سبد خرید", default=1)
+
 
     class Meta:
         verbose_name_plural = "1. محصول ها"
@@ -149,7 +151,7 @@ class Order(models.Model):
     )
     customer = models.ForeignKey(CustomerProfile, null=True, on_delete=models.SET_NULL, verbose_name="مشتری")
     session = models.CharField(max_length=100, null=True, verbose_name="Session")
-    checkout_date = jmodels.jDateTimeField(blank=True, default=timezone.now, verbose_name="تاریخ پرداخت")
+    checkout_date = jmodels.jDateTimeField(null=True, blank=True, default=timezone.now, verbose_name="تاریخ پرداخت")
     customer_full_name = models.CharField(max_length=50, null=True, blank=True, verbose_name="نام و نام خانوادگی")
     invoice_date_time = jmodels.jDateTimeField(default=timezone.now, verbose_name="تاریخ و زمان صدور فاکتور")
     total_price = models.DecimalField(verbose_name="قیمت کل", max_digits=12, decimal_places=0)
@@ -160,6 +162,7 @@ class Order(models.Model):
     postal_code = models.CharField(verbose_name="کد پستی", default=0, null=False, max_length=10)
     additional_info = models.TextField(verbose_name="اطلاعات تکمیلی", blank=True)
     order_status = models.CharField(choices=ORDER_STATUS_CHOICES, max_length=20, verbose_name="وضعیت سفارش")
+    payment_track_id = models.CharField(max_length=100, verbose_name='شماره پیگیری زیبال')
 
     class Meta:
         verbose_name_plural = "2. سفارش ها"

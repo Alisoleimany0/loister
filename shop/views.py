@@ -1,29 +1,32 @@
 import requests
 import json
 import re
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, SuspiciousOperation, MultipleObjectsReturned, \
-        PermissionDenied
+    PermissionDenied
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Sum
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 from hitcount.utils import get_hitcount_model
 from hitcount.views import HitCountMixin
+from zibal.zibal import zibal
 
+import loister.settings
 from cart.models import Cart, CartProductQuantity
 from customer.models import CustomerProfile, CustomerAddress, Review
 from loister import utils
-from site_configs.models import HomepageCover
+from site_configs.models import HomepageCover, SiteInfo
 from .models import Category, Product, ProductImage, ProductOffers, ProductDetail, Order, BoughtProduct, ProductType, \
-        ProductWeight
+    ProductWeight
 
 
 @utils.expire_session
@@ -121,9 +124,9 @@ def signup_user(request):
         if not User.objects.filter(username=request.POST['username']).exists():
             if not re.match(r"^[a-zA-z\d@_\-.]+$", request.POST['username']) or \
                     (request.POST['username']).__contains__("\\"):
-                        return utils.get_toast_response(request,
-                                                        "نام کاربری فقط میتواند ترکیبی از اعداد و حروف انگلیسی و _ @ . باشد",
-                                                        "danger")
+                return utils.get_toast_response(request,
+                                                "نام کاربری فقط میتواند ترکیبی از اعداد و حروف انگلیسی و _ @ . باشد",
+                                                "danger")
             try:
                 validate_password(request.POST['password'])
             except ValidationError as error:
@@ -180,8 +183,8 @@ def add_cart_view(request):
                 return utils.get_toast_response(request, "خطای ناشناخته", "danger")
 
             cart_product = \
-                    CartProductQuantity.objects.get_or_create(product=product, cart=cart.first(),
-                                                              weight=request.GET.get('weight', None))[0]
+                CartProductQuantity.objects.get_or_create(product=product, cart=cart.first(),
+                                                          weight=request.GET.get('weight', None))[0]
             cart_product.quantity += int(request.GET['quantity'])
             if cart_product.quantity > cart_product.product.max_in_cart:
                 return utils.get_toast_response(request,
@@ -266,30 +269,65 @@ def payment_redirect_view(request):
                 BoughtProduct.objects.create(order=order, product=item.product, quantity=item.quantity,
                                              name=item.product.name, price=item.sell_price, weight=item.weight,
                                              total_price=item.total_price)
-            post_copy = request.POST.copy()
-            post_copy["order_id"] = order.id
-            # TODO this is for testing. Remove after implementing payment
-            post_copy['code'] = "200"
-            request.session['_post_data'] = post_copy
-            # TODO redirect user to
-            return redirect("payment_confirmation")
+            callback_url = \
+                ('http://' if loister.settings.DEBUG else 'https://') + SiteInfo.objects.first().site_domain + reverse(
+                    'payment_confirmation')
+            zb = zibal(loister.settings.MERCHANT, callback_url)
+            # send payment request
+            response_dict = zb.request(amount=str(order.total_price * 10), mobile=order.delivery_phone_number,
+                                       order_id=order.id)
+            try:
+                if response_dict['result'] == 100:
+                    track_id = response_dict['trackId']
+                    order.payment_track_id = track_id
+                    order.save()
+                    return redirect(f'https://gateway.zibal.ir/start/{track_id}')
+                else:
+                    return HttpResponse(
+                        f"""<h1 dir="rtl">درخواست شما با خطا مواجه شد<h1>""" +
+                        f"""<h1 dir="rtl">{zb.request_result(response_dict['result'])}<h1>""" +
+                        f"""<h1 dir="rtl">لطفا برای حل مشکل با پشتیبانی تماس بگیرید</h1>"""
+                    )
+            except:
+                raise SuspiciousOperation(response_dict['result'])
 
 
 @utils.expire_session
 def payment_confirmation_view(request):
-    """method that handle bank's API callback"""
-    # TODO properly handle api callback
-    if request.session['_post_data']['code'] == "200" and request.session['_post_data']['order_id']:
-        order = Order.objects.get(id=int(request.session['_post_data']["order_id"]))
-        order.order_status = Order.ORDER_STATUS_CHOICES[1][0]
-        order.checkout_date = timezone.now()
-        order.save()
-        if request.user.is_authenticated:
-            CartProductQuantity.objects.filter(cart__customer__user=request.user).delete()
-        else:
-            CartProductQuantity.objects.filter(cart__session=request.session.session_key, cart__customer=None).delete()
+    """method that handles bank's API callback"""
+    context = {'order_id': request.GET['orderId'], 'track_id': request.GET['trackId']}
+    if request.GET['success'] == "1":
+        zb = zibal(loister.settings.MERCHANT, '')
+        response = zb.verify(trackId=request.GET['trackId'])
+        if response['result'] == 100:
+            if response['status'] == 1:
+                order = Order.objects.get(id=int(request.GET["orderId"]))
 
-        return render(request, "payment_result.html")
+                if order.payment_track_id != request.GET['trackId']:
+                    raise ValidationError("trackId is invalid")
+                if order.total_price * 10 != response['amount']:
+                    raise ValidationError("payment amount is invalid")
+
+                order.order_status = Order.ORDER_STATUS_CHOICES[1][0]
+                order.checkout_date = datetime.fromisoformat(response['paidAt'])
+                order.save()
+                context['successful'] = True
+                if request.user.is_authenticated:
+                    CartProductQuantity.objects.filter(cart__customer__user=request.user).delete()
+                else:
+                    CartProductQuantity.objects.filter(cart__session=request.session.session_key,
+                                                       cart__customer=None).delete()
+            else:
+                return HttpResponse(
+                    """<h1 dir="rtl">پرداخت شما از سمت زیبال تایید نشده است لطفا با پشتیبانی تماس بگیرید.</h1>""" +
+                    "<br>" + f"{zb.verify_result(response['result'])}")
+        elif response['result'] == 201:
+            context['already_successful'] = True
+        else:
+            return HttpResponse("""<h1 dir="rtl">پرداخت با خطا مواجه شده است</h1>""")
+    else:
+        context['successful'] = False
+    return render(request, "payment_result.html", context=context)
 
 
 @utils.expire_session
@@ -475,56 +513,29 @@ def order_details_view(request, pk):
                 return render(request, "user_profile/order_details.html", context=context)
     raise SuspiciousOperation()
 
-
-amount = 1000000  # Rial / Required
-description = "توضیحات مربوط به تراکنش را در این قسمت وارد کنید"  # Required
-phone = '09915392053'  # Optional
-# Important: need to edit for real server.
-CallbackURL = 'https://www.google.com/'
-
-# TODO zarinpal sandbox api is broken implement after
-# def send_request(request):
-#     data = {
-#             "merchant": loister.settings.MERCHANT,
-#             "amount": amount,
-#             # "description": description,
-#             "callback_url": CallbackURL,
-#             }
-#     data = json.dumps(data)
-#     # set content length by data
-#     headers = {'content-type': 'application/json', 'accept': 'application/json'}
+#
+# def test_view(request, order_id=2):
+#     amount = 1000000
+#     mobile = '09915392053'
+#     callback_url = \
+#         ('http://' if loister.settings.DEBUG else 'https://') + SiteInfo.objects.first().site_domain + reverse(
+#             'payment_confirmation')
+#     zb = zibal(loister.settings.MERCHANT, callback_url)
+#     order = get_object_or_404(Order, id=order_id)
+#     response_dict = zb.request(amount=str(order.total_price * 10), mobile=order.delivery_phone_number,
+#                                order_id=order.id)
 #     try:
-#         response = requests.post(ZP_API_REQUEST, data=data, headers=headers, timeout=10)
-#         print(response.headers)
-#         if response.status_code == 200:
-#             response = response.json()
-#             if response['Status'] == 100:
-#                 return {'status': True, 'url': ZP_API_STARTPAY + str(response['Authority']),
-#                         'authority': response['Authority']}
-#             else:
-#                 return {'status': False, 'code': str(response['Status'])}
-#         return HttpResponse(response)
-
-#     except requests.exceptions.Timeout:
-#         return {'status': False, 'code': 'timeout'}
-#     except requests.exceptions.ConnectionError:
-#          return {'status': False, 'code': 'connection error'}
-
-
-def test_view(authority):
-    data = {
-        "merchant": "zibal",
-        "amount": "100000",
-        "callbackUrl": CallbackURL,
-    }
-    data = json.dumps(data)
-    # set content length by data
-    # headers = {'content-type': 'application/json', 'content-length': str(len(data))}
-    headers = {'content-type': 'application/json'}
-    response: HttpResponse = requests.post('https://gateway.zibal.ir/v1/request', data=data, headers=headers)
-    if response.status_code == 200:
-        if response.json()['result'] == 100:
-            trackId = response.json()['trackId']
-            print(type(requests.get(f'https://gateway.zibal.ir/start/{trackId}', data=data)))
-    return HttpResponse()
-    # return response
+#         if response_dict['result'] == 100:
+#             track_id = response_dict['trackId']
+#             order.payment_track_id = track_id
+#             order.save()
+#             return redirect(f'https://gateway.zibal.ir/start/{track_id}')
+#         else:
+#             return HttpResponse(
+#                 f"""<h1 dir="rtl">درخواست شما با خطا مواجه شد<h1>""" +
+#                 f"""<h1 dir="rtl">{zb.request_result(response_dict['result'])}<h1>""" +
+#                 f"""<h1 dir="rtl">لطفا برای حل مشکل با پشتیبانی تماس بگیرید</h1>"""
+#             )
+#
+#     except:
+#         raise SuspiciousOperation(response_dict['result'])

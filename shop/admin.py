@@ -88,7 +88,7 @@ class ProductAdminForm(forms.ModelForm):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'type']
+    list_display = ['id', 'name', 'type', 'is_available']
     prepopulated_fields = {'slug': ('name',), }
     filter_horizontal = ['category']
     inlines = ProductDetailInline, ProductImageInline
@@ -113,8 +113,8 @@ class ProductOffersAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'customer_full_name', 'delivery_phone_number', 'formatted_date', 'total_price',
-                    'set_to_complete']
-    search_fields = ['customer_full_name', 'id', 'checkout_date']
+                    'set_to_complete', 'payment_track_id']
+    search_fields = ['customer_full_name', 'delivery_phone_number', 'id', 'checkout_date', 'payment_track_id']
 
     list_filter = (
         ('checkout_date', JDateFieldListFilter),
@@ -124,7 +124,7 @@ class OrderAdmin(admin.ModelAdmin):
     def set_to_complete(self, obj):
         if obj.order_status == Order.ORDER_STATUS_CHOICES[1][0]:
             return format_html('<a class="button" href="{}">{}</a>', reverse('order_set_complete', args=[obj.pk]),
-                               'تکمیل')
+                               'نهایی کردن')
         elif obj.order_status == Order.ORDER_STATUS_CHOICES[0][0]:
             return "در انتظار پرداخت"
         else:

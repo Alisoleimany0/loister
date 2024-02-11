@@ -67,13 +67,13 @@ class SocialLink(models.Model):
 
 
 class SiteInfo(models.Model):
+    site_domain = models.CharField(max_length=50, default='127.0.0.1', verbose_name='دامنه سایت')
     logo_image = models.ImageField(verbose_name='تصویر لوگو', upload_to='logo/', blank=True, null=True)
     logo_width = models.IntegerField(verbose_name='عرض لوگو', default=60)
     logo_height = models.IntegerField(verbose_name='ارتفاع لوگو', default=60)
     show_name_next_to_logo = models.BooleanField(verbose_name='نمایش نام سایت در کنار لوگو', default=True)
     site_name = models.CharField(verbose_name='اسم سایت', max_length=50, null=True)
     introduction_text = RichTextField(verbose_name='متن معرفی', max_length=600, blank=True, null=True)
-
 
     class Meta:
         verbose_name = 'اطلاعات سایت'
