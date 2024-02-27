@@ -129,30 +129,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="page-content-section col-lg-5 col-md-6 bg-white">
-                        <div class="global-form product-review-form bg-white rounded p-3 mt-3">
-                            <form action="{% url 'product_review' product.slug %}" method="post">
-                                {% csrf_token %}
-                                <div class="set-rate d-flex rounded">
-                                    <span class="d-inline-block pe-3">امتیاز شما</span>
-                                    <div class="box-rate w-100 text-end">
-                                        <input type="radio" id="5" value="5" name="rating">
-                                        <label for="5"></label>
-                                        <input type="radio" id="4" value="4" name="rating">
-                                        <label for="4"></label>
-                                        <input type="radio" id="3" value="3" name="rating">
-                                        <label for="3"></label>
-                                        <input type="radio" id="2" value="2" name="rating">
-                                        <label for="2"></label>
-                                        <input type="radio" id="1" value="1" name="rating">
-                                        <label for="1"></label>
-                                    </div>
-                                </div>
-                                <textarea class="rounded" name="content" placeholder="نظر شما ..."></textarea>
-                                <button type="submit" class="rounded">ارسال دیدگاه</button>
-                            </form>
-                        </div>
-                    </div>
+
                     <div class="page-content-section col-lg-7 col-md-6 bg-white">
                         <div class="product-content bg-white p-3 mt-3 rounded">
                             <ul class="nav nav-pills mb-2" id="pills-tab" role="tablist">
@@ -232,6 +209,30 @@
                                     {% endfor %}
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="page-content-section col-lg-5 col-md-6 bg-white">
+                        <div class="global-form product-review-form bg-white rounded p-3 mt-3">
+                            <form action="{% url 'product_review' product.slug %}" method="post">
+                                {% csrf_token %}
+                                <div class="set-rate d-flex rounded">
+                                    <span class="d-inline-block pe-3">امتیاز شما</span>
+                                    <div class="box-rate w-100 text-end">
+                                        <input type="radio" id="5" value="5" name="rating">
+                                        <label for="5"></label>
+                                        <input type="radio" id="4" value="4" name="rating">
+                                        <label for="4"></label>
+                                        <input type="radio" id="3" value="3" name="rating">
+                                        <label for="3"></label>
+                                        <input type="radio" id="2" value="2" name="rating">
+                                        <label for="2"></label>
+                                        <input type="radio" id="1" value="1" name="rating">
+                                        <label for="1"></label>
+                                    </div>
+                                </div>
+                                <textarea class="rounded" name="content" placeholder="نظر شما ..."></textarea>
+                                <button type="submit" class="rounded">ارسال دیدگاه</button>
+                            </form>
                         </div>
                     </div>
                 </div>
