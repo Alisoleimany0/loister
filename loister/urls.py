@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf.urls.i18n import i18n_patterns
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from . import settings
@@ -26,19 +27,18 @@ from django.urls import re_path
 from django.views.static import serve
 
 
-def static(prefix, view=serve, **kwargs):
-    # TODO: remove for production
-    if not prefix:
-        raise ImproperlyConfigured("Empty static prefix not permitted")
-    # elif not settings.DEBUG or urlsplit(prefix).netloc:
-    elif urlsplit(prefix).netloc:
-        # No-op if not in debug mode or a non-local prefix.
-        return []
-    return [
-        re_path(
-            r"^%s(?P<path>.*)$" % re.escape(prefix.lstrip("/")), view, kwargs=kwargs
-        ),
-    ]
+# def static(prefix, view=serve, **kwargs):
+#     if not prefix:
+#         raise ImproperlyConfigured("Empty static prefix not permitted")
+#     # elif not settings.DEBUG or urlsplit(prefix).netloc:
+#     elif urlsplit(prefix).netloc:
+#         # No-op if not in debug mode or a non-local prefix.
+#         return []
+#     return [
+#         re_path(
+#             r"^%s(?P<path>.*)$" % re.escape(prefix.lstrip("/")), view, kwargs=kwargs
+#         ),
+#     ]
 
 
 urlpatterns = [

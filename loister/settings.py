@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-xl*+b#%iwa=u%s*zjs$fs_8-!jeutoh+kjiilzca7-*@m(!-*@
 MERCHANT = "zibal"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 SITE_ADDRESS = '127.0.0.1'
 
