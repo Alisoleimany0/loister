@@ -171,11 +171,11 @@ function iranwebsv(state) {
     with (document.getElementById('city')) {
         options.length = 0;
 
-        if (state === 0) {
+        if (state == 0) {
             options[0] = new Option('لطفا استان را انتخاب نمایید', '');
         }
 
-        if (state === 1) {
+        if (state == 1) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('احمدآبادمستوفي', '33131');
             options[2] = new Option('ادران', '31541');
@@ -258,7 +258,7 @@ function iranwebsv(state) {
             options[79] = new Option('ورامين', '3371');
             options[80] = new Option('وهن آباد', '18391');
         }
-        if (state === 2) {
+        if (state == 2) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('احمد سرگوراب', '43591');
             options[2] = new Option('اسالم', '43891');
@@ -327,7 +327,7 @@ function iranwebsv(state) {
             options[65] = new Option('هشتپر ـ طوالش', '4371');
             options[66] = new Option('واجارگاه', '44891');
         }
-        if (state === 3) {
+        if (state == 3) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('ابشاحمد', '54671');
             options[2] = new Option('اذغان', '54561');
@@ -382,7 +382,7 @@ function iranwebsv(state) {
             options[51] = new Option('هوراند', '54491');
             options[52] = new Option('ورزقان', '54581');
         }
-        if (state === 4) {
+        if (state == 4) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('اروندكنار', '6331');
             options[2] = new Option('اميديه', '63731');
@@ -426,7 +426,7 @@ function iranwebsv(state) {
             options[40] = new Option('هويزه', '64451');
             options[41] = new Option('ويس', '61491');
         }
-        if (state === 5) {
+        if (state == 5) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option(' بيضا', '73631');
             options[2] = new Option('اردكان ـ سپيدان', '7361');
@@ -502,7 +502,7 @@ function iranwebsv(state) {
             options[72] = new Option('ني ريز', '7491');
             options[73] = new Option('وراوي', '73171');
         }
-        if (state === 6) {
+        if (state == 6) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('ابريشم', '81789');
             options[2] = new Option('ابوزيدآباد', '87481');
@@ -595,7 +595,7 @@ function iranwebsv(state) {
             options[89] = new Option('ورنامخواست', '84731');
             options[90] = new Option('ویلاشهر', '8581');
         }
-        if (state === 7) {
+        if (state == 7) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('ابدال آباد', '95781');
             options[2] = new Option('ازادوار', '96441');
@@ -652,7 +652,7 @@ function iranwebsv(state) {
             options[53] = new Option('نيشابور', '931');
             options[54] = new Option('نيل شهر', '95751');
         }
-        if (state === 8) {
+        if (state == 8) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('َآوج', '3461');
             options[2] = new Option('ارداق', '34671');
@@ -680,7 +680,7 @@ function iranwebsv(state) {
             options[24] = new Option('معلم كلايه', '34931');
             options[25] = new Option('نرجه', '34811');
         }
-        if (state === 9) {
+        if (state == 9) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('ارادان', '35861');
             options[2] = new Option('اميريه', '3681');
@@ -700,7 +700,7 @@ function iranwebsv(state) {
             options[16] = new Option('ميامي', '3631');
             options[17] = new Option('ميغان', '36441');
         }
-        if (state === 10) {
+        if (state == 10) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('دستجرد', '3741');
             options[2] = new Option('سلفچگان', '37461');
@@ -709,7 +709,7 @@ function iranwebsv(state) {
             options[5] = new Option('قنوات', '3731');
             options[6] = new Option('كهك', '37351');
         }
-        if (state === 11) {
+        if (state == 11) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('اراك', '381');
             options[2] = new Option('آستانه', '3871');
@@ -735,7 +735,7 @@ function iranwebsv(state) {
             options[22] = new Option('ميلاجرد', '38551');
             options[23] = new Option('هندودر', '38761');
         }
-        if (state === 12) {
+        if (state == 12) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option(' آب بر ـ طارم', '4591');
             options[2] = new Option('ابهر', '4561');
@@ -757,7 +757,7 @@ function iranwebsv(state) {
             options[18] = new Option('همايون', '45331');
             options[19] = new Option('هيدج', '45731');
         }
-        if (state === 13) {
+        if (state == 13) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('اسلام آباد', '48451');
             options[2] = new Option('اميركلا', '4731');
@@ -809,7 +809,7 @@ function iranwebsv(state) {
             options[48] = new Option('نور', '4641');
             options[49] = new Option('نوشهر', '4651');
         }
-        if (state === 14) {
+        if (state == 14) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('انبار آلوم', '49391');
             options[2] = new Option('اينچه برون', '49751');
@@ -832,7 +832,7 @@ function iranwebsv(state) {
             options[19] = new Option('مراوه تپه', '48733');
             options[20] = new Option('مينودشت', '4981');
         }
-        if (state === 15) {
+        if (state == 15) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('ابي بيگلو', '56331');
             options[2] = new Option('اردبيل', '561');
@@ -854,7 +854,7 @@ function iranwebsv(state) {
             options[18] = new Option('نير', '5641');
             options[19] = new Option('هشتجين', '56871');
         }
-        if (state === 16) {
+        if (state == 16) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('اروميه', '571');
             options[2] = new Option('اشنويه', '5771');
@@ -892,7 +892,7 @@ function iranwebsv(state) {
             options[34] = new Option('نقده', '5761');
             options[35] = new Option('نوشين شهر', '57381');
         }
-        if (state === 17) {
+        if (state == 17) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('ازندريان', '65995');
             options[2] = new Option('اسدآباد', '6541');
@@ -916,7 +916,7 @@ function iranwebsv(state) {
             options[20] = new Option('نهاوند', '6591');
             options[21] = new Option('همدان', '651');
         }
-        if (state === 18) {
+        if (state == 18) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('اورامانتخت', '66791');
             options[2] = new Option('بانه', '6691');
@@ -934,7 +934,7 @@ function iranwebsv(state) {
             options[14] = new Option('مريوان', '6671');
             options[15] = new Option('موچش', '66391');
         }
-        if (state === 19) {
+        if (state == 19) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('اسلام آباد غرب', '6761');
             options[2] = new Option('باينگان', '67931');
@@ -958,7 +958,7 @@ function iranwebsv(state) {
             options[20] = new Option('هرسين', '6731');
             options[21] = new Option('هلشي', '67341');
         }
-        if (state === 20) {
+        if (state == 20) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('ازنا', '6871');
             options[2] = new Option('الشتر ـ سلسله', '6891');
@@ -980,7 +980,7 @@ function iranwebsv(state) {
             options[18] = new Option('نورآباد ـ دلفان', '6831');
             options[19] = new Option('واشيان نصيرتپه', '68541');
         }
-        if (state === 21) {
+        if (state == 21) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('ابدان', '75551');
             options[2] = new Option('اهرم ـ تنگستان', '7551');
@@ -1013,7 +1013,7 @@ function iranwebsv(state) {
             options[29] = new Option('نخل تقي', '75111');
             options[30] = new Option('وحدتيه', '75671');
         }
-        if (state === 22) {
+        if (state == 22) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('اختيارآباد', '76381');
             options[2] = new Option('ارزوئیه', '78591');
@@ -1063,7 +1063,7 @@ function iranwebsv(state) {
             options[46] = new Option('نجف شهر', '78151');
             options[47] = new Option('نگار', '78431');
         }
-        if (state === 23) {
+        if (state == 23) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('ابوموسي', '79591');
             options[2] = new Option('ايسين', '79331');
@@ -1099,7 +1099,7 @@ function iranwebsv(state) {
             options[32] = new Option('كيش', '7941');
             options[33] = new Option('ميناب', '7981');
         }
-        if (state === 24) {
+        if (state == 24) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('اردل', '8881');
             options[2] = new Option('آلوني', '88941');
@@ -1131,7 +1131,7 @@ function iranwebsv(state) {
             options[28] = new Option('هفشجان', '8841');
             options[29] = new Option('وردنجان', '88571');
         }
-        if (state === 25) {
+        if (state == 25) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('ابركوه', '8931');
             options[2] = new Option('احمدآباد', '89531');
@@ -1154,7 +1154,7 @@ function iranwebsv(state) {
             options[19] = new Option('هرات ـ خاتم', '89881');
             options[20] = new Option('يزد', '891');
         }
-        if (state === 26) {
+        if (state == 26) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('اسپكه', '99431');
             options[2] = new Option('ايرانشهر', '991');
@@ -1192,7 +1192,7 @@ function iranwebsv(state) {
             options[34] = new Option('نيك شهر', '9991');
             options[35] = new Option('هيدوچ', '99671');
         }
-        if (state === 27) {
+        if (state == 27) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('اركواز', '69971');
             options[2] = new Option('ارمو', '69641');
@@ -1214,7 +1214,7 @@ function iranwebsv(state) {
             options[18] = new Option('موسيان', '69841');
             options[19] = new Option('ميمه', '69861');
         }
-        if (state === 28) {
+        if (state == 28) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('باشت', '75881');
             options[2] = new Option('پاتاوه', '75981');
@@ -1231,7 +1231,7 @@ function iranwebsv(state) {
             options[13] = new Option('مادوان', '75911');
             options[14] = new Option('ياسوج ـ 7591', '7591');
         }
-        if (state === 29) {
+        if (state == 29) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('اسفراين', '9661');
             options[2] = new Option('ايور', '94331');
@@ -1245,7 +1245,7 @@ function iranwebsv(state) {
             options[10] = new Option('فاروج', '9481');
             options[11] = new Option('گرمه', '9431');
         }
-        if (state === 30) {
+        if (state == 30) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('ارسك', '97831');
             options[2] = new Option('اسديه ـ درميان', '97441');
@@ -1267,7 +1267,7 @@ function iranwebsv(state) {
             options[18] = new Option('نهبندان', '9751');
             options[19] = new Option('نیمبلوك', '97443');
         }
-        if (state === 31) {
+        if (state == 31) {
             options[0] = new Option('لطفا شهر را انتخاب نمایید', '');
             options[1] = new Option('اشتهارد', '31871');
             options[2] = new Option('آسارا', '31551');
