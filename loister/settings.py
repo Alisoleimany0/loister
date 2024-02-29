@@ -22,8 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-xl*+b#%iwa=u%s*zjs$fs_8-!jeutoh+kjiilzca7-*@m(!-*@'
 
-# MERCHANT = "65c28fa0c5d2cb00229acebc"
-MERCHANT = "zibal"
+MERCHANT = "65c28fa0c5d2cb00229acebc"
+# MERCHANT = "zibal"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
