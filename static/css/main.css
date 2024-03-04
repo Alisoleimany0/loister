@@ -84,12 +84,12 @@ a#scrollUp i {
 *******Header CSS******
 **************************/
 #header {
-    border-bottom: solid 2px #FFF ;
+    border-bottom: solid 2px #FD9B18;
     margin-bottom: 20px;
 }
 
 .header_top {
-    background: none repeat scroll 0 0 #FFF;
+    background: none repeat scroll 0 0 #F0F0E9;
     display: none; /* Don't show topbar */
 }
 
