@@ -345,7 +345,7 @@ footer::before {
     color: #ffffff;
     font-size: 16px;
     transform: rotate(45deg);
-    background: #B79891 linear-gradient(135deg, #f35959 10%, #ff4343 100%);
+    background: #B79891 linear-gradient(135deg, #ff0d0d 100%, ##ff0d0d 100%);
 }
 
 footer::after {
