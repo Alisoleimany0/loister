@@ -84,7 +84,7 @@ a#scrollUp i {
 *******Header CSS******
 **************************/
 #header {
-    border-bottom: solid 2px #FFF;
+    border-bottom: solid 2px #FFF ;
     margin-bottom: 20px;
 }
 
