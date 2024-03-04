@@ -48,7 +48,7 @@ header .top-access a {
 header .top-menu {
     /* fallback for old browsers */
     /*transition: top 0.2s ease-in-out;*/
-    background: #B79891 linear-gradient(135deg, #ffffff 10%, #fff 100%);
+    background: #B79891 linear-gradient(135deg,#ff0d0d 100%,  #ff0d0d 100%);
     z-index: 1;
 }
 
