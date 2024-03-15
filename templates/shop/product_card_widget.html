@@ -45,7 +45,7 @@
     </a>
     <div id="addToCartForm" class="add-to-cart d-inline-block bg-white mb-3 p-4">
                                     <form action="{% url 'add_cart' %}" method="get">
-                                        <span>تعداد در سبد: </span>
+                                        <span>تعداد : </span>
 
                                         <input type="number" name="quantity" min="1" value="1" class="rounded">
                                         <input type="hidden" name="id" value="{{ product.id }}">
@@ -74,7 +74,7 @@
 
                                 </div>
                                 <!---<span>تعداد در سبد: {{ in_cart }} از {{ product.max_in_cart }}</span>-->
-    <a class="d-block bg-danger text-center center-block text-white m-auto " href=" {% url 'cart' %}">
+    <a class="d-block bg-success text-center center-block text-white m-auto " href=" {% url 'cart' %}">
         <h5 style="color:#FFF" >رفتن سبد خرید</h5>
     </a>
     <p class="text-center overflow-hidden mt-2">{{ product.display_description }}</p>
