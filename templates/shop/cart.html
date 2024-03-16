@@ -72,7 +72,7 @@
                                         <td>
 
 
-                                            <form method="POST" action="{% url 'delete_all-cart' product.slug %}">
+                                            <form method="POST" action="{% url 'delete_all_cart' product.slug %}">
                                                 {% csrf_token %}
                                                 <button type="submit">remove from the cart</button>
                                             </form>
