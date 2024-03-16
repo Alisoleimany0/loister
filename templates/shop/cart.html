@@ -71,11 +71,11 @@
                                         <td > خالی کردن سبد خرید</td>
                                         <td>
 
-                                            <form method="POST" action="{% url 'delete_all_cart' product.slug %}">
-                                                {% csrf_token %}
-                                                <button type="submit">remove from the cart</button>
-                                            </form>
-                                            <form action="{% url 'remove_cart_item' %}" method="post">
+<!--                                            <form method="POST" action="{% url 'delete_all_cart' product.slug %}">-->
+<!--                                                {% csrf_token %}-->
+<!--                                                <button type="submit">remove from the cart</button>-->
+<!--                                            </form>-->
+                                            <form action="{% url 'delete_all_cart' %}" method="post">
                                                     {% csrf_token %}
                                                     <input type="hidden" name="item_id" value="{{ item.id }}">
                                                     <button class="btn btn-outline-danger bi-trash"></button>
