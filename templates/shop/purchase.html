@@ -38,15 +38,7 @@
                         </div>
                     </div>
 
-                    <div >
-                        <table >
-                            <tr >
-                                <th>هزینه حمل و نقل :  </th>
-                                <th><input type="hidden"  ><label>  <span><bdi>{{ freight_cost|intcomma:False }}<span> تومان </span></bdi></span></label>
-                                </th>
-                            </tr>
-                        </table>
-                    </div>
+
                     <div class="col-md-6">
                         <span class="d-block my-3">اطلاعات تحویل مرسوله</span>
                         <div class="purchase-address-profile-content p-3 mt-3 border rounded">
@@ -193,6 +185,16 @@
                                    value="{{ order.delivery_phone_number }}" placeholder="شماره موبایل را وارد کنید">
                             <textarea type="text" name="additional_info" value="{{ order.additional_info }}"
                                       placeholder="توضیحات اضافی"></textarea>
+                            <div >
+                                <table >
+                                    <tr >
+                                        <th> ارسال رایگان برای خرید بالای 1 میلیون تومان  </th>
+                                        <th>هزینه ارسال :  </th>
+                                        <th><input type="hidden"  ><label>  <span><bdi>{{ freight_cost|intcomma:False }}<span> تومان </span></bdi></span></label>
+                                        </th>
+                                    </tr>
+                                </table>
+                            </div>
                             <div class="purchase-note bg-light p-3 rounded mt-3" style="width: 100%;">
                                 <label class="form-check-label" for="flexCheckChecked">
                                     <input id="rulesCheckBox" class="form-check-input" type="checkbox">
