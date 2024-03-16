@@ -64,11 +64,14 @@
                                 <table class="table">
                                     <tr>
                                         <td colspan="2"> خالی کردن سبد خرید</td>
-                                        <form action="{% url 'remove_cart_item' %}" method="post">
+                                        <td>
+                                            <form action="{% url 'remove_cart_item' %}" method="post">
                                                     {% csrf_token %}
                                                     <input type="hidden" name="item_id" value="{{ item.id }}">
                                                     <button class="btn btn-outline-danger bi-trash"></button>
-                                        </form>
+                                            </form>
+                                        </td>
+
 
                                     </tr>
                                     <tr>
