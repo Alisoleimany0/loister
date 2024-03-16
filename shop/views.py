@@ -224,6 +224,9 @@ def remove_cart_item_view(request):
         get_object_or_404(CartProductQuantity, id=request.POST.get("item_id")).delete()
 
     return redirect("cart")
+def delete_all_cart(request, slug):
+    Cart.objects.filter(user=request.user, products__slug=products).delete()
+    return redirect('cart')
 
 
 @utils.expire_session
