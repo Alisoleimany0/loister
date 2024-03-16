@@ -46,7 +46,6 @@
     <div id="addToCartForm" class="add-to-cart d-inline-block bg-white mb-3 p-4">
                                     <form action="{% url 'add_cart' %}" method="get">
                                         <span>تعداد : </span>
-
                                         <input type="number" name="quantity" min="1" value="1" class="rounded">
                                         <input type="hidden" name="id" value="14">
                                         <input type="hidden" name="id" value="{{ product.id }}">
