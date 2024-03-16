@@ -237,16 +237,16 @@ def new_order_view(request):
         items = CartProductQuantity.objects.filter(cart__customer__user=request.user)
         addresses = CustomerAddress.objects.filter(customer__user=request.user)
         customer = CustomerProfile.objects.filter(user=request.user).first()
-        if Order.objects.filter(order_status=Order.ORDER_STATUS_CHOICES[0][0], customer=customer).exists():
-            return utils.get_toast_response(request,
-                                            "شما سفارش پرداخت نشده دارید. لطفا ابتدا از طریق پنل کاربری سفارش خود را پرداخت یا لغو کنید.",
-                                            "warning")
-    else:
-        if Order.objects.filter(order_status=Order.ORDER_STATUS_CHOICES[0][0],
-                                session=request.session.session_key).exists():
-            return utils.get_toast_response(request,
-                                            "شما سفارش پرداخت نشده دارید. لطفا ابتدا از طریق پنل کاربری سفارش خود را پرداخت یا لغو کنید.",
-                                            "warning")
+    #     if Order.objects.filter(order_status=Order.ORDER_STATUS_CHOICES[0][0], customer=customer).exists():
+    #         return utils.get_toast_response(request,
+    #                                         "شما سفارش پرداخت نشده دارید. لطفا ابتدا از طریق پنل کاربری سفارش خود را پرداخت یا لغو کنید.",
+    #                                         "warning")
+    # else:
+    #     if Order.objects.filter(order_status=Order.ORDER_STATUS_CHOICES[0][0],
+    #                             session=request.session.session_key).exists():
+    #         return utils.get_toast_response(request,
+    #                                         "شما سفارش پرداخت نشده دارید. لطفا ابتدا از طریق پنل کاربری سفارش خود را پرداخت یا لغو کنید.",
+    #                                         "warning")
         items = CartProductQuantity.objects.filter(cart__session=request.session.session_key)
     if not items:
         return redirect("home")
