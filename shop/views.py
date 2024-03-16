@@ -248,6 +248,7 @@ def new_order_view(request):
     #                                         "شما سفارش پرداخت نشده دارید. لطفا ابتدا از طریق پنل کاربری سفارش خود را پرداخت یا لغو کنید.",
     #                                         "warning")
     #     items = CartProductQuantity.objects.filter(cart__session=request.session.session_key)
+
     if not items:
         return redirect("home")
     sub_total = 0
