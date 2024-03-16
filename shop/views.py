@@ -251,11 +251,12 @@ def new_order_view(request):
     if not items:
         return redirect("home")
     sub_total = 0
+
     for item in items:
         sub_total += item.total_price
     print("FUCK")
     # calculate freight cost
-    freight_cost = SiteInfo.objects.first().freight_cost if sub_total < 10000000 else 0
+    freight_cost = SiteInfo.objects.first().freight_cost if sub_total < 1000000 else 0
     sub_total += freight_cost
 
     context = {'addresses': addresses, 'items': items, 'sub_total': sub_total, 'customer': customer,
