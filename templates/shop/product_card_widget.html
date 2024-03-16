@@ -75,9 +75,7 @@
                                 </div>
 
                                 <!---<span>تعداد در سبد: {{ in_cart }} از {{ product.max_in_cart }}</span>-->
-    <a class="d-block bg-success text-center center-block text-white m-auto " href=" {% url 'cart' %}">
-        <h5 style="color:#FFF" >رفتن به سبد خرید</h5>
-    </a>
+
     <form class="global-form" action="{% url 'cart' %}" method="get">
 <!--                                        <a  href=" {% url 'profile_purchase_history' %}">-->
         <button class="btn  btn-success " type="submit">رفتن به سبد خرید</button>
