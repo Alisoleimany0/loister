@@ -23,7 +23,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-xl*+b#%iwa=u%s*zjs$fs_8-!jeutoh+kjiilzca7-*@m(!-*@'
 
 MERCHANT = "65c24296c5d2cb001a11a3bd"
-
 # MERCHANT = "zibal"
 
 # SECURITY WARNING: don't run with debug turned on in production!

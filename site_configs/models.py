@@ -74,6 +74,7 @@ class SiteInfo(models.Model):
     show_name_next_to_logo = models.BooleanField(verbose_name='نمایش نام سایت در کنار لوگو', default=True)
     site_name = models.CharField(verbose_name='اسم سایت', max_length=50, null=True)
     introduction_text = RichTextField(verbose_name='متن معرفی', max_length=600, blank=True, null=True)
+    freight_cost = models.IntegerField(verbose_name='هزینه حمل', default=0)
 
     class Meta:
         verbose_name = 'اطلاعات سایت'

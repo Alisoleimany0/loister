@@ -60,7 +60,6 @@ class Product(models.Model):
     sale_price = models.DecimalField(verbose_name="قیمت حراج", default=0, decimal_places=0, max_digits=12)
     max_in_cart = models.IntegerField(verbose_name="حداکثر تعداد در سبد خرید", default=1)
 
-
     class Meta:
         verbose_name_plural = "1. محصول ها"
         verbose_name = "محصول"
@@ -155,6 +154,7 @@ class Order(models.Model):
     checkout_date = jmodels.jDateTimeField(null=True, blank=True, verbose_name="تاریخ پرداخت")
     customer_full_name = models.CharField(max_length=50, null=True, blank=True, verbose_name="نام و نام خانوادگی")
     invoice_date_time = jmodels.jDateTimeField(auto_now_add=True, verbose_name="تاریخ و زمان صدور فاکتور")
+    freight_cost = models.IntegerField(verbose_name='هزینه حمل', default=0)
     total_price = models.DecimalField(verbose_name="قیمت کل", max_digits=12, decimal_places=0)
     delivery_phone_number = models.CharField(verbose_name="شماره تلفن تحویل‌گیرنده", max_length=15)
     district = models.CharField(verbose_name="استان", max_length=20)

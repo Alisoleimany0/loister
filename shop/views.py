@@ -253,7 +253,13 @@ def new_order_view(request):
     sub_total = 0
     for item in items:
         sub_total += item.total_price
-    context = {'addresses': addresses, 'items': items, 'sub_total': sub_total, 'customer': customer}
+    print("FUCK")
+    # calculate freight cost
+    freight_cost = SiteInfo.objects.first().freight_cost if sub_total < 10000000 else 0
+    sub_total += freight_cost
+
+    context = {'addresses': addresses, 'items': items, 'sub_total': sub_total, 'customer': customer,
+               'freight_cost': freight_cost}
     return render(request, 'shop/purchase.html', context)
 
 
@@ -287,11 +293,17 @@ def payment_redirect_view(request):
             sub_total = 0
             for item in items:
                 sub_total += item.total_price
+
+            # calculate freight cost
+            freight_cost = SiteInfo.objects.first().freight_cost if sub_total < 10000000 else 0
+            sub_total += freight_cost
+
             if request.POST.get("order_id", None):
                 order = get_object_or_404(Order, id=request.POST['order_id'])
             else:
                 order = Order.objects.create(customer=customer,
                                              session=session,
+                                             freight_cost=freight_cost,
                                              total_price=sub_total,
                                              order_status=Order.ORDER_STATUS_CHOICES[0][0],
                                              customer_full_name=request.POST['full_name'],
@@ -541,8 +553,13 @@ def order_details_view(request, pk):
                 sub_total = 0
                 for item in items:
                     sub_total += item.total_price
+
+                # calculate freight cost
+                freight_cost = SiteInfo.objects.first().freight_cost if sub_total < 10000000 else 0
+                sub_total += freight_cost
+
                 context = {'order': order, 'addresses': addresses, 'items': items, 'sub_total': sub_total,
-                           'customer': customer}
+                           'freight_cost': freight_cost, 'customer': customer}
                 return render(request, "shop/purchase.html", context=context)
             else:
                 items = BoughtProduct.objects.filter(order=order)
