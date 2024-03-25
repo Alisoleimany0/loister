@@ -264,6 +264,7 @@ def new_order_view(request):
     return render(request, 'shop/purchase.html', context)
 
 
+
 @utils.expire_session
 def cancel_order_view(request, pk):
     order = get_object_or_404(Order, id=pk)
