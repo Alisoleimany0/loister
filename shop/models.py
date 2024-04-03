@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import signals, Avg
+from django.urls import reverse
 from django.utils import timezone
 from django_jalali.db import models as jmodels
 
@@ -95,6 +96,9 @@ class Product(models.Model):
         if image:
             return image.first()
         return None
+
+    def get_absolute_url(self):
+        return reverse('product', kwargs={'slug': self.slug})
 
     def is_favourite(self, customer: CustomerProfile):
         return self in customer.favourites.all()

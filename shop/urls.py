@@ -1,7 +1,12 @@
+from django.contrib.sitemaps.views import sitemap
 from django.urls import path
 from . import views
+from .sitemaps import ProductsSitemap
+
+
 
 urlpatterns = [
+
     path('', views.index_view, name="home"),
     path('logout/', views.logout_user, name="logout"),
     path('signup/', views.signup_user, name="signup"),
@@ -12,7 +17,6 @@ urlpatterns = [
     path('cart/add_product/', views.add_cart_view, name="add_cart"),
     path('cart/remove_item/', views.remove_cart_item_view, name="remove_cart_item"),
     path('cart/empty_cart/', views.delete_all_cart, name="delete_all_cart"),
-
     path('order/new/', views.new_order_view, name="new_order"),
     path('order/details/<int:pk>', views.order_details_view, name="order_details"),
     path('order/cancel/<int:pk>', views.cancel_order_view, name="cancel_order"),

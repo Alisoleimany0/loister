@@ -17,7 +17,11 @@ Including another URLconf
 from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include
+
+from shop.sitemaps import ProductsSitemap, ShopSitemap
+from site_configs.sitemaps import SiteSitemap
 from . import settings
 
 import re
@@ -25,7 +29,6 @@ from urllib.parse import urlsplit
 from django.core.exceptions import ImproperlyConfigured
 from django.urls import re_path
 from django.views.static import serve
-
 
 # def static(prefix, view=serve, **kwargs):
 #     if not prefix:
@@ -40,6 +43,11 @@ from django.views.static import serve
 #         ),
 #     ]
 
+sitemaps = {
+    'shop': ShopSitemap,
+    'site': SiteSitemap,
+    'products': ProductsSitemap,
+}
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -47,6 +55,8 @@ urlpatterns = [
     path('customer', include('customer.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('info/', include('site_configs.urls')),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
+         name='django.contrib.sitemaps.views.sitemap'),
 ]
 handler404 = 'loister.views.http404'
 
