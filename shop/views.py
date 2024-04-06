@@ -225,7 +225,10 @@ def remove_cart_item_view(request):
 
 
 def delete_all_cart(request):
-    CartProductQuantity.objects.filter(cart__customer__user=request.user).delete()
+    if request.user.is_authenticated:
+        CartProductQuantity.objects.filter(cart__customer__user=request.user).delete()
+    else:
+        CartProductQuantity.objects.filter(cart__session=request.session.session_key).delete()
     return redirect('cart')
 
 
