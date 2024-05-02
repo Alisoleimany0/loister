@@ -32,8 +32,19 @@
                                         <li class="d-inline-block m-1">
                                             <a href="{% if not 'https://' in link.link_address and not 'http://' in link.link_address %}https://{% endif %}{{ link.link_address }}"
                                                target="_blank" class="d-inline-block text-info">
-                                                {% if link.name == 'Instagram' or link.name == 'instagram' or link.name == 'insta' %}
-                                                  <a href="{{ link.link_address }}"><i class="bi bi-instagram"></i></a>
+                                                <a href="{{ link.link_address }}" class="d-inline-block p-2">
+                                                    {% if link.name == 'Instagram' or link.name == 'instagram' or link.name == 'insta' %}
+                                                        <a href="{{ link.link_address }}"><i class="bi bi-instagram"></i></a>
+                                                    {% elif link.name == 'LinkedIn' or link.name == 'linkedin' %}
+                                                        <a href="{{ link.link_address }}"><i class="bi bi-linkedin"></i></a>
+                                                    {% elif link.name == 'Twitter' or link.name == 'twitter' %}
+                                                        <a href="{{ link.link_address }}"><i class="bi bi-twitter"></i></a>
+                                                    {% elif link.name == 'Telegram' or link.name == 'telegram' or link.name == 'tel' %}
+                                                        <a href="{{ link.link_address }}"><i class="bi bi-telegram"></i></a>
+                                                    {% elif link.name == 'WhatsApp' or link.name == 'whatsapp' %}
+                                                        <a href="{{ link.link_address }}"><i class="bi bi-whatsapp"></i></a>
+                                                    {% endif %}
+                                                </a>
 <!--                                                {% if link.name %}{{ link.name }}{% else %}-->
 <!--                                                    {{ link.link_address }}{% endif %}-->
                                             </a>
