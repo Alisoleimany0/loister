@@ -32,8 +32,12 @@
                                         <li class="d-inline-block m-1">
                                             <a href="{% if not 'https://' in link.link_address and not 'http://' in link.link_address %}https://{% endif %}{{ link.link_address }}"
                                                target="_blank" class="d-inline-block text-info">
-                                                {% if link.name %}{{ link.name }}{% else %}
-                                                    {{ link.link_address }}{% endif %}</a>
+                                                {% if link.name == 'Instagram' or link.name == 'instagram' or link.name == 'insta' %}
+                                                  <a href="{{ link.link_address }}"><i class="bi bi-instagram"></i></a>
+<!--                                                {% if link.name %}{{ link.name }}{% else %}-->
+<!--                                                    {{ link.link_address }}{% endif %}-->
+
+                                            </a>
                                         </li>
                                         <br>
                                     {% endfor %}
